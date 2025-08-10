@@ -1,6 +1,170 @@
-<div class="body">
+<div>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+   
 
-
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #0ea5e9;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --gray-light: #e2e8f0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-card .card-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card .card-subtext {
+            font-size: 0.75rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--secondary);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        
+        .quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            text-align: center;
+            color: var(--dark);
+            text-decoration: none;
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+        }
+        
+        .quick-action-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .quick-action-btn span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .quick-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
     <!-- Dashboard Header -->
     <header class="dashboard-header py-4">
         <div class="container-fluid">
@@ -80,7 +244,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -96,7 +260,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -112,7 +276,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-md-3 col-sm-6">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -142,7 +306,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
@@ -172,7 +336,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -188,7 +352,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -204,7 +368,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-md-3 col-sm-6">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -222,164 +386,14 @@
             </div>
         </div>
     </div>
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --primary-dark: #4f46e5;
-            --secondary: #f43f5e;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --info: #0ea5e9;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #94a3b8;
-            --gray-light: #e2e8f0;
-        }
-
-        .body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
-            color: var(--dark);
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-            margin-bottom: 2rem;
-        }
-
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            overflow: hidden;
-            background-color: white;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card .card-title {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--gray);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card .card-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-card .card-subtext {
-            font-size: 0.75rem;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-        }
-
-        .trend-up {
-            color: var(--success);
-        }
-
-        .trend-down {
-            color: var(--secondary);
-        }
-
-        .chart-container {
-            position: relative;
-            height: 350px;
-            width: 100%;
-        }
-
-        .section-title {
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-
-        .section-title:after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-        }
-
-        .quick-action-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            border-radius: 10px;
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-            text-align: center;
-            color: var(--dark);
-            text-decoration: none;
-        }
-
-        .quick-action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            color: var(--primary);
-        }
-
-        .quick-action-btn i {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
-
-        .quick-action-btn span {
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         // Set current date
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
         });
 
         // Sales Chart
@@ -405,39 +419,28 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         backgroundColor: '#1e293b',
-                        titleFont: {
-                            size: 14,
-                            weight: '600'
-                        },
-                        bodyFont: {
-                            size: 12
-                        },
+                        titleFont: { size: 14, weight: '600' },
+                        bodyFont: { size: 12 },
                         padding: 12,
                         cornerRadius: 8,
                         displayColors: false
                     }
                 },
                 scales: {
-                    y: {
+                    y: { 
                         beginAtZero: true,
-                        grid: {
-                            color: 'rgba(226, 232, 240, 0.5)'
-                        },
-                        ticks: {
+                        grid: { color: 'rgba(226, 232, 240, 0.5)' },
+                        ticks: { 
                             callback: function(value) {
                                 return '$' + value.toLocaleString();
                             }
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
-                        }
+                    x: { 
+                        grid: { display: false }
                     }
                 }
             }
@@ -481,5 +484,6 @@
             }
         });
     </script>
-
+</body>
+</html>
 </div>
