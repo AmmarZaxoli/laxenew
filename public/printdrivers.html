@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير الفواتير | LAXE ONLINE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #2c3e50;
+            --primary-light: #f5f7fa;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #e0e0e0;
+        }
+
+        * {
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: white;
+            color: #333;
+        }
+
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        .invoice-report {
+            width: 100%;
+            margin: 0;
+            background: white;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .report-header {
+            padding: 1rem 0;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .report-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Report Content */
+        .report-content {
+            padding: 0 10px;
+        }
+
+        /* Driver Info Section */
+        .driver-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box {
+            background: var(--primary-light);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            font-size: 15px;
+            color: var(--dark);
+        }
+
+        .info-box span {
+            font-weight: 600;
+            color: var(--dark);
+            margin-right: 5px;
+        }
+
+        /* Invoice Table */
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 14px;
+        }
+
+        .invoice-table thead {
+            background: var(--primary);
+            color: white;
+        }
+
+        .invoice-table th {
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .invoice-table td {
+            padding: 8px 10px;
+            text-align: center;
+            border: 1px solid #2c3e50;
+            /* Bold border */
+
+            border-bottom: 1px solid #2c3e50;
+        }
+
+        .invoice-table td.address,
+        .invoice-table td.phone {
+            font-weight: bold;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary-light);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .summary-label {
+            font-size: 16px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .summary-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .delivery-check {
+            border: 1.5px solid #000000;
+            /* Bold border */
+            width: 25px;
+            /* Adjust size as needed */
+            height: 25px;
+            border-radius: 4px;
+            /* Optional: make it slightly rounded */
+            display: inline-block;
+            margin: auto;
+        }
+
+
+        .report-footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-report">
+        <!-- Header -->
+        <div class="report-header">
+            <div class="logo">
+                <div class="logo-text">LAXE ONLINE</div>
+            </div>
+            <h1 class="report-title">تقرير الفواتير حسب السائق</h1>
+        </div>
+
+        <div class="report-content">
+            <!-- Driver Info -->
+            <div class="driver-section">
+                <div class="info-box">
+                    اسم السائق:
+                    <span>ammar</span>
+                </div>
+                <div class="info-box">
+                    التاريخ:
+                    <span>2025-07-29</span>
+                </div>
+            </div>
+
+            <!-- Invoice Table -->
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>الفاتورة</th>
+                        <th>العنوان</th>
+                        <th>الهاتف</th>
+                        <th>التوصيل</th>
+                        <th>الإجمالي</th>
+                        <th style="width: 200px;">التوصيل + الإجمالي</th>
+                        <th>الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                                                        <tr>
+                                <td>1</td>
+                                <td>1001</td>
+                                <td class="address">ye</td>
+                                <td class="phone">
+                                    5
+                                </td>
+                                <td>3,000</td>
+                                <td>200,000</td>
+                                <td>203,000</td>
+                                <td>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>2</td>
+                                <td>1002</td>
+                                <td class="address">kj</td>
+                                <td class="phone">
+                                    88
+                                </td>
+                                <td>3,000</td>
+                                <td>230,000</td>
+                                <td>233,000</td>
+                                <td>
+                                </td>
+                            </tr>
+                                                            </tbody>
+            </table>
+        </div>
+        <div class="container" style=" padding: 10px; display: flex;gap:10px;">
+            <div class="info-box" style="width: 40%; text-align: right;">
+                مجموع القائمة :
+                <label class="summary-label">
+                    430,000
+                </label>
+
+            </div>
+            <div class="info-box" style="width: 40%; text-align: right;">
+                مجموع التوصيل :
+                <label class="summary-label">
+                    6,000
+                </label>
+            </div>
+            <div class="info-box" style="width: 40%; text-align: right;">
+                مجموع القائمة والتوصيل كلي:
+                <label class="summary-label">
+                    436,000
+                </label>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

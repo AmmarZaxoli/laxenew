@@ -1,0 +1,125 @@
+<div class="content-container" style="position: relative; padding-top: 70px;">
+    <!-- Button fixed at the top-center -->
+    <button wire:click="toggleModal" class="btn position-fixed" style="
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: linear-gradient(to right, #6366f1 0%, #4f46e5 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 6px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            color: white;
+            font-weight: 400;
+            transition: all 0.3s ease;
+        "
+        onmouseover="this.style.transform='translateX(-50%) scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(0, 0, 0, 0.2)'"
+        onmouseout="this.style.transform='translateX(-50%)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.1)'">
+        <i class="fas fa-clipboard-check me-2"></i>
+        <span>طلبات السوائق</span>
+    </button>
+
+    <!--[if BLOCK]><![endif]--><?php if($showModal): ?>
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5); z-index:1050;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">عدد الطلبات لكل سائق</h5>
+                        <button type="button" class="btn-close" wire:click="toggleModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="createdAt" class="form-label">من تاريخ</label>
+                                <input type="date" wire:model.lazy="createdAt" id="createdAt"
+                                    class="form-control <?php $__errorArgs = ['createdAt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['createdAt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                            <div class="col-md-6">
+                                <label for="updatedAt" class="form-label">إلى تاريخ</label>
+                                <input type="date" wire:model.lazy="updatedAt" id="updatedAt"
+                                    class="form-control <?php $__errorArgs = ['updatedAt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['updatedAt'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['dateFilter'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <div class="alert alert-danger mb-3"><?php echo e($message); ?></div> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>اسم السائق</th>
+                                        <th>عدد الطلبات</th>
+                                        <th>آخر تحديث</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <tr>
+                                            <td><?php echo e($driver->nameDriver); ?></td>
+                                            <td><?php echo e($driver->invoices_count); ?></td>
+                                            <td>
+                                                <?php echo e(optional($driver->invoices->first())->date_sell ? $driver->invoices->first()->date_sell->format('Y-m-d H:i') : 'N/A'); ?>
+
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                        <tr>
+                                            <td colspan="3" class="text-center">
+                                                <!--[if BLOCK]><![endif]--><?php if($this->createdAt || $this->updatedAt): ?>
+                                                    لا توجد بيانات في الفترة المحددة
+                                                <?php else: ?>
+                                                    لا توجد بيانات اليوم
+                                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" wire:click="toggleModal">إغلاق</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+</div><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/drivers/drivers-order.blade.php ENDPATH**/ ?>
