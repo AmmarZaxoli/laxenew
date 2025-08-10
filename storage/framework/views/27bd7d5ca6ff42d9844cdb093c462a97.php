@@ -14,7 +14,6 @@
     <!-- Google Fonts - Tajawal -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo e(asset('assets/css/style.css')); ?>" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
 
 </head>

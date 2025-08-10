@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -96,7 +96,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -112,7 +112,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
@@ -172,7 +172,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -188,7 +188,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -204,7 +204,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <div class="card stat-card h-100">
                     <div class="card-body">
@@ -222,7 +222,7 @@
             </div>
         </div>
     </div>
-<style>
+    <style>
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
@@ -236,14 +236,14 @@
             --gray: #94a3b8;
             --gray-light: #e2e8f0;
         }
-        
+
         .body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
             color: var(--dark);
             -webkit-font-smoothing: antialiased;
         }
-        
+
         .dashboard-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
@@ -251,7 +251,7 @@
             box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
             margin-bottom: 2rem;
         }
-        
+
         .card {
             border: none;
             border-radius: 12px;
@@ -260,12 +260,12 @@
             overflow: hidden;
             background-color: white;
         }
-        
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        
+
         .card-icon {
             width: 48px;
             height: 48px;
@@ -276,7 +276,7 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
         }
-        
+
         .stat-card .card-title {
             font-size: 0.875rem;
             font-weight: 500;
@@ -285,35 +285,35 @@
             letter-spacing: 0.5px;
             margin-bottom: 0.5rem;
         }
-        
+
         .stat-card .card-value {
             font-size: 1.75rem;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 0.25rem;
         }
-        
+
         .stat-card .card-subtext {
             font-size: 0.75rem;
             color: var(--gray);
             display: flex;
             align-items: center;
         }
-        
+
         .trend-up {
             color: var(--success);
         }
-        
+
         .trend-down {
             color: var(--secondary);
         }
-        
+
         .chart-container {
             position: relative;
             height: 350px;
             width: 100%;
         }
-        
+
         .section-title {
             font-weight: 600;
             color: var(--dark);
@@ -321,7 +321,7 @@
             position: relative;
             padding-bottom: 0.5rem;
         }
-        
+
         .section-title:after {
             content: '';
             position: absolute;
@@ -332,13 +332,13 @@
             background: var(--primary);
             border-radius: 3px;
         }
-        
+
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 1rem;
         }
-        
+
         .quick-action-btn {
             display: flex;
             flex-direction: column;
@@ -353,33 +353,33 @@
             color: var(--dark);
             text-decoration: none;
         }
-        
+
         .quick-action-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             color: var(--primary);
         }
-        
+
         .quick-action-btn i {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
             color: var(--primary);
         }
-        
+
         .quick-action-btn span {
             font-size: 0.75rem;
             font-weight: 500;
         }
-        
-     
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         // Set current date
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
 
         // Sales Chart
@@ -405,28 +405,39 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false },
+                    legend: {
+                        display: false
+                    },
                     tooltip: {
                         backgroundColor: '#1e293b',
-                        titleFont: { size: 14, weight: '600' },
-                        bodyFont: { size: 12 },
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
                         padding: 12,
                         cornerRadius: 8,
                         displayColors: false
                     }
                 },
                 scales: {
-                    y: { 
+                    y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(226, 232, 240, 0.5)' },
-                        ticks: { 
+                        grid: {
+                            color: 'rgba(226, 232, 240, 0.5)'
+                        },
+                        ticks: {
                             callback: function(value) {
                                 return '$' + value.toLocaleString();
                             }
                         }
                     },
-                    x: { 
-                        grid: { display: false }
+                    x: {
+                        grid: {
+                            display: false
+                        }
                     }
                 }
             }
