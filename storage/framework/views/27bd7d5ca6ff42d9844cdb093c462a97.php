@@ -14,7 +14,7 @@
     <!-- Google Fonts - Tajawal -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo e(asset('assets/css/style.css')); ?>" />
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
 
 </head>
@@ -54,7 +54,7 @@
                     <li class="nav-item">
                         <a class="nav-link <?php echo e(Route::is('dashboards.create') ? 'active' : ''); ?>"
                             href="<?php echo e(route('dashboards.create')); ?>">
-                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span> 
+                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
                             <span class="nav-text">لوحة التحكم</span>
                             <span class="nav-badge">New</span>
                         </a>
@@ -184,8 +184,7 @@
                             <span class="nav-text">شراء القوائم</span>
                             <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
-                        <div class="collapse <?php echo e(Route::is('add_Invoices.create') ? 'show' : ''); ?>"
-                            id="invoicesMenu">
+                        <div class="collapse <?php echo e(Route::is('add_Invoices.create') ? 'show' : ''); ?>" id="invoicesMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
                                     <a class="nav-link <?php echo e(Route::is('add_Invoices.create') ? 'active' : ''); ?>"
@@ -279,7 +278,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?php echo e(asset('assets/js/script.js')); ?>"></script>
-    
+
     <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
@@ -298,16 +297,18 @@ if (isset($__slots)) unset($__slots);
 ?>
     <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
 
- <script>
+    <script>
         document.addEventListener('livewire:init', () => {
-            Livewire.on('print-driver-invoices', async ({ url }) => {
+            Livewire.on('print-driver-invoices', async ({
+                url
+            }) => {
                 try {
                     const iframe = document.createElement('iframe');
                     iframe.style.display = 'none';
                     iframe.src = url;
                     document.body.appendChild(iframe);
 
-                    iframe.onload = function () {
+                    iframe.onload = function() {
                         setTimeout(() => {
                             iframe.contentWindow.focus();
                             iframe.contentWindow.print();
@@ -331,7 +332,7 @@ if (isset($__slots)) unset($__slots);
                     iframe.src = url;
                     document.body.appendChild(iframe);
 
-                    iframe.onload = function () {
+                    iframe.onload = function() {
                         setTimeout(() => {
                             iframe.contentWindow.focus();
                             iframe.contentWindow.print();
@@ -349,4 +350,6 @@ if (isset($__slots)) unset($__slots);
         });
     </script>
 </body>
-</html><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/layouts/index.blade.php ENDPATH**/ ?>
+
+</html>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/layouts/index.blade.php ENDPATH**/ ?>

@@ -14,7 +14,7 @@
     <!-- Google Fonts - Tajawal -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @livewireStyles
 </head>
 
@@ -53,7 +53,7 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('dashboards.create') ? 'active' : '' }}"
                             href="{{ route('dashboards.create') }}">
-                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span> 
+                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
                             <span class="nav-text">لوحة التحكم</span>
                             <span class="nav-badge">New</span>
                         </a>
@@ -183,8 +183,7 @@
                             <span class="nav-text">شراء القوائم</span>
                             <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
-                        <div class="collapse {{ Route::is('add_Invoices.create') ? 'show' : '' }}"
-                            id="invoicesMenu">
+                        <div class="collapse {{ Route::is('add_Invoices.create') ? 'show' : '' }}" id="invoicesMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
                                     <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
@@ -279,19 +278,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
-    
+
     @livewire('drivers.drivers-order')
     @livewireScripts
- <script>
+    <script>
         document.addEventListener('livewire:init', () => {
-            Livewire.on('print-driver-invoices', async ({ url }) => {
+            Livewire.on('print-driver-invoices', async ({
+                url
+            }) => {
                 try {
                     const iframe = document.createElement('iframe');
                     iframe.style.display = 'none';
                     iframe.src = url;
                     document.body.appendChild(iframe);
 
-                    iframe.onload = function () {
+                    iframe.onload = function() {
                         setTimeout(() => {
                             iframe.contentWindow.focus();
                             iframe.contentWindow.print();
@@ -315,7 +316,7 @@
                     iframe.src = url;
                     document.body.appendChild(iframe);
 
-                    iframe.onload = function () {
+                    iframe.onload = function() {
                         setTimeout(() => {
                             iframe.contentWindow.focus();
                             iframe.contentWindow.print();
@@ -333,4 +334,5 @@
         });
     </script>
 </body>
+
 </html>
