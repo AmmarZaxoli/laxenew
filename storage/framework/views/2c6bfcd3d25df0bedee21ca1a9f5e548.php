@@ -573,4 +573,4 @@ input[type="checkbox"]:checked::after {
     }
 }
 </style>
-</div><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/GetAPI/show.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/getAPI/show.blade.php ENDPATH**/ ?>

@@ -67,22 +67,24 @@ class SearchProduct extends Component
     }
 
 
-    public function getResultsProperty()
-    {
-        if (!is_string($this->search)) {
-            return collect();
-        }
+public function getResultsProperty()
+{
+    if (!is_string($this->search)) {
+        return collect();
+    }
 
-        return Definition::where(function ($query) {
+    return Definition::where(function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%')
                 ->orWhere('code', 'like', '%' . $this->search . '%')
                 ->orWhere('barcode', 'like', '%' . $this->search . '%');
         })
-            ->whereHas('products')
-            ->withCount('products')
-            ->limit(7)
-            ->get();
-    }
+        ->where('is_active', 'active')  // <-- Add this line to filter active only
+        ->whereHas('products')
+        ->withCount('products')
+        ->limit(7)
+        ->get();
+}
+
 
     public function selectProduct($product_id)
     {

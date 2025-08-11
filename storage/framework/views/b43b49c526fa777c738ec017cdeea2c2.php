@@ -1,6 +1,9 @@
 <div class="content-container" style="position: relative; padding-top: 70px;">
     <!-- Button fixed at the top-center -->
-    <button wire:click="toggleModal" class="btn position-fixed" style="
+    <button wire:click="toggleModal" class="btn position-fixed"
+        style="
+            width: 160px;
+
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
@@ -32,7 +35,7 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label for="createdAt" class="form-label">من تاريخ</label>
-                                <input type="date" wire:model.lazy="createdAt" id="createdAt"
+                                <input type="date" wire:model="createdAt" id="createdAt"
                                     class="form-control <?php $__errorArgs = ['createdAt'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -45,14 +48,16 @@ unset($__errorArgs, $__bag); ?>">
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                             </div>
                             <div class="col-md-6">
                                 <label for="updatedAt" class="form-label">إلى تاريخ</label>
-                                <input type="date" wire:model.lazy="updatedAt" id="updatedAt"
+                                <input type="date" wire:model="updatedAt" id="updatedAt"
                                     class="form-control <?php $__errorArgs = ['updatedAt'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -65,10 +70,25 @@ unset($__errorArgs, $__bag); ?>">
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="button" class="btn btn-outline-primary py-2 px-4 shadow-sm"
+                                    wire:loading.attr="disabled" style="margin-top: 5px"
+                                    wire:target="filterByDate" wire:click="filterByDate">
+                                    <span wire:loading.remove wire:target="filterByDate">
+                                        <i class="fas fa-search me-2"></i> بحث
+                                    </span>
+                                    <span wire:loading wire:target="filterByDate">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>
+                                        جاري البحث...
+                                    </span>
+                                </button>
                             </div>
                         </div>
 
@@ -76,7 +96,9 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="alert alert-danger mb-3"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="alert alert-danger mb-3"><?php echo e($message); ?></div>
+                        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
@@ -94,9 +116,11 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                                     <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <tr>
                                             <td><?php echo e($driver->nameDriver); ?></td>
-                                            <td><?php echo e($driver->invoices_count); ?></td>
+                                            <td><?php echo e($driver->orders_count); ?></td>
                                             <td>
-                                                <?php echo e(optional($driver->invoices->first())->date_sell ? $driver->invoices->first()->date_sell->format('Y-m-d H:i') : 'N/A'); ?>
+                                                <?php echo e(optional($driver->customers->first())->date_sell
+                                                    ? \Carbon\Carbon::parse($driver->customers->first()->date_sell)->format('Y-m-d H:i')
+                                                    : 'N/A'); ?>
 
                                             </td>
                                         </tr>
@@ -122,4 +146,5 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
             </div>
         </div>
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-</div><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/drivers/drivers-order.blade.php ENDPATH**/ ?>
+</div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/drivers/drivers-order.blade.php ENDPATH**/ ?>

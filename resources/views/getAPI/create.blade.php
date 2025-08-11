@@ -2,6 +2,6 @@
 
 @section('content')
     <div style="padding: 10px">
-        <livewire:get-api.show>
+        <livewire:GetAPI.show>
     </div>
 @endsection

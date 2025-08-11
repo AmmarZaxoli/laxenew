@@ -40,15 +40,15 @@ class Show extends Component
 
     public $showBulkDateModal = false;
     public $bulkNewDateSell;
-public function openDateFilterModal()
-{
-    $today = now()->format('Y-m-d');
-    $this->date_from = $this->date_from ?? $today;
-    $this->date_to = $this->date_to ?? $today;
-    $this->filteredByDate = false; // or true if you want to filter by default
-    // Show modal logic here, if you have one, e.g.:
-    // $this->showDateFilterModal = true;
-}
+    public function openDateFilterModal()
+    {
+        $today = now()->format('Y-m-d');
+        $this->date_from = $this->date_from ?? $today;
+        $this->date_to = $this->date_to ?? $today;
+        $this->filteredByDate = false; // or true if you want to filter by default
+        // Show modal logic here, if you have one, e.g.:
+        // $this->showDateFilterModal = true;
+    }
 
     public function numinvoice($id)
     {
@@ -63,7 +63,7 @@ public function openDateFilterModal()
         $this->selectedDriverId = ''; // reset
 
     }
-    
+
     public function updateDriver()
     {
         $this->validate([
@@ -102,19 +102,28 @@ public function openDateFilterModal()
     }
 
     // تحديث تواريخ الفواتير المختارة دفعة واحدة
-    public function updateBulkDateSell()
-    {
-        foreach ($this->selectedInvoices as $invoiceNumber) {
-            $invoice = Sell_invoice::where('num_invoice_sell', $invoiceNumber)->first();
-            if ($invoice && $invoice->customer) {
-                $invoice->date_sell = $this->bulkNewDateSell;
-                $invoice->save();
+   public function updateBulkDateSell()
+{
+    foreach ($this->selectedInvoices as $invoiceNumber) {
+        $invoice = Sell_invoice::where('num_invoice_sell', $invoiceNumber)->first();
+
+        if ($invoice) {
+            // Update invoice date
+            $invoice->date_sell = $this->bulkNewDateSell;
+            $invoice->save();
+
+            // If related customer exists, update their date_sell as well
+            if ($invoice->customer) {
+                $invoice->customer->date_sell = $this->bulkNewDateSell;
+                $invoice->customer->save();
             }
         }
-
-        session()->flash('message', 'تم تحديث تاريخ البيع للفواتير المختارة بنجاح.');
-        $this->showBulkDateModal = false;
     }
+
+    session()->flash('message', 'تم تحديث تاريخ البيع للفواتير المختارة بنجاح.');
+    $this->showBulkDateModal = false;
+}
+
 
 
     #[On('invoiceUpdated')]
@@ -126,9 +135,9 @@ public function openDateFilterModal()
     public function mount()
     {
         $this->drivers = Driver::all();
-    $today = now()->format('Y-m-d');
-    $this->date_from = $this->date_from ?? $today;
-    $this->date_to = $this->date_to ?? $today;
+        $today = now()->format('Y-m-d');
+        $this->date_from = $this->date_from ?? $today;
+        $this->date_to = $this->date_to ?? $today;
     }
 
     public function filterByDate()
@@ -252,7 +261,7 @@ public function openDateFilterModal()
 
 
 
-   
+
 
     public function print($id) {}
     public function edit($id) {}
@@ -471,43 +480,44 @@ public function openDateFilterModal()
         Offer_sell::where('sell_invoice_id', $id)->delete();
         Sell_invoice::where('id', $id)->delete();
     }
-     public function printdriver()
-{
-    if (!$this->selected_driver) {
-        $this->dispatch('show-toast', type: 'error', message: 'يرجى اختيار السائق أولاً');
-        return;
-    }
+    public function printdriver()
+    {
+        if (!$this->selected_driver) {
+            $this->dispatch('show-toast', type: 'error', message: 'يرجى اختيار السائق أولاً');
+            return;
+        }
 
-    // Get invoice numbers based on driver ID and optional date range
-    $invoiceNumbers = Sell_invoice::query()
-        ->with('customer.driver')
-        ->whereHas('customer', function ($q) {
-            $q->where('driver_id', $this->selected_driver);
-        })
-        ->when($this->date_from && $this->date_to, function ($q) {
-            $q->whereDate('date_sell', '>=', $this->date_from)
-              ->whereDate('date_sell', '<=', $this->date_to);
-        })
-        ->pluck('num_invoice_sell')
-        ->toArray();
-    if (empty($invoiceNumbers)) {
-        flash()->addError('لا توجد فواتير لهذا السائق في المدة المحددة.');
-        return;
-    }
+        // Get invoice numbers based on driver ID and optional date range
+        $invoiceNumbers = Sell_invoice::query()
+            ->with('customer.driver')
+            ->whereHas('customer', function ($q) {
+                $q->where('driver_id', $this->selected_driver);
+            })
+            ->when($this->date_from && $this->date_to, function ($q) {
+                $q->whereDate('date_sell', '>=', $this->date_from)
+                    ->whereDate('date_sell', '<=', $this->date_to);
+            })
+            ->pluck('num_invoice_sell')
+            ->toArray();
+        if (empty($invoiceNumbers)) {
+            flash()->addError('لا توجد فواتير لهذا السائق في المدة المحددة.');
+            return;
+        }
 
-    try {
-        $driverName = Driver::find($this->selected_driver)->nameDriver;
-        
-        $url = route('print.driver-invoices', [
-            'invoiceIds' => implode(',', $invoiceNumbers),
-            'driverName' => $driverName,
-        ]);
+        try {
+            $driverName = Driver::find($this->selected_driver)->nameDriver;
 
-        $this->dispatch('print-driver-invoices', url: $url);
-    } catch (\Exception $e) {
-        session()->flash('error', 'حدث خطأ أثناء محاولة الطباعة: ' . $e->getMessage());
+            $url = route('print.driver-invoices', [
+                'invoiceIds' => implode(',', $invoiceNumbers),
+                'driverName' => $driverName,
+            ]);
+
+            $this->dispatch('print-driver-invoices', url: $url);
+        } catch (\Exception $e) {
+            session()->flash('error', 'حدث خطأ أثناء محاولة الطباعة: ' . $e->getMessage());
+        }
     }
-}    public $selectedInvoicesData = [];
+    public $selectedInvoicesData = [];
 
 
     public function printSelected()
@@ -540,8 +550,4 @@ public function openDateFilterModal()
 
         return view('print.invoices', compact('invoices'));
     }
-
 }
-
-
-

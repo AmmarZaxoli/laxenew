@@ -8,27 +8,48 @@
                         <label for="name" class="form-label">الاسم</label>
                         <input type="text" class="form-control shadow-sm" wire:model.lazy='name' id="name"
                             autocomplete="off">
-                        @error('name')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
 
                     <div class="mb-3">
                         <label for="code" class="form-label">الكود</label>
                         <input type="text" class="form-control shadow-sm" wire:model='code' id="code"
                             autocomplete="off">
-                        @error('code')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
 
                     <div class="mb-3">
                         <label for="barcode" class="form-label">الباركود</label>
                         <input type="text" class="form-control shadow-sm" wire:model='barcode' id="barcode"
                             autocomplete="off">
-                        @error('barcode')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['barcode'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
                 </div>
 
@@ -38,22 +59,36 @@
                         <label for="typeproduct" class="form-label">النوع</label>
                         <select class="form-select shadow-sm" wire:model="type_id" id="typeproduct">
                             <option value="">اختر النوع</option>
-                            @foreach ($types as $type)
-                                <option value="{{ $type->id }}">{{ $type->typename }}</option>
-                            @endforeach
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($type->id); ?>"><?php echo e($type->typename); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                         </select>
-                        @error('type_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['type_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
 
                     <div class="mb-3">
                         <label for="madin" class="form-label">المدين</label>
                         <input type="text" class="form-control shadow-sm" wire:model='madin' id="madin"
                             autocomplete="off">
-                        @error('madin')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['madin'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
 
                     <!-- Product Status -->
@@ -75,9 +110,16 @@
                                 </label>
                             </div>
                         </div>
-                        @error('is_active')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['is_active'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="text-danger"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
 
                     <!-- Delivery Option - Redesigned with Switch -->
@@ -88,14 +130,21 @@
                         <input class="form-check-input" type="checkbox" role="switch" wire:model.live="delivery_type"
                             id="deliverableSwitch" style="width: 3em; height: 1.5em; cursor: pointer;">
                         <label class="form-check-label ms-2" for="deliverableSwitch">
-                            <span class="fw-bold {{ $delivery_type ? 'text-success' : 'text-danger' }}">
+                            <span class="fw-bold <?php echo e($delivery_type ? 'text-success' : 'text-danger'); ?>">
 
                             </span>
                         </label>
                     </div>
-                    @error('delivery_type')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                    <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['delivery_type'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="text-danger"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                 </div>
 
 
@@ -108,15 +157,15 @@
                             x-on:livewire-upload-error="isUploading = false"
                             x-on:livewire-upload-progress="progress = $event.detail.progress">
 
-                            @if ($image)
-                                <img src="{{ $image->temporaryUrl() }}" class="img-thumbnail mb-3"
+                            <!--[if BLOCK]><![endif]--><?php if($image): ?>
+                                <img src="<?php echo e($image->temporaryUrl()); ?>" class="img-thumbnail mb-3"
                                     style="max-height: 100px">
-                            @else
+                            <?php else: ?>
                                 <div class="image-placeholder mb-3">
                                     <i class="fas fa-image fa-4x text-muted"></i>
                                     <p class="text-muted mt-2">لا توجد صورة</p>
                                 </div>
-                            @endif
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                             <div class="d-flex justify-content-center">
                                 <label for="image" class="btn btn-outline-primary position-relative">
@@ -136,9 +185,16 @@
                                 </div>
                             </div>
                         </div>
-                        @error('image')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
                 </div>
 
@@ -162,3 +218,4 @@
         </form>
     </div>
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/definitions/insert.blade.php ENDPATH**/ ?>

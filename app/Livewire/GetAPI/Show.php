@@ -105,7 +105,7 @@ class Show extends Component
 
     public function render()
     {
-        return view('livewire.GetAPI.show', [
+        return view('livewire.getAPI.show', [
             'totalPages' => $this->totalPages(),
         ]);
     }

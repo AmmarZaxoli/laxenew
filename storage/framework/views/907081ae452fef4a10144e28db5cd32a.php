@@ -6,7 +6,7 @@
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('get-api.show', []);
+[$__name, $__params] = $__split('GetAPI.show', []);
 
 $__html = app('livewire')->mount($__name, $__params, 'lw-3792820746-0', $__slots ?? [], get_defined_vars());
 

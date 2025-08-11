@@ -1,6 +1,9 @@
 <div class="content-container" style="position: relative; padding-top: 70px;">
     <!-- Button fixed at the top-center -->
-    <button wire:click="toggleModal" class="btn position-fixed" style="
+    <button wire:click="toggleModal" class="btn position-fixed"
+        style="
+            width: 160px;
+
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
@@ -20,7 +23,7 @@
         <span>طلبات السوائق</span>
     </button>
 
-    @if($showModal)
+    @if ($showModal)
         <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5); z-index:1050;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -32,19 +35,38 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label for="createdAt" class="form-label">من تاريخ</label>
-                                <input type="date" wire:model.lazy="createdAt" id="createdAt"
+                                <input type="date" wire:model="createdAt" id="createdAt"
                                     class="form-control @error('createdAt') is-invalid @enderror">
-                                @error('createdAt') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('createdAt')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="updatedAt" class="form-label">إلى تاريخ</label>
-                                <input type="date" wire:model.lazy="updatedAt" id="updatedAt"
+                                <input type="date" wire:model="updatedAt" id="updatedAt"
                                     class="form-control @error('updatedAt') is-invalid @enderror">
-                                @error('updatedAt') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('updatedAt')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="button" class="btn btn-outline-primary py-2 px-4 shadow-sm"
+                                    wire:loading.attr="disabled" style="margin-top: 5px"
+                                    wire:target="filterByDate" wire:click="filterByDate">
+                                    <span wire:loading.remove wire:target="filterByDate">
+                                        <i class="fas fa-search me-2"></i> بحث
+                                    </span>
+                                    <span wire:loading wire:target="filterByDate">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>
+                                        جاري البحث...
+                                    </span>
+                                </button>
                             </div>
                         </div>
 
-                        @error('dateFilter') <div class="alert alert-danger mb-3">{{ $message }}</div> @enderror
+                        @error('dateFilter')
+                            <div class="alert alert-danger mb-3">{{ $message }}</div>
+                        @enderror
 
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover">
@@ -59,15 +81,17 @@
                                     @forelse($drivers as $driver)
                                         <tr>
                                             <td>{{ $driver->nameDriver }}</td>
-                                            <td>{{ $driver->invoices_count }}</td>
+                                            <td>{{ $driver->orders_count }}</td>
                                             <td>
-                                                {{ optional($driver->invoices->first())->date_sell ? $driver->invoices->first()->date_sell->format('Y-m-d H:i') : 'N/A' }}
+                                                {{ optional($driver->customers->first())->date_sell
+                                                    ? \Carbon\Carbon::parse($driver->customers->first()->date_sell)->format('Y-m-d H:i')
+                                                    : 'N/A' }}
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
                                             <td colspan="3" class="text-center">
-                                                @if($this->createdAt || $this->updatedAt)
+                                                @if ($this->createdAt || $this->updatedAt)
                                                     لا توجد بيانات في الفترة المحددة
                                                 @else
                                                     لا توجد بيانات اليوم
