@@ -102,27 +102,27 @@ class Show extends Component
     }
 
     // تحديث تواريخ الفواتير المختارة دفعة واحدة
-   public function updateBulkDateSell()
-{
-    foreach ($this->selectedInvoices as $invoiceNumber) {
-        $invoice = Sell_invoice::where('num_invoice_sell', $invoiceNumber)->first();
+    public function updateBulkDateSell()
+    {
+        foreach ($this->selectedInvoices as $invoiceNumber) {
+            $invoice = Sell_invoice::where('num_invoice_sell', $invoiceNumber)->first();
 
-        if ($invoice) {
-            // Update invoice date
-            $invoice->date_sell = $this->bulkNewDateSell;
-            $invoice->save();
+            if ($invoice) {
+                // Update invoice date
+                $invoice->date_sell = $this->bulkNewDateSell;
+                $invoice->save();
 
-            // If related customer exists, update their date_sell as well
-            if ($invoice->customer) {
-                $invoice->customer->date_sell = $this->bulkNewDateSell;
-                $invoice->customer->save();
+                // If related customer exists, update their date_sell as well
+                if ($invoice->customer) {
+                    $invoice->customer->date_sell = $this->bulkNewDateSell;
+                    $invoice->customer->save();
+                }
             }
         }
-    }
 
-    session()->flash('message', 'تم تحديث تاريخ البيع للفواتير المختارة بنجاح.');
-    $this->showBulkDateModal = false;
-}
+        session()->flash('message', 'تم تحديث تاريخ البيع للفواتير المختارة بنجاح.');
+        $this->showBulkDateModal = false;
+    }
 
 
 
@@ -537,17 +537,57 @@ class Show extends Component
     {
         $invoiceIds = array_filter(explode(',', $request->invoiceIds));
 
+        if (empty($invoiceIds)) {
+            abort(404, 'No invoices specified');
+        }
+
         $invoices = Sell_invoice::with(['customer.driver', 'sell'])
-            ->whereIn('num_invoice_sell', $this->selectedInvoices)
-            ->get()
-            ->filter(); // Remove null values
-
-
+            ->whereIn('num_invoice_sell', $invoiceIds)
+            ->get();
 
         if ($invoices->isEmpty()) {
             abort(404, 'No invoices found');
         }
 
-        return view('print.invoices', compact('invoices'));
+        $data = [];
+        $data['invoices'] = [];
+        $data['driver_name'] = ''; // Will set from first invoice's driver
+
+        foreach ($invoices as $inv) {
+            $driverName = $inv->customer->driver->name ?? '—';
+            if (empty($data['driver_name'])) {
+                $data['driver_name'] = $driverName;
+            }
+
+            $products = $inv->sell->map(function ($item) {
+                return [
+                    'name' => $item->nameproduct,
+                    'code' => $item->code,
+                    'qty' => $item->quantity,
+                    'price' => $item->price,
+                    'total' => $item->totalprice,
+                ];
+            })->toArray();
+
+            $productChunks = array_chunk($products, 15); // 15 per page, adjust as needed
+            $pageCount = count($productChunks);
+
+            // Add pages for this invoice with header/footer flags
+            for ($i = 0; $i < $pageCount; $i++) {
+                $data['invoices'][] = [
+                    'invoice_id' => $inv->num_invoice_sell,
+                    'show_header' => ($i === 0),
+                    'show_footer' => ($i === $pageCount - 1),  // ONLY last page shows footer (totals)
+                    'address' => $inv->customer->addressCustomer ?? '—',
+                    'mobile' => $inv->customer->mobile ?? '—',
+                    'products' => $productChunks[$i],
+                    'total' => $inv->sell->sum('totalprice'),
+                    'taxi_price' => $inv->pricetaxi ?? 0,
+                    'grand_total' => $inv->totalprice ?? 0,
+                ];
+            }
+        }
+
+        return view('print.invoices', compact('data'));
     }
 }

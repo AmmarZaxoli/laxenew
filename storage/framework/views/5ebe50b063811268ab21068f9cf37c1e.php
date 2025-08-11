@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>A6 Invoice Top-Center on A4</title>
+    <title>A6 Invoice Print</title>
     <style>
-        @page {
-            size: A4 portrait;
-            margin: 0;
-        }
+       @page { size: A4 portrait; margin: 0; }
+
 
         body {
             color: #813434;
@@ -20,30 +19,23 @@
             background: white;
         }
 
-        /* Responsive wrapper to allow horizontal scroll on small screens */
         .invoices-wrapper {
             padding: 10px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
             background: #f5f5f5;
-            min-height: 100vh; /* fill full viewport height */
+            min-height: 100vh;
             box-sizing: border-box;
         }
 
-        /* A6 invoice box */
         .invoice-container {
             width: 105mm;
             height: 148mm;
-            margin: 0 auto 20px auto; /* center horizontally, margin below */
-            border: 1px solid #000;
-            box-sizing: border-box;
-            overflow-x: hidden; /* prevent horizontal overflow inside invoice */
+            margin: 0 auto 20px auto;
             background: white;
+            page-break-inside: avoid;
         }
 
-        /* Inner padding & layout */
         .invoice-inner {
-            padding: 35mm 11mm 5mm 5mm; /* top right bottom left */
+            padding: 35mm 11mm 5mm 5mm;
             height: calc(100% - 15mm);
             box-sizing: border-box;
         }
@@ -57,64 +49,36 @@
             margin-bottom: 1.7mm;
         }
 
-        /* Beautiful product table */
         .product-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            color: #4a2b2b; /* dark shade of #813434 for text */
-            background-color: #fff8f7; /* very light warm background */
+            color: #4a2b2b;
+            background-color: #fff8f7;
             box-shadow: 0 2px 6px rgba(129, 52, 52, 0.15);
-            border-radius: 8px;
-            overflow: hidden;
             margin-bottom: 5mm;
         }
 
         .product-table th,
         .product-table td {
-            padding: 8px 12px;
+            padding: 4px 6px;
             text-align: center;
-            vertical-align: middle;
             border-bottom: 1px solid #d9b7b7;
         }
 
         .product-table thead th {
-            background-color: #813434;
-            color: #813434;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 3px solid #562a2a;
+            background-color: #f3dcdc;
+            font-weight: bold;
         }
 
-        .product-table tbody tr:hover {
-            background-color: #f5e4e4;
-            cursor: default;
-        }
-
-        .product-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Rounded corners on thead */
-        .product-table thead tr th:first-child {
-            border-top-right-radius: 8px;
-        }
-        .product-table thead tr th:last-child {
-            border-top-left-radius: 8px;
-        }
-
-        /* Zebra striping */
         .product-table tbody tr:nth-child(even) {
             background-color: #fff0ef;
         }
 
-        /* Totals stacked vertically to prevent overflow */
         .totals {
             display: flex;
             flex-direction: column;
             gap: 3mm;
-            padding-left: 2mm; /* matches table padding */
         }
 
         .total-line {
@@ -127,32 +91,27 @@
             font-weight: bold;
         }
 
-        /* Page break for printing */
-        .page-break {
-            page-break-after: always;
-        }
-
-        /* Optional: Adjust font size slightly on very small screens */
-        @media (max-width: 320px) {
-            body {
-                font-size: 10px;
+        @media print {
+            .page-break {
+                page-break-after: always;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="invoices-wrapper">
         <?php $__currentLoopData = $data['invoices']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div class="invoice-container">
                 <div class="invoice-inner">
-                    <!-- Driver Info -->
-                    <div class="driver-info">
-                        <div class="info-line"><strong>:</strong> <?php echo e($data['driver_name']); ?></div>
-                        <div class="info-line"><strong>:</strong> <?php echo e($invoice['address']); ?></div>
-                        <div class="info-line"><strong>:</strong> <?php echo e($invoice['mobile']); ?></div>
-                    </div>
+                    <?php if($invoice['show_header']): ?>
+                        <div class="driver-info">
+                            <div class="info-line"><strong>السائق:</strong> <?php echo e($data['driver_name']); ?></div>
+                            <div class="info-line"><strong>العنوان:</strong> <?php echo e($invoice['address']); ?></div>
+                            <div class="info-line"><strong>الموبايل:</strong> <?php echo e($invoice['mobile']); ?></div>
+                        </div>
+                    <?php endif; ?>
 
-                    <!-- Products Table -->
                     <table class="product-table">
                         <thead>
                             <tr>
@@ -178,12 +137,14 @@
                         </tbody>
                     </table>
 
-                    <!-- Totals -->
-                    <div class="totals">
-                        <div class="total-line">المجموع: <?php echo e(number_format($invoice['total'])); ?> د.ع</div>
-                        <div class="total-line">التوصيل: <?php echo e(number_format($invoice['taxi_price'])); ?> د.ع</div>
-                        <div class="total-line grand-total">الإجمالي: <?php echo e(number_format($invoice['grand_total'])); ?> د.ع</div>
-                    </div>
+                 <?php if(!empty($invoice['show_footer'])): ?>
+    <div class="totals">
+        <div class="total-line">المجموع: <?php echo e(number_format($invoice['total'])); ?> د.ع</div>
+        <div class="total-line">التوصيل: <?php echo e(number_format($invoice['taxi_price'])); ?> د.ع</div>
+        <div class="total-line grand-total">الإجمالي: <?php echo e(number_format($invoice['grand_total'])); ?> د.ع</div>
+    </div>
+<?php endif; ?>
+
                 </div>
             </div>
 
@@ -193,5 +154,6 @@
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </body>
+
 </html>
 <?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/print/invoices.blade.php ENDPATH**/ ?>
