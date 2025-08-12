@@ -203,17 +203,6 @@
                                 <span>تغيير السائق للمحدد</span>
                             </div>
                         </button>
-                        <button wire:click="printSelected" wire:loading.attr="disabled" class="btn btn-outline-primary"
-                            @disabled(count($selectedInvoices) === 0)>
-                            <span wire:loading.remove wire:target="printSelected">
-                                <i class="fas fa-print me-2"></i>
-                                طباعة القائمات ({{ count($selectedInvoices) }})
-                            </span>
-                            <span wire:loading wire:target="printSelected">
-                                <i class="fas fa-spinner fa-spin me-2"></i>
-                                طباعة القائمات...
-                            </span>
-                        </button>
                         <button wire:click="printdriver" wire:loading.attr="disabled" class="btn btn-outline-primary"
                             @disabled(empty($selected_driver))>
                             <span wire:loading.remove wire:target="printdriver">
@@ -590,8 +579,4 @@
         });
     </script>
     @endscript
-
-
-
-
 </div>

@@ -42,7 +42,7 @@
             font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
-            color: #6d2d2d;
+            color: #21007c;
         }
 
         .report-title {
@@ -77,13 +77,17 @@
             margin-right: 5px;
         }
 
+        /* Table Styling */
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
             margin: 1.5rem 0;
             font-size: 14px;
-            page-break-inside: avoid;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .invoice-table thead {
+            display: table-header-group; /* Repeat header when printing */
         }
 
         .invoice-table thead tr {
@@ -123,6 +127,11 @@
             color: #34495e;
         }
 
+        /* Prevent breaking inside a row */
+        .invoice-table tr {
+            page-break-inside: avoid;
+        }
+
         .invoice-table tr:nth-child(even) {
             background-color: #f8f9fa;
         }
@@ -155,30 +164,13 @@
             font-weight: 600;
         }
 
-        .container {
-            padding: 10px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .container .info-box {
-            flex: 1;
-            min-width: 200px;
-            text-align: right;
-        }
-
-        .invoice-separator {
-            margin: 30px 0;
-            border-top: 2px dashed #ccc;
-        }
-
         .totals-section {
             margin-top: 30px;
             padding: 20px;
             background: #f8f9fa;
             border-radius: 8px;
             border-left: 4px solid #1a5276;
+            page-break-inside: avoid; /* Keep totals together */
         }
 
         .totals-grid {
@@ -223,7 +215,7 @@
             <div class="driver-section">
                 <div class="info-box">
                     اسم السائق:
-                    <span>{{ $data['driver_name'] }}</span>
+                    <span>{{ $data['driver_name'] ?? '—' }}</span>
                 </div>
                 <div class="info-box">
                     تاريخ التقرير:
@@ -235,51 +227,53 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>الفاتورة</th>
+                        <th>رقم الفاتورة</th>
                         <th>العنوان</th>
                         <th>الهاتف</th>
                         <th>التوصيل</th>
                         <th>الإجمالي</th>
-                        <th>المجمالي الكلي</th>
-                        <th> المالحظات</th>
+                        <th>الإجمالي الكلي</th>
+                        <th>ملاحظات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data['invoices'] as $index => $invoice)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $invoice['invoice_number'] }}</td>
-                        <td class="address">{{ $invoice['address'] }}</td>
-                        <td class="phone">
-                            @php
-                                $phones = explode(',', $invoice['mobile']);
-                                foreach($phones as $phone) {
-                                    echo '<span class="phone-number">' . trim($phone) . '</span>';
-                                }
-                            @endphp
-                        </td>
-                        <td>{{ number_format($invoice['taxi_price']) }}</td>
-                        <td>{{ number_format($invoice['total']) }}</td>
-                        <td>{{ number_format($invoice['grand_total']) }}</td>
-                        <td></td>
-                    </tr>
+                    @foreach($data['driverInvoices'] as $index => $invoice)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $invoice['invoice_number'] ?? '—' }}</td>
+                            <td class="address">{{ $invoice['address'] ?? '—' }}</td>
+                            <td class="phone">
+                                @php
+                                    $phones = explode(',', $invoice['mobile'] ?? '');
+                                    foreach($phones as $phone) {
+                                        echo '<span class="phone-number">' . trim($phone) . '</span>';
+                                    }
+                                @endphp
+                            </td>
+                            <td>{{ number_format($invoice['taxi_price'] ?? 0) }}</td>
+                            <td>{{ number_format($invoice['total'] ?? 0) }}</td>
+                            <td>{{ number_format($invoice['grand_total'] ?? 0) }}</td>
+                            <td></td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
 
+            <div class="totals-section">
                 <div class="totals-grid">
                     <div class="info-box">
                         إجمالي الفواتير:
-                        <label class="summary-label">{{ number_format($data['total_invoice_total']) }}</label>
+                        <label class="summary-label">{{ number_format($data['total_invoice_total'] ?? 0) }}</label>
                     </div>
                     <div class="info-box">
                         إجمالي التوصيل:
-                        <label class="summary-label">{{ number_format($data['total_taxi_price']) }}</label>
+                        <label class="summary-label">{{ number_format($data['total_taxi_price'] ?? 0) }}</label>
                     </div>
                     <div class="info-box">
                         الإجمالي الكلي:
-                        <label class="summary-label">{{ number_format($data['total_invoice_total'] + $data['total_taxi_price']) }}</label>
+                        <label class="summary-label">{{ number_format(($data['total_invoice_total'] ?? 0) + ($data['total_taxi_price'] ?? 0)) }}</label>
                     </div>
+                </div>
             </div>
         </div>
     </div>

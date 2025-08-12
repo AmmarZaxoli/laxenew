@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nameoffer')->unique();
             $table->string('code')->unique();
             $table->integer('price');
+            $table->boolean('delivery')->default(false);
 
             $table->timestamps();
         });

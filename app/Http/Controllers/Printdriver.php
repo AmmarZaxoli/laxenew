@@ -13,32 +13,51 @@ class Printdriver extends Controller
 public function printInvoices(Request $request)
 {
     $invoiceIds = array_filter(explode(',', $request->invoiceIds));
-    $driverName = $request->driverName; // Get the driver name from request
+    $driverName = $request->driverName ?? '—'; // ضمان وجود اسم
+
+    if (empty($invoiceIds)) {
+        abort(404, 'No invoices specified.');
+    }
 
     $invoices = Sell_invoice::with(['customer.driver', 'sell'])
         ->whereIn('num_invoice_sell', $invoiceIds)
-        ->get()
-        ->filter(fn($invoice) => $invoice && $invoice->customer && $invoice->sell);
+        ->whereHas('customer')
+        ->whereHas('sell')
+        ->get();
+
+    if ($invoices->isEmpty()) {
+        abort(404, 'No invoices found.');
+    }
 
     $data = [
-        'driver_name' => $driverName, // Use the explicitly passed driver name
+        'driver_name' => $driverName,
         'date' => now()->format('Y-m-d'),
-        'invoices' => $invoices->map(function ($invoice) {
+        'driverInvoices' => $invoices->map(function ($invoice) {
+            // إذا كانت علاقة sell مجموعة نأخذ أول عنصر أو نحسب المجموع حسب حاجتك
+            $sell = is_iterable($invoice->sell) ? $invoice->sell->first() : $invoice->sell;
+
             return [
                 'invoice_number' => $invoice->num_invoice_sell,
                 'address' => $invoice->customer->address ?? '—',
                 'mobile' => $invoice->customer->mobile ?? '—',
-                'taxi_price' => $invoice->sell->taxi_price ?? 0,
-                'total' => $invoice->sell->total_price_afterDiscount_invoice ?? 0,
-                'grand_total' => 
-                    ($invoice->sell->taxi_price ?? 0) + 
-                    ($invoice->sell->total_price_afterDiscount_invoice ?? 0),
+                'taxi_price' => $sell->taxi_price ?? 0,
+                'total' => $sell->total_price_afterDiscount_invoice ?? 0,
+                'grand_total' =>
+                    ($sell->taxi_price ?? 0) +
+                    ($sell->total_price_afterDiscount_invoice ?? 0),
             ];
         })->toArray(),
-        'total_taxi_price' => $invoices->sum(fn($i) => $i->sell->taxi_price ?? 0),
-        'total_invoice_total' => $invoices->sum(fn($i) => $i->sell->total_price_afterDiscount_invoice ?? 0),
+        'total_taxi_price' => $invoices->sum(function ($i) {
+            $sell = is_iterable($i->sell) ? $i->sell->first() : $i->sell;
+            return $sell->taxi_price ?? 0;
+        }),
+        'total_invoice_total' => $invoices->sum(function ($i) {
+            $sell = is_iterable($i->sell) ? $i->sell->first() : $i->sell;
+            return $sell->total_price_afterDiscount_invoice ?? 0;
+        }),
     ];
 
     return view('print.printdrivers', compact('data'));
 }
+
 }

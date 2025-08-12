@@ -23,7 +23,7 @@ class Show extends Component
 {
 
 
-
+    public $driverInvoices;
     public $selectedInvoiceId;
     public $selectedDriverId;
     public $drivers = [];
@@ -224,7 +224,6 @@ class Show extends Component
 
         $this->invoiceNumberToIdMap = $filteredInvoices;
     }
-
     public function render()
     {
         $query = Sell_invoice::with(['customer', 'sell'])
@@ -234,8 +233,7 @@ class Show extends Component
                     $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
                         ->orWhereHas(
                             'customer',
-                            fn($q) =>
-                            $q->where('mobile', 'like', '%' . $this->search . '%')
+                            fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%')
                         );
                 });
             })
@@ -243,7 +241,7 @@ class Show extends Component
                 $this->selected_driver,
                 fn($q) =>
                 $q->whereHas(
-                    'customer.driver', // Note the added relationship
+                    'customer.driver',
                     fn($q2) =>
                     $q2->where('driver_id', $this->selected_driver)
                 )
@@ -254,10 +252,14 @@ class Show extends Component
                 ->whereDate('date_sell', '<=', $this->date_to);
         }
 
-        $invoices = $query->get();
+        $this->driverInvoices = $query->get();
 
-        return view('livewire.drivers.invoice-controls.show', compact('invoices'));
+        $driverInvoices = $this->driverInvoices;
+        $invoices = $driverInvoices;
+
+        return view('livewire.drivers.invoice-controls.show', compact('driverInvoices', 'invoices'));
     }
+
 
 
 
@@ -482,41 +484,25 @@ class Show extends Component
     }
     public function printdriver()
     {
-        if (!$this->selected_driver) {
-            $this->dispatch('show-toast', type: 'error', message: 'يرجى اختيار السائق أولاً');
+        if (empty($this->driverInvoices) || $this->driverInvoices->isEmpty()) {
+            flash()->addError('لا توجد بيانات للطباعة.');
             return;
         }
 
-        // Get invoice numbers based on driver ID and optional date range
-        $invoiceNumbers = Sell_invoice::query()
-            ->with('customer.driver')
-            ->whereHas('customer', function ($q) {
-                $q->where('driver_id', $this->selected_driver);
-            })
-            ->when($this->date_from && $this->date_to, function ($q) {
-                $q->whereDate('date_sell', '>=', $this->date_from)
-                    ->whereDate('date_sell', '<=', $this->date_to);
-            })
-            ->pluck('num_invoice_sell')
-            ->toArray();
-        if (empty($invoiceNumbers)) {
-            flash()->addError('لا توجد فواتير لهذا السائق في المدة المحددة.');
-            return;
-        }
+        $invoiceNumbers = $this->driverInvoices->pluck('num_invoice_sell')->toArray();
+        $driverName = optional($this->driverInvoices->first()->customer->driver)->nameDriver ?? '—';
 
-        try {
-            $driverName = Driver::find($this->selected_driver)->nameDriver;
+        $url = route('print.driver-invoices', [
+            'invoiceIds' => implode(',', $invoiceNumbers),
+            'driverName' => $driverName,
+            'date_from' => $this->date_from,
+            'date_to' => $this->date_to,
+        ]);
 
-            $url = route('print.driver-invoices', [
-                'invoiceIds' => implode(',', $invoiceNumbers),
-                'driverName' => $driverName,
-            ]);
-
-            $this->dispatch('print-driver-invoices', url: $url);
-        } catch (\Exception $e) {
-            session()->flash('error', 'حدث خطأ أثناء محاولة الطباعة: ' . $e->getMessage());
-        }
+        $this->dispatch('print-driver-invoices', url: $url);
     }
+
+
     public $selectedInvoicesData = [];
 
 
@@ -532,62 +518,5 @@ class Show extends Component
         $url = route('print.invoices', ['invoiceIds' => $invoiceIds]);
 
         $this->dispatch('print-invoices', $url);
-    }
-    public function printInvoices(Request $request)
-    {
-        $invoiceIds = array_filter(explode(',', $request->invoiceIds));
-
-        if (empty($invoiceIds)) {
-            abort(404, 'No invoices specified');
-        }
-
-        $invoices = Sell_invoice::with(['customer.driver', 'sell'])
-            ->whereIn('num_invoice_sell', $invoiceIds)
-            ->get();
-
-        if ($invoices->isEmpty()) {
-            abort(404, 'No invoices found');
-        }
-
-        $data = [];
-        $data['invoices'] = [];
-        $data['driver_name'] = ''; // Will set from first invoice's driver
-
-        foreach ($invoices as $inv) {
-            $driverName = $inv->customer->driver->name ?? '—';
-            if (empty($data['driver_name'])) {
-                $data['driver_name'] = $driverName;
-            }
-
-            $products = $inv->sell->map(function ($item) {
-                return [
-                    'name' => $item->nameproduct,
-                    'code' => $item->code,
-                    'qty' => $item->quantity,
-                    'price' => $item->price,
-                    'total' => $item->totalprice,
-                ];
-            })->toArray();
-
-            $productChunks = array_chunk($products, 15); // 15 per page, adjust as needed
-            $pageCount = count($productChunks);
-
-            // Add pages for this invoice with header/footer flags
-            for ($i = 0; $i < $pageCount; $i++) {
-                $data['invoices'][] = [
-                    'invoice_id' => $inv->num_invoice_sell,
-                    'show_header' => ($i === 0),
-                    'show_footer' => ($i === $pageCount - 1),  // ONLY last page shows footer (totals)
-                    'address' => $inv->customer->addressCustomer ?? '—',
-                    'mobile' => $inv->customer->mobile ?? '—',
-                    'products' => $productChunks[$i],
-                    'total' => $inv->sell->sum('totalprice'),
-                    'taxi_price' => $inv->pricetaxi ?? 0,
-                    'grand_total' => $inv->totalprice ?? 0,
-                ];
-            }
-        }
-
-        return view('print.invoices', compact('data'));
     }
 }

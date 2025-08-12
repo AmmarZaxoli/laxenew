@@ -6,11 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>A6 Invoice Print</title>
     <style>
-        @page {
-            size: A4 portrait;
-            margin: 0;
-        }
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
 
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .page-break {
+                page-break-after: always;
+            }
+        }
 
         body {
             color: #813434;
@@ -18,12 +28,10 @@
             padding: 0;
             font-family: Arial, sans-serif;
             font-size: 12px;
-            direction: rtl;
             background: white;
         }
 
         .invoices-wrapper {
-            padding: 10px;
             background: #f5f5f5;
             min-height: 100vh;
             box-sizing: border-box;
@@ -52,21 +60,67 @@
             margin-bottom: 1.7mm;
         }
 
+        /* Table fixed layout so it never expands A6 size */
         .product-table {
             width: 100%;
+            max-width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 10px;
             color: #4a2b2b;
             background-color: #fff8f7;
             box-shadow: 0 2px 6px rgba(129, 52, 52, 0.15);
             margin-bottom: 5mm;
+            word-wrap: break-word;
         }
 
         .product-table th,
         .product-table td {
             padding: 4px 6px;
-            text-align: center;
+            text-align: right;
             border-bottom: 1px solid #d9b7b7;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Name column is quarter width of code column */
+        .product-table th.name-col,
+        .product-table td.name-col {
+            width: 20mm; /* quarter of code column */
+            max-width: 20mm;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Code column */
+        .product-table th.code-col,
+        .product-table td.code-col {
+            width: 13mm;    
+            max-width: 13mm;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-table th.col-num,
+        .product-table td.col-num {
+            width: 5mm;
+        }
+
+        .product-table th.qty-col,
+        .product-table td.qty-col {
+            width: 10mm;
+        }
+
+        .product-table th.price-col,
+        .product-table td.price-col {
+            width: 11mm;
+        }
+
+        .product-table th.total-col,
+        .product-table td.total-col {
+            width: 15mm;
         }
 
         .product-table thead th {
@@ -93,12 +147,6 @@
         .grand-total {
             font-weight: bold;
         }
-
-        @media print {
-            .page-break {
-                page-break-after: always;
-            }
-        }
     </style>
 </head>
 
@@ -108,7 +156,7 @@
             <div class="invoice-container">
                 <div class="invoice-inner">
                     @if ($invoice['show_header'])
-                        <div class="driver-info">
+                        <div class="driver-info" style="margin-top: 3mm;">
                             <div class="info-line"><strong>السائق:</strong> {{ $data['driver_name'] }}</div>
                             <div class="info-line"><strong>العنوان:</strong> {{ $invoice['address'] }}</div>
                             <div class="info-line"><strong>الموبايل:</strong> {{ $invoice['mobile'] }}</div>
@@ -118,23 +166,23 @@
                     <table class="product-table">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>المنتج</th>
-                                <th>الكود</th>
-                                <th>الكمية</th>
-                                <th>السعر</th>
-                                <th>الإجمالي</th>
+                                <th class="col-num">#</th>
+                                <th class="name-col">اسم</th>
+                                <th class="code-col">الكود</th>
+                                <th class="qty-col">الكمية</th>
+                                <th class="price-col">السعر</th>
+                                <th class="total-col">الإجمالي</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($invoice['products'] as $i => $product)
                                 <tr>
-                                    <td>{{ $i + 1 }}</td>
-                                    <td>{{ $product['name'] }}</td>
-                                    <td>{{ $product['code'] ?? '—' }}</td>
-                                    <td>{{ $product['qty'] }}</td>
-                                    <td>{{ number_format($product['price']) }}</td>
-                                    <td>{{ number_format($product['total']) }}</td>
+                                    <td class="col-num">{{ $i + 1 }}</td>
+                                    <td class="name-col text-right">{{ $product['name'] }}</td>
+                                    <td class="code-col">{{ $product['code'] ?? '—' }}</td>
+                                    <td class="qty-col">{{ $product['qty'] }}</td>
+                                    <td class="price-col">{{ number_format($product['price']) }}</td>
+                                    <td class="total-col">{{ number_format($product['total']) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -144,8 +192,7 @@
                         <div class="totals">
                             <div class="total-line">المجموع: {{ number_format($invoice['total']) }} د.ع</div>
                             <div class="total-line">التوصيل: {{ number_format($invoice['taxi_price']) }} د.ع</div>
-                            <div class="total-line grand-total">الإجمالي: {{ number_format($invoice['grand_total']) }}
-                                د.ع</div>
+                            <div class="total-line grand-total">الإجمالي: {{ number_format($invoice['grand_total']) }} د.ع</div>
                         </div>
                     @endif
 

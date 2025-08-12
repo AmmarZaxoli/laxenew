@@ -25,6 +25,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('sell_invoice_id');
             $table->unsignedBigInteger('driver_id');
+            $table->boolean('print')->default(false);
             $table->foreign('sell_invoice_id')->references('id')->on('sell_invoices')->onDelete('cascade');
             $table->foreign('driver_id')->references('id')->on('drivers')->onUpdate('cascade');
 

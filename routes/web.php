@@ -13,6 +13,10 @@ Route::get('/print/driver-invoices', [Printdriver::class, 'printInvoices'])
     ->name('print.driver-invoices');
 Route::get('/print/invoices', [PrintController::class, 'printInvoices'])
     ->name('print.invoices');
+    Route::get('/multiprint/invoices' ,function() {
+        return view('print.multiprintinvoice.create');
+    })
+    ->name('print.create');
 // Route::get('/', Login::class)->name('login');
 // // Public routes
 // Route::middleware([PreventLoginWhenAuthenticated::class])->group(function () {

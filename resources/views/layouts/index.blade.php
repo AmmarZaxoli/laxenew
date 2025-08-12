@@ -53,7 +53,7 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('dashboards.create') ? 'active' : '' }}"
                             href="{{ route('dashboards.create') }}">
-                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span> 
+                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
                             <span class="nav-text">لوحة التحكم</span>
                             <span class="nav-badge">New</span>
                         </a>
@@ -123,6 +123,14 @@
                             <span class="nav-text">مصروفات</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('print.create', 'print.*') ? 'active' : '' }}"
+                            href="{{ route('print.create') }}">
+                            <span class="nav-icon"><i class="bi bi-printer"></i></span>
+                            <span class="nav-text">طباعة القوائم</span>
+                        </a>
+
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('companys.create') ? 'active' : '' }}"
@@ -183,8 +191,7 @@
                             <span class="nav-text">شراء القوائم</span>
                             <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
-                        <div class="collapse {{ Route::is('add_Invoices.create') ? 'show' : '' }}"
-                            id="invoicesMenu">
+                        <div class="collapse {{ Route::is('add_Invoices.create') ? 'show' : '' }}" id="invoicesMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
                                     <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
@@ -279,10 +286,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
-    
+
     @livewire('drivers.drivers-order')
     @livewireScripts
- <script>
+    <script>
         document.addEventListener('livewire:init', () => {
             Livewire.on('print-driver-invoices', async ({ url }) => {
                 try {
@@ -333,4 +340,5 @@
         });
     </script>
 </body>
+
 </html>

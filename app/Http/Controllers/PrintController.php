@@ -33,7 +33,7 @@ class PrintController extends Controller
         $driverName = $drivers->count() === 1 ? $drivers->first() : 'عدة سواق';
 
         // Prepare paginated invoices
-        $itemsPerPage = 8; // Number of products per page
+        $itemsPerPage = 8; // Products per page
         $preparedInvoices = [];
 
         foreach ($invoices as $invoice) {
@@ -55,13 +55,13 @@ class PrintController extends Controller
                     'invoice_number' => $invoice->num_invoice_sell,
                     'address'        => $invoice->customer->address ?? '—',
                     'mobile'         => $invoice->customer->mobile ?? '—',
-                    'taxi_price'     => optional($invoice->sell)->taxi_price ?? 0,
-                    'total'          => optional($invoice->sell)->total_price_afterDiscount_invoice ?? 0,
-                    'grand_total'    => (optional($invoice->sell)->taxi_price ?? 0) +
-                        (optional($invoice->sell)->total_price_afterDiscount_invoice ?? 0),
+                    'taxi_price'     => $invoice->sell->taxi_price ?? 0,
+                    'total'          => $invoice->sell->total_price_afterDiscount_invoice ?? 0,
+                    'grand_total'    => ($invoice->sell->taxi_price ?? 0) + 
+                                        ($invoice->sell->total_price_afterDiscount_invoice ?? 0),
                     'products'       => $chunk->toArray(),
-                    'show_header'    => $pageIndex === 0,         // Show header only on first page
-                    'show_footer'    => $pageIndex === $pageCount - 1,  // Show footer only on last page
+                    'show_header'    => true, // Always show header
+                    'show_footer'    => $pageIndex === $pageCount - 1, // Footer only on last page
                 ];
             }
         }
