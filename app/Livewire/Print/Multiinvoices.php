@@ -38,7 +38,7 @@ class Multiinvoices extends Component
 
     public $showBulkDriverModal = false;
     public $bulkDriverId;
-    public $printedStatus = 0; 
+    public $printedStatus = 0;
 
     public function filterPrinted($status)
     {
@@ -208,10 +208,26 @@ class Multiinvoices extends Component
             return;
         }
 
-        $invoiceIds = implode(',', $this->selectedInvoices);
+        // Fetch all invoices by their invoice numbers (num_invoice_sell)
+        $invoices = Sell_invoice::whereIn('num_invoice_sell', $this->selectedInvoices)
+            ->with('customer')
+            ->get();
 
+        // Extract unique customer IDs from invoices (skip if no customer linked)
+        $customerIds = $invoices->pluck('customer.id')->filter()->unique();
+
+        // Update 'print' column to true (1) for all these customers
+        Customer::whereIn('id', $customerIds)->update(['print' => 1]);
+
+        // Prepare the URL for printing
+        $invoiceIds = implode(',', $this->selectedInvoices);
         $url = route('print.invoices', ['invoiceIds' => $invoiceIds]);
 
+        // Dispatch event to trigger printing
         $this->dispatch('print-invoices', $url);
+
+
+        $this->selectedInvoices = [];
+        $this->selectAll = false;
     }
 }

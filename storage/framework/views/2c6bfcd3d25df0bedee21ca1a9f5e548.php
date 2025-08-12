@@ -2,24 +2,19 @@
     <div>
         <div class="order-dashboard">
             <!-- Header Section -->
-            <div class="dashboard-header">
+            <div class="dashboard-header ">
                 <div class="header-left">
-                    <h1 class="dashboard-title">Pending Orders</h1>
-                    <div class="action-controls">
-                        <select class="action-select" wire:model="bulkAction">
-                            <option value="">Bulk Actions</option>
-                            <option value="accept">Accept Selected</option>
-                            <option value="reject">Reject Selected</option>
+                    <h1 class="dashboard-title">اسم السائق</h1>
+                    <div class="action-controls" style="width: 300px">
+                        <select id="nameDriver" wire:model.live="selected_driver" class="form-select">
+                            <option value="">اختر السائق</option>
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($driver->id); ?>"><?php echo e($driver->nameDriver); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                         </select>
-                        <button class="apply-btn" wire:click="applyBulkAction">Apply</button>
                     </div>
                 </div>
-                <!--[if BLOCK]><![endif]--><?php if($loading): ?>
-                    <div class="loading-state">
-                        <div class="loading-spinner"></div>
-                        <span>Loading orders...</span>
-                    </div>
-                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+               
             </div>
 
             <!-- Message Section -->
@@ -193,7 +188,7 @@
             }
 
             .order-dashboard {
-                margin: 2rem auto;
+                
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
                 color: var(--dark);
                 background-color: white;

@@ -5,6 +5,8 @@ namespace App\Livewire\GetAPI;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Http;
+use App\Models\Driver;
+
 
 class Show extends Component
 {
@@ -19,10 +21,12 @@ class Show extends Component
     public $perPage = 5;
     public $currentPage = 1;
     public $token;
+    public $drivers;
 
     public function mount()
     {
         $this->authenticateAndFetch();
+        $this->drivers = Driver::all();
     }
 
     public function authenticateAndFetch()

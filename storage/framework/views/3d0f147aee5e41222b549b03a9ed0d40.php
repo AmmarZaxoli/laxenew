@@ -82,6 +82,12 @@
                         جاري البحث...
                     </span>
                 </button>
+
+                <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px" onclick="location.reload();">
+                    <i class="fas fa-sync-alt me-1"></i> تحديث الصفحة
+                </button>
+
+
             </div>
 
         </div>

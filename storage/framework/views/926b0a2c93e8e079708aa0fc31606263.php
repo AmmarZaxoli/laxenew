@@ -10,7 +10,22 @@
                         aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
-                    <livewire:returnproducts.show>
+                    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('returnproducts.show', []);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-3667539297-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
                 </div>
             </div>
         </div>
@@ -27,7 +42,22 @@
                         aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
-                    <livewire:addproduct.add-invoice-product>
+                    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('addproduct.add-invoice-product', []);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-3667539297-1', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
                 </div>
             </div>
         </div>
@@ -35,7 +65,7 @@
 
 
     <!-- Bulk Driver Edit Modal -->
-    @if ($showBulkDriverModal)
+    <!--[if BLOCK]><![endif]--><?php if($showBulkDriverModal): ?>
         <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
             <div class="modal-dialog">
                 <div class="modal-content shadow-lg">
@@ -48,13 +78,20 @@
                         <label for="bulkDriverId" class="form-label">اختر السائق الجديد</label>
                         <select id="bulkDriverId" wire:model.live="bulkDriverId" class="form-select shadow-sm">
                             <option value="">-- اختر السائق --</option>
-                            @foreach ($drivers as $driver)
-                                <option value="{{ $driver->id }}"> {{ $driver->nameDriver }} </option>
-                            @endforeach
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($driver->id); ?>"> <?php echo e($driver->nameDriver); ?> </option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                         </select>
-                        @error('bulkDriverId')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['bulkDriverId'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="text-danger"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
                     <div class="modal-footer">
                         <button wire:click="updateBulkDriver" class="btn btn-outline-primary shadow-sm">
@@ -68,7 +105,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
 
 
@@ -92,11 +129,12 @@
             <label for="nameDriver" class="form-label">أسماء السائقين</label>
             <select id="nameDriver" wire:model.live="selected_driver" class="form-select shadow-sm">
                 <option value="">اختر السائق</option>
-                @foreach ($drivers as $driver)
-                    <option value="{{ $driver->id }}">
-                        {{ $driver->nameDriver }}
+                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($driver->id); ?>">
+                        <?php echo e($driver->nameDriver); ?>
+
                     </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
             </select>
         </div>
 
@@ -108,19 +146,22 @@
                 <div class="card-body py-2 d-flex justify-content-between bg-light rounded">
                     <span>المجموع الفواتير:</span>
                     <span class="fw-bold fs-6 text-primary">
-                        {{ number_format($invoices->sum(fn($i) => $i->sell?->total_price_afterDiscount_invoice ?? 0)) }}
+                        <?php echo e(number_format($invoices->sum(fn($i) => $i->sell?->total_price_afterDiscount_invoice ?? 0))); ?>
+
                     </span>
                 </div>
                 <div class="card-body py-2 d-flex justify-content-between">
                     <span>المجموع التوصيل:</span>
                     <span class="fw-bold fs-6 text-danger">
-                        {{ number_format($invoices->sum(fn($i) => $i->sell?->taxi_price ?? 0)) }}
+                        <?php echo e(number_format($invoices->sum(fn($i) => $i->sell?->taxi_price ?? 0))); ?>
+
                     </span>
                 </div>
                 <div class="card-body py-2 d-flex justify-content-between bg-light rounded">
                     <span>المجموع الكلي:</span>
                     <span class="fw-bold fs-5 text-black">
-                        {{ number_format($invoices->sum(fn($i) => ($i->sell?->total_price_afterDiscount_invoice ?? 0) + ($i->sell?->taxi_price ?? 0))) }}
+                        <?php echo e(number_format($invoices->sum(fn($i) => ($i->sell?->total_price_afterDiscount_invoice ?? 0) + ($i->sell?->taxi_price ?? 0)))); ?>
+
                     </span>
                 </div>
             </div>
@@ -150,9 +191,9 @@
                     جاري البحث...
                 </span>
             </button>
-            <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px"
-                onclick="location.reload();">
-                <i class="fas fa-sync-alt me-1"></i> تحديث </button>
+             <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px" onclick="location.reload();">
+                    <i class="fas fa-sync-alt me-1"></i> تحديث الصفحة
+                </button>
         </div>
     </div>
 
@@ -163,14 +204,14 @@
                 <div
                     class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 bg-light border-bottom gap-2 gap-md-0">
                     <div class="order-2 order-md-1 text-muted text-center text-md-start">
-                        {{-- <span class="fw-semibold">{{ $invoices->count() }}</span> عدد الفواتير --}}
+                        
                     </div>
 
                     <div
                         class="order-1 order-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-3 w-100 w-md-auto">
                         <!-- Delete Button -->
                         <button class="btn btn-outline-danger" wire:click="$dispatch('confirmDeleteSelected')"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-trash-alt me-2"></i>
                                 <span>حذف المحدد</span>
@@ -181,7 +222,7 @@
 
                         <!-- Payment Button -->
                         <button class="btn btn-outline-success" wire:click="$dispatch('confirm-payment')"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-credit-card me-2"></i>
                                 <span>الدفع المحدد</span>
@@ -191,7 +232,7 @@
 
                         <!-- Edit Date Button -->
                         <button class="btn btn-outline-primary" wire:click="openBulkDateModal"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-calendar-alt me-2"></i>
                                 <span>تعديل تاريخ للمحدد</span>
@@ -200,20 +241,20 @@
 
                         <!-- Change Driver Button -->
                         <button class="btn btn-outline-primary" wire:click="openBulkDriverModal"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-user-tie me-2"></i>
                                 <span>تغيير السائق للمحدد</span>
                             </div>
                         </button>
                         <button wire:click="printdriver" wire:loading.attr="disabled" class="btn btn-outline-primary"
-                            @disabled(empty($selected_driver))>
+                            <?php if(empty($selected_driver)): echo 'disabled'; endif; ?>>
                             <span wire:loading.remove wire:target="printdriver">
                                 <i class="fas fa-print me-2"></i>
                                 طباعة حسب السائق
-                                @if (!empty($invoicesCount))
-                                    ({{ $invoicesCount }})
-                                @endif
+                                <!--[if BLOCK]><![endif]--><?php if(!empty($invoicesCount)): ?>
+                                    (<?php echo e($invoicesCount); ?>)
+                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                             </span>
                             <span wire:loading wire:target="printdriver">
                                 <i class="fas fa-spinner fa-spin me-2"></i>
@@ -229,11 +270,11 @@
 
         <!-- Selected Invoices Display -->
         <div class="p-3 bg-light">
-            @forelse ($selectedInvoices as $num_invoice_sell)
-                <span class="badge bg-primary me-1">{{ $num_invoice_sell }}</span>
-            @empty
+            <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $selectedInvoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num_invoice_sell): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <span class="badge bg-primary me-1"><?php echo e($num_invoice_sell); ?></span>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <span class="text-muted">لا توجد فواتير مختارة</span>
-            @endforelse
+            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
             : الفواتير المختارة
         </div>
 
@@ -260,90 +301,96 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($invoices as $invoice)
+                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td>
                                 <input type="checkbox" class="form-check-input shadow-sm" style="cursor: pointer"
-                                    wire:model.live="selectedInvoices" value="{{ $invoice->num_invoice_sell }}"
-                                    @checked(in_array((string) $invoice->num_invoice_sell, $selectedInvoices))>
+                                    wire:model.live="selectedInvoices" value="<?php echo e($invoice->num_invoice_sell); ?>"
+                                    <?php if(in_array((string) $invoice->num_invoice_sell, $selectedInvoices)): echo 'checked'; endif; ?>>
                             </td>
-                            <td class="text-muted align-middle">{{ $loop->iteration }}</td>
+                            <td class="text-muted align-middle"><?php echo e($loop->iteration); ?></td>
                             <td class="text-center align-middle fw-semibold">
                                 <span class="badge bg-success bg-opacity-10 text-success fs-6 fw-bold">
-                                    {{ $invoice->num_invoice_sell }}
+                                    <?php echo e($invoice->num_invoice_sell); ?>
+
                                 </span>
                             </td>
                             <td class="text-center align-middle">
-                                {{ $invoice->customer?->driver?->nameDriver ?? '—' }}
+                                <?php echo e($invoice->customer?->driver?->nameDriver ?? '—'); ?>
+
                             </td>
                             <td class="text-center align-middle text-truncate" style="max-width:150px;">
-                                {{ $invoice->customer?->address ?? '—' }}
+                                <?php echo e($invoice->customer?->address ?? '—'); ?>
+
                             </td>
-                            <td class="text-center align-middle">{{ $invoice->customer?->mobile ?? '—' }}</td>
+                            <td class="text-center align-middle"><?php echo e($invoice->customer?->mobile ?? '—'); ?></td>
                             <td class="text-center align-middle text-nowrap">
-                                {{ number_format($invoice->sell?->taxi_price ?? 0) }}
+                                <?php echo e(number_format($invoice->sell?->taxi_price ?? 0)); ?>
+
                             </td>
                             <td class="text-center align-middle fw-bold text-nowrap">
-                                {{ number_format($invoice->sell?->total_price_afterDiscount_invoice) }}
+                                <?php echo e(number_format($invoice->sell?->total_price_afterDiscount_invoice)); ?>
+
                             </td>
                             <td class="text-center align-middle">
                                 <div class="d-flex justify-content-center">
-                                    {{ $invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : '' }}
+                                    <?php echo e($invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : ''); ?>
+
                                 </div>
                             </td>
                             <td class="text-center align-middle">
                                 <div class="d-flex justify-content-center">
-                                    {{ number_format($invoice->customer?->profit_invoice ?? 0) }}<br>
-                                    {{ number_format($invoice->customer?->profit_invoice_after_discount ?? 0) }}
+                                    <?php echo e(number_format($invoice->customer?->profit_invoice ?? 0)); ?><br>
+                                    <?php echo e(number_format($invoice->customer?->profit_invoice_after_discount ?? 0)); ?>
+
 
                             </td>
                             <td class="text-center">
                                 <div class="dropstart">
-                                    <button class="btn btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Invoice actions">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                                        aria-expanded="false" aria-label="Invoice actions">
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu shadow p-2"
                                         style="width: auto; white-space: nowrap; margin-right: 10px;">
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-primary mx-1"
-                                                wire:click="print({{ $invoice->id }})" title="طباعة">
+                                                wire:click="print(<?php echo e($invoice->id); ?>)" title="طباعة">
                                                 <i class="fas fa-print"></i>
                                             </button>
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-success mx-1" data-bs-toggle="modal"
                                                 data-bs-target="#addinvoiceproduct"
-                                                wire:click="numinvoice({{ $invoice->num_invoice_sell }})"
+                                                wire:click="numinvoice(<?php echo e($invoice->num_invoice_sell); ?>)"
                                                 title="إضافة منتجات">
                                                 <i class="fas fa-cart-plus"></i>
                                             </button>
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-dark mx-1"
-                                                wire:click="payment({{ $invoice->id }})" title="تم الدفع">
+                                                wire:click="payment(<?php echo e($invoice->id); ?>)" title="تم الدفع">
                                                 <i class="fas fa-dollar-sign"></i>
                                             </button>
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-warning mx-1" data-bs-toggle="modal"
                                                 data-bs-target="#EditInvoice"
-                                                wire:click="numinvoice({{ $invoice->num_invoice_sell }})"
+                                                wire:click="numinvoice(<?php echo e($invoice->num_invoice_sell); ?>)"
                                                 title="تعديل الفاتورة">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-info mx-1"
-                                                wire:click="openDriverModal({{ $invoice->id }})"
-                                                data-bs-toggle="modal" data-bs-target="#editDriverModal"
-                                                title="تعديل السائق">
+                                                wire:click="openDriverModal(<?php echo e($invoice->id); ?>)" data-bs-toggle="modal"
+                                                data-bs-target="#editDriverModal" title="تعديل السائق">
                                                 <i class="fas fa-user-edit"></i>
                                             </button>
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-danger mx-1"
-                                                wire:click.prevent="$dispatch('confirmDelete', { id: {{ $invoice->id }} })"
+                                                wire:click.prevent="$dispatch('confirmDelete', { id: <?php echo e($invoice->id); ?> })"
                                                 title="حذف الفاتورة">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
@@ -352,21 +399,21 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="11" class="text-center py-5 text-muted">
                                 <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
                                 <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                 </tbody>
             </table>
         </div>
     </div>
 
     <!-- Bulk Date Edit Modal -->
-    @if ($showBulkDateModal)
+    <!--[if BLOCK]><![endif]--><?php if($showBulkDateModal): ?>
         <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
             <div class="modal-dialog">
                 <div class="modal-content shadow-lg">
@@ -381,8 +428,7 @@
                             class="form-control shadow-sm">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" wire:click="updateBulkDateSell"
-                            class="btn btn-outline-primary shadow-sm">
+                        <button type="button" wire:click="updateBulkDateSell" class="btn btn-outline-primary shadow-sm">
                             <i class="fas fa-save me-2"></i>حفظ التغيير
                         </button>
                         <button type="button" class="btn btn-outline-secondary shadow-sm"
@@ -393,11 +439,11 @@
                 </div>
             </div>
         </div>
-    @endif
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
     <!-- Edit Driver Modal -->
-    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1"
-        aria-labelledby="editDriverModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1" aria-labelledby="editDriverModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content shadow-lg">
                 <div class="modal-header bg-light">
@@ -410,13 +456,20 @@
                         <label for="driver" class="form-label">اختر السائق</label>
                         <select wire:model="selectedDriverId" class="form-select shadow-sm" id="driver">
                             <option value="">-- اختر السائق --</option>
-                            @foreach ($drivers as $driver)
-                                <option value="{{ $driver->id }}">{{ $driver->nameDriver }}</option>
-                            @endforeach
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($driver->id); ?>"><?php echo e($driver->nameDriver); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                         </select>
-                        @error('selectedDriverId')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['selectedDriverId'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="text-danger"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -526,62 +579,83 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    @script
-        <script>
-            $wire.on("confirmDelete", (event) => {
-                Swal.fire({
-                    title: "هل أنت متأكد؟",
-                    text: "لن تتمكن من التراجع!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "نعم، احذفه!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call("delete", event.id);
-                    }
-                });
+        <?php
+        $__scriptKey = '3667539297-0';
+        ob_start();
+    ?>
+    <script>
+        $wire.on("confirmDelete", (event) => {
+            Swal.fire({
+                title: "هل أنت متأكد؟",
+                text: "لن تتمكن من التراجع!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "نعم، احذفه!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.call("delete", event.id);
+                }
             });
-        </script>
-    @endscript
+        });
+    </script>
+        <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
 
 
-    @script
-        <script>
-            $wire.on('confirm-payment', () => {
-                Swal.fire({
-                    title: "تأكيد الدفع",
-                    text: "هل تريد تأكيد دفع الفواتير المحددة؟",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "نعم، تأكيد",
-                    cancelButtonText: "إلغاء"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call('paymentmulti');
-                    }
-                });
+        <?php
+        $__scriptKey = '3667539297-1';
+        ob_start();
+    ?>
+    <script>
+        $wire.on('confirm-payment', () => {
+            Swal.fire({
+                title: "تأكيد الدفع",
+                text: "هل تريد تأكيد دفع الفواتير المحددة؟",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "نعم، تأكيد",
+                cancelButtonText: "إلغاء"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.call('paymentmulti');
+                }
             });
-        </script>
-    @endscript
-    @script
-        <script>
-            $wire.on('confirmDeleteSelected', () => {
-                Swal.fire({
-                    title: "هل أنت متأكد؟",
-                    text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "نعم، احذفهم!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call('deleteSelected');
-                    }
-                });
+        });
+    </script>
+        <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
+        <?php
+        $__scriptKey = '3667539297-2';
+        ob_start();
+    ?>
+    <script>
+        $wire.on('confirmDeleteSelected', () => {
+            Swal.fire({
+                title: "هل أنت متأكد؟",
+                text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "نعم، احذفهم!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.call('deleteSelected');
+                }
             });
-        </script>
-    @endscript
-</div>
+        });
+    </script>
+        <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
+</div><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/drivers/invoice-controls/show.blade.php ENDPATH**/ ?>

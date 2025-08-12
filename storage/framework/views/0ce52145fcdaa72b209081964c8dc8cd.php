@@ -10,7 +10,22 @@
                         aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
-                    <livewire:returnproducts.show>
+                    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('returnproducts.show', []);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-562533009-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
                 </div>
             </div>
         </div>
@@ -27,7 +42,22 @@
                         aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
-                    <livewire:addproduct.add-invoice-product>
+                    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('addproduct.add-invoice-product', []);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-562533009-1', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
                 </div>
             </div>
         </div>
@@ -97,14 +127,14 @@
                 <div
                     class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 bg-light border-bottom gap-2 gap-md-0">
                     <div class="order-2 order-md-1 text-muted text-center text-md-start">
-                        {{-- <span class="fw-semibold">{{ $invoices->count() }}</span> عدد الفواتير --}}
+                        
                     </div>
 
                     <div
                         class="order-1 order-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-3 w-100 w-md-auto">
                         <!-- Delete Button -->
                         <button class="btn btn-outline-danger" wire:click="$dispatch('confirmDeleteSelected')"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-trash-alt me-2"></i>
                                 <span>حذف المحدد</span>
@@ -115,7 +145,7 @@
 
                         <!-- Payment Button -->
                         <button class="btn btn-outline-success" wire:click="$dispatch('confirm-payment')"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-credit-card me-2"></i>
                                 <span>إرجاع الدفع المحدد</span>
@@ -125,7 +155,7 @@
 
                         <!-- Edit Date Button -->
                         <button class="btn btn-outline-primary" wire:click="openBulkDateModal"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-calendar-alt me-2"></i>
                                 <span>تعديل تاريخ للمحدد</span>
@@ -140,11 +170,11 @@
 
             <!-- Selected Invoices Display -->
             <div class="p-3 bg-light">
-                @forelse ($selectedInvoices as $num_invoice_sell)
-                    <span class="badge bg-primary me-1">{{ $num_invoice_sell }}</span>
-                @empty
+                <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $selectedInvoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num_invoice_sell): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <span class="badge bg-primary me-1"><?php echo e($num_invoice_sell); ?></span>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <span class="text-muted">لا توجد فواتير مختارة</span>
-                @endforelse
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                 : الفواتير المختارة
             </div>
 
@@ -171,38 +201,42 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($invoices as $invoice)
+                        <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
                                 <td>
                                     <input type="checkbox" class="form-check-input shadow-sm" style="cursor: pointer"
-                                        wire:model.live="selectedInvoices" value="{{ $invoice->num_invoice_sell }}"
-                                        @checked(in_array((string) $invoice->num_invoice_sell, $selectedInvoices))>
+                                        wire:model.live="selectedInvoices" value="<?php echo e($invoice->num_invoice_sell); ?>"
+                                        <?php if(in_array((string) $invoice->num_invoice_sell, $selectedInvoices)): echo 'checked'; endif; ?>>
                                 </td>
-                                <td class="text-muted align-middle">{{ $loop->iteration }}</td>
+                                <td class="text-muted align-middle"><?php echo e($loop->iteration); ?></td>
                                 <td class="text-center align-middle fw-semibold">
                                     <span class="badge bg-success bg-opacity-10 text-success fs-6 fw-bold">
-                                        {{ $invoice->num_invoice_sell }}
+                                        <?php echo e($invoice->num_invoice_sell); ?>
+
                                     </span>
                                 </td>
                                 <td class="text-center align-middle">
-                                    {{ $invoice->customer?->driver?->nameDriver ?? '—' }}
+                                    <?php echo e($invoice->customer?->driver?->nameDriver ?? '—'); ?>
+
                                 </td>
                                 <td class="text-center align-middle text-truncate" style="max-width:150px;">
-                                    {{ $invoice->customer?->address ?? '—' }}</td>
-                                <td class="text-center align-middle">{{ $invoice->customer?->mobile ?? '—' }}</td>
+                                    <?php echo e($invoice->customer?->address ?? '—'); ?></td>
+                                <td class="text-center align-middle"><?php echo e($invoice->customer?->mobile ?? '—'); ?></td>
                                 <td class="text-center align-middle text-nowrap">
-                                    {{ number_format($invoice->sell?->taxi_price ?? 0) }} </td>
+                                    <?php echo e(number_format($invoice->sell?->taxi_price ?? 0)); ?> </td>
                                 <td class="text-center align-middle fw-bold text-nowrap">
-                                    {{ number_format($invoice->sell?->total_price_afterDiscount_invoice) }} </td>
+                                    <?php echo e(number_format($invoice->sell?->total_price_afterDiscount_invoice)); ?> </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex justify-content-center">
-                                        {{ $invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : '' }}
+                                        <?php echo e($invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : ''); ?>
+
                                     </div>
                                 </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex justify-content-center">
-                                        {{ number_format($invoice->customer?->profit_invoice ?? 0) }}<br>
-                                        {{ number_format($invoice->customer?->profit_invoice_after_discount ?? 0) }}
+                                        <?php echo e(number_format($invoice->customer?->profit_invoice ?? 0)); ?><br>
+                                        <?php echo e(number_format($invoice->customer?->profit_invoice_after_discount ?? 0)); ?>
+
 
                                 </td>
                                 <td class="text-center">
@@ -218,7 +252,7 @@
                                                 <li class="d-inline-block">
                                                     <!-- Print -->
                                                     <button class="btn btn btn-outline-primary px-2"
-                                                        wire:click="print({{ $invoice->id }})"
+                                                        wire:click="print(<?php echo e($invoice->id); ?>)"
                                                         title="طباعة الفاتورة">
                                                         <i class="fas fa-print me-1"></i>
                                                     </button>
@@ -228,7 +262,7 @@
                                                     <!-- Add Products -->
                                                     <button class="btn btn btn-outline-success px-2"
                                                         data-bs-toggle="modal" data-bs-target="#addinvoiceproduct"
-                                                        wire:click="numinvoice({{ $invoice->num_invoice_sell }})"
+                                                        wire:click="numinvoice(<?php echo e($invoice->num_invoice_sell); ?>)"
                                                         title="إضافة منتجات">
                                                         <i class="fas fa-cart-plus me-1"></i>
                                                     </button>
@@ -236,7 +270,7 @@
                                                 <li class="d-inline-block">
                                                     <!-- Mark as Paid -->
                                                     <button class="btn btn-outline-danger px-2"
-                                                        wire:click="payment({{ $invoice->id }})"
+                                                        wire:click="payment(<?php echo e($invoice->id); ?>)"
                                                         title="إرجاع الدفع">
                                                         <i class="fas fa-money-bill-wave me-1"></i>
                                                     </button>
@@ -246,7 +280,7 @@
                                                     <!-- Edit Invoice -->
                                                     <button class="btn btn btn-outline-warning px-2"
                                                         data-bs-toggle="modal" data-bs-target="#EditInvoice"
-                                                        wire:click="numinvoice({{ $invoice->num_invoice_sell }})"
+                                                        wire:click="numinvoice(<?php echo e($invoice->num_invoice_sell); ?>)"
                                                         title="تعديل الفاتورة">
                                                         <i class="fas fa-edit me-1"></i>
                                                     </button>
@@ -254,7 +288,7 @@
                                                 <li class="d-inline-block">
                                                     <!-- Delete -->
                                                     <button class="btn btn btn-outline-danger px-2"
-                                                        wire:click.prevent="$dispatch('confirmDelete', { id: {{ $invoice->id }} })"
+                                                        wire:click.prevent="$dispatch('confirmDelete', { id: <?php echo e($invoice->id); ?> })"
                                                         title="حذف الفاتورة">
                                                         <i class="fas fa-trash-alt me-1"></i>
                                                     </button>
@@ -273,21 +307,21 @@
                                         </ul>
                                     </div>
                                 </td>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="11" class="text-center py-5 text-muted">
                                     <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
                                     <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </tbody>
                 </table>
             </div>
         </div>
 
         <!-- Bulk Date Edit Modal -->
-        @if ($showBulkDateModal)
+        <!--[if BLOCK]><![endif]--><?php if($showBulkDateModal): ?>
             <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
                 <div class="modal-dialog">
                     <div class="modal-content shadow-lg">
@@ -314,7 +348,7 @@
                     </div>
                 </div>
             </div>
-        @endif
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
 
 
@@ -396,7 +430,10 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        @script
+            <?php
+        $__scriptKey = '562533009-0';
+        ob_start();
+    ?>
             <script>
                 $wire.on("confirmDelete", (event) => {
                     Swal.fire({
@@ -414,10 +451,17 @@
                     });
                 });
             </script>
-        @endscript
+            <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
 
 
-        @script
+            <?php
+        $__scriptKey = '562533009-1';
+        ob_start();
+    ?>
             <script>
                 $wire.on('confirm-payment', () => {
                     Swal.fire({
@@ -434,8 +478,15 @@
                     });
                 });
             </script>
-        @endscript
-        @script
+            <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
+            <?php
+        $__scriptKey = '562533009-2';
+        ob_start();
+    ?>
             <script>
                 $wire.on('confirmDeleteSelected', () => {
                     Swal.fire({
@@ -453,9 +504,14 @@
                     });
                 });
             </script>
-        @endscript
+            <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
 
 
 
 
     </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/return-sell/show.blade.php ENDPATH**/ ?>
