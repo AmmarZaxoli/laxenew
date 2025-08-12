@@ -38,6 +38,13 @@ class Multiinvoices extends Component
 
     public $showBulkDriverModal = false;
     public $bulkDriverId;
+    public $printedStatus = 0; 
+
+    public function filterPrinted($status)
+    {
+        $this->printedStatus = $status;
+        $this->resetSelectedInvoices();
+    }
 
     public function mount()
     {
@@ -59,7 +66,7 @@ class Multiinvoices extends Component
         $this->resetSelectedInvoices();
     }
 
- 
+
     public function resetSelectedInvoices()
     {
         $this->selectedInvoices = [];
@@ -83,12 +90,16 @@ class Multiinvoices extends Component
                         ->orWhereHas('customer', fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%'));
                 });
             })
-            ->when($this->selected_driver, fn($q) =>
+            ->when(
+                $this->selected_driver,
+                fn($q) =>
                 $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
             )
-            ->when($this->filteredByDate && $this->date_from && $this->date_to, fn($q) =>
+            ->when(
+                $this->filteredByDate && $this->date_from && $this->date_to,
+                fn($q) =>
                 $q->whereDate('date_sell', '>=', $this->date_from)
-                  ->whereDate('date_sell', '<=', $this->date_to)
+                    ->whereDate('date_sell', '<=', $this->date_to)
             )
             ->pluck('num_invoice_sell')
             ->map(fn($num) => (string) $num)
@@ -107,12 +118,16 @@ class Multiinvoices extends Component
                         ->orWhereHas('customer', fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%'));
                 });
             })
-            ->when($this->selected_driver, fn($q) =>
+            ->when(
+                $this->selected_driver,
+                fn($q) =>
                 $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
             )
-            ->when($this->filteredByDate && $this->date_from && $this->date_to, fn($q) =>
+            ->when(
+                $this->filteredByDate && $this->date_from && $this->date_to,
+                fn($q) =>
                 $q->whereDate('date_sell', '>=', $this->date_from)
-                  ->whereDate('date_sell', '<=', $this->date_to)
+                    ->whereDate('date_sell', '<=', $this->date_to)
             )
             ->select('id', 'num_invoice_sell')
             ->get()
@@ -127,53 +142,64 @@ class Multiinvoices extends Component
         $this->invoiceNumberToIdMap = $filteredInvoices;
     }
 
-  public function render()
-{
-    $query = Sell_invoice::with(['customer', 'sell'])
-        ->whereHas('sell', fn($q) => $q->where('cash', 0))
-        ->when($this->search, function ($q) {
-            $q->where(function ($sub) {
-                $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('customer', function ($q) {
-                        $q->where('mobile', 'like', '%' . $this->search . '%');
-                    });
-            });
-        })
-        ->whereHas('customer', function ($q) {
-            $q->where('print', false); 
-        })
-        ->when(
-            $this->selected_driver,
-            fn($q) =>
-            $q->whereHas('customer.driver', fn($q2) => $q2->where('driver_id', $this->selected_driver))
-        );
+    public function render()
+    {
+        $query = Sell_invoice::with(['customer', 'sell'])
+            ->whereHas('sell', fn($q) => $q->where('cash', 0))
+            ->when($this->search, function ($q) {
+                $q->where(function ($sub) {
+                    $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
+                        ->orWhereHas(
+                            'customer',
+                            fn($q) =>
+                            $q->where('mobile', 'like', '%' . $this->search . '%')
+                        );
+                });
+            })
+            ->when(!is_null($this->printedStatus), function ($q) {
+                $q->whereHas(
+                    'customer',
+                    fn($q) =>
+                    $q->where('print', $this->printedStatus)
+                );
+            })
+            ->when(
+                $this->selected_driver,
+                fn($q) =>
+                $q->whereHas(
+                    'customer.driver',
+                    fn($q2) =>
+                    $q2->where('driver_id', $this->selected_driver)
+                )
+            );
 
-    if ($this->filteredByDate && $this->date_from && $this->date_to) {
-        $query->whereDate('date_sell', '>=', $this->date_from)
-            ->whereDate('date_sell', '<=', $this->date_to);
+        if ($this->filteredByDate && $this->date_from && $this->date_to) {
+            $query->whereDate('date_sell', '>=', $this->date_from)
+                ->whereDate('date_sell', '<=', $this->date_to);
+        }
+
+        $this->driverInvoices = $query->get();
+
+        return view('livewire.print.multiinvoices', [
+            'driverInvoices' => $this->driverInvoices,
+            'invoices' => $this->driverInvoices
+        ]);
     }
 
-    $this->driverInvoices = $query->get();
-
-    $driverInvoices = $this->driverInvoices;
-    $invoices = $driverInvoices;
-
-    return view('livewire.print.multiinvoices', compact('driverInvoices', 'invoices'));
-}
-
-
-   
-
-   
-
-   
-
-   
 
 
 
-   
-   
+
+
+
+
+
+
+
+
+
+
+
 
     public function printSelected()
     {

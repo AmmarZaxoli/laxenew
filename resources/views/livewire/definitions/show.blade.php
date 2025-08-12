@@ -12,7 +12,7 @@
                     </div>
                 </div>
 
-                
+
 
                 <div class="col-md-3">
                     <label for="selected_type" class="form-label small text-muted mb-1">تصفية حسب النوع</label>
@@ -39,18 +39,19 @@
                 </div>
 
                 <div class="col-md-3">
-    <div class="btn-group w-100" role="group" style="height: 35px">
-        <button wire:click="filterDelivery('all')" type="button" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-list me-1"></i> الكل
-        </button>
-        <button wire:click="filterDelivery(true)" type="button" class="btn btn-outline-success btn-sm">
-            <i class="fas fa-check me-1"></i> مجاني
-        </button>
-        <button wire:click="filterDelivery(false)" type="button" class="btn btn-outline-danger btn-sm">
-            <i class="fas fa-times me-1"></i> غير مجاني
-        </button>
-    </div>
-</div>
+                    <div class="btn-group w-100" role="group" style="height: 35px">
+                        <button wire:click="filterDelivery('all')" type="button"
+                            class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-list me-1"></i> الكل
+                        </button>
+                        <button wire:click="filterDelivery(true)" type="button" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-check me-1"></i> مجاني
+                        </button>
+                        <button wire:click="filterDelivery(false)" type="button" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-times me-1"></i> غير مجاني
+                        </button>
+                    </div>
+                </div>
 
             </div>
 
@@ -100,7 +101,7 @@
                                     @endif
                                 </td>
 
-<td class="text-center">
+                                <td class="text-center">
                                     @if ($definition->delivery_type)
                                         <span class="badge bg-success bg-opacity-10 text-success">
                                             <i class="fas fa-check"></i> نعم
@@ -113,7 +114,7 @@
                                 </td>
 
                                 <td class="text-center">{{ $definition->madin }}</td>
-                                
+
 
                                 <td class="text-center">
                                     @if ($definition->image && file_exists(public_path('storage/' . $definition->image)))
