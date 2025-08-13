@@ -26,7 +26,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('types')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->string('is_active')->default('active');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

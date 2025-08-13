@@ -97,14 +97,14 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         <div class="d-flex gap-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" wire:model.defer="is_active"
-                                    style="cursor: pointer" id="active" value="active">
+                                    style="cursor: pointer" id="active" value="1">
                                 <label class="form-check-label text-success" for="active">
                                     <i class="fas fa-check-circle me-1"></i> نشط
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" wire:model.defer="is_active"
-                                    style="cursor: pointer" id="inactive" value="not active">
+                                    style="cursor: pointer" id="inactive" value="0">
                                 <label class="form-check-label text-danger" for="inactive">
                                     <i class="fas fa-times-circle me-1"></i> غير نشط
                                 </label>

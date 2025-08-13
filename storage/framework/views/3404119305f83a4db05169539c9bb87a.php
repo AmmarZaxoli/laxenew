@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="update">
+    
         <div class="modal-body row g-3">
             <div class="col-md-6">
                 <label class="form-label">اسم المنتج</label>
@@ -66,14 +66,14 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                 <div class="d-flex gap-3">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" wire:model.defer="is_active" id="active"
-                            value="active" style="cursor: pointer">
+                            value="1" style="cursor: pointer">
                         <label class="form-check-label text-success" for="active">
                             <i class="fas fa-check-circle me-1"></i> نشط
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" wire:model.defer="is_active" id="inactive"
-                            value="not active" style="cursor: pointer">
+                            value="0" style="cursor: pointer">
                         <label class="form-check-label text-danger" for="inactive">
                             <i class="fas fa-times-circle me-1"></i> غير نشط
                         </label>
@@ -150,10 +150,10 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-primary">تحديث</button>
+            <button wire:click='update' class="btn btn-outline-primary">تحديث</button>
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
         </div>
-    </form>
+   
 
 </div>
 <?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/definitions/edit.blade.php ENDPATH**/ ?>

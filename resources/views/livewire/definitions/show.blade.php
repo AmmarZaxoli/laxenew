@@ -27,11 +27,11 @@
                 <div class="col-md-3">
 
                     <div class="btn-group w-100" role="group" style="height: 35px">
-                        <button wire:click="filterActive('active')" type="button"
+                        <button wire:click="filterActive('1')" type="button"
                             class="btn btn-outline-success btn-sm">
                             <i class="fas fa-check-circle me-1"></i> نشط
                         </button>
-                        <button wire:click="filterActive('inactive')" type="button"
+                        <button wire:click="filterActive('0')" type="button"
                             class="btn btn-outline-danger btn-sm">
                             <i class="fas fa-times-circle me-1"></i> غير نشط
                         </button>
@@ -90,7 +90,7 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    @if ($definition->is_active === 'active')
+                                    @if ($definition->is_active === 1)
                                         <span class="badge bg-success bg-opacity-10 text-success">
                                             <i class="fas fa-check-circle me-1"></i> نشط
                                         </span>

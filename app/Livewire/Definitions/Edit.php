@@ -67,6 +67,7 @@ class Edit extends Component
 
     public function update()
     {
+        
         try {
             $this->validate([
                 'name' => [
