@@ -20,6 +20,28 @@ class Edit extends Component
     public $cash = 0;
     public $note = '';
 
+    // Add this method to your Livewire component
+    public function updatedProducts($value, $key)
+    {
+        // Parse the index and field from the key (e.g., "0.quantity")
+        $parts = explode('.', $key);
+        $index = $parts[0];
+        $field = $parts[1];
+
+        // Only validate if quantity is being updated
+        if ($field === 'quantity') {
+            $qSold = $this->products[$index]['q_sold'] ?? 0;
+            $newQuantity = $value;
+
+            if ($newQuantity < $qSold) {
+                // Reset to the previous valid quantity or q_sold, whichever is higher
+                $this->products[$index]['quantity'] = max($qSold, $this->products[$index]['quantity']);
+
+                // Show error message
+                session()->flash('error', 'لا يمكن أن تكون الكمية أقل من الكمية المباعة (' . $qSold . ')');
+            }
+        }
+    }
     public function mount($invoiceId)
     {
         try {
@@ -27,7 +49,7 @@ class Edit extends Component
 
             $this->invoice = Buy_invoice::findOrFail($invoiceId);
 
-            $this->products = Buy_Products_invoice::where('num_invoice_id', $invoiceId)
+            $this->products = Sub_Buy_Products_invoice::where('num_invoice_id', $invoiceId)
                 ->get()
                 ->map(function ($product) {
                     return [
@@ -35,10 +57,11 @@ class Edit extends Component
                         'product_id' => $product->product_id,
                         'name' => $product->name,
                         'barcode' => $product->barcode,
-                        'quantity' => (float)$product->quantity, // Ensure numeric type
-                        'buy_price' => (float)$product->buy_price, // Ensure numeric type
-                        'sell_price' => (float)$product->sell_price, // Ensure numeric type
-                        'profit' => (float)$product->profit, // Ensure numeric type
+                        'quantity' => (float)$product->quantity,
+                        'q_sold' => (float)$product->q_sold,
+                        'buy_price' => (float)$product->buy_price,
+                        'sell_price' => (float)$product->sell_price,
+                        'profit' => (float)$product->profit,
                         'dateex' => $product->dateex,
                     ];
                 })->toArray();
@@ -95,6 +118,13 @@ class Edit extends Component
 
     public function updateInvoice()
     {
+        // Validate quantities before saving
+        foreach ($this->products as $index => $product) {
+            if ($product['quantity'] < $product['q_sold']) {
+                session()->flash('error', 'لا يمكن أن تكون الكمية أقل من الكمية المباعة للمنتج: ' . $product['name']);
+                return;
+            }
+        }
         try {
             DB::transaction(function () {
                 try {
@@ -150,6 +180,7 @@ class Edit extends Component
                         if ($invoiceProduct) {
                             $invoiceProduct->update([
                                 'quantity' => (float)$updatedProduct['quantity'],
+                                'q_sold' => (float)$updatedProduct['q_sold'],
                                 'buy_price' => (float)$updatedProduct['buy_price'],
                                 'sell_price' => (float)$updatedProduct['sell_price'],
                                 'profit' => (float)$updatedProduct['profit'],
@@ -165,7 +196,7 @@ class Edit extends Component
             session()->flash('success', 'تم تحديث الفاتورة بنجاح.');
             // $this->dispatch('close-driver-modal');
         } catch (Exception $e) {
-            session()->flash('error', 'Failed to update invoice: ' );
+            session()->flash('error', 'Failed to update invoice: ');
         }
     }
 

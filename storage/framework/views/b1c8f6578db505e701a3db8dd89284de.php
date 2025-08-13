@@ -1,12 +1,19 @@
 <div>
     <form wire:submit.prevent="update">
         <div class="modal-body">
-            <h4 class="mb-4 text-center fw-bold text-primary">{{ $name }}</h4>
+            <h4 class="mb-4 text-center fw-bold text-primary"><?php echo e($name); ?></h4>
 
             <div class="mb-3">
                 <label class="form-label">سعر البيع</label>
                 <input type="number" class="form-control"  step="250" wire:model.defer="price_sell" placeholder="أدخل الكمية">
-                @error('price_sell') <small class="text-danger">{{ $message }}</small> @enderror
+                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['price_sell'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <small class="text-danger"><?php echo e($message); ?></small> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
             </div>
 
             <div class="mb-10">
@@ -25,7 +32,14 @@
                         </label>
                     </div>
                 </div>
-                @error('is_active') <small class="text-danger d-block mt-1">{{ $message }}</small> @enderror
+                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['is_active'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <small class="text-danger d-block mt-1"><?php echo e($message); ?></small> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
             </div>
         </div>
 
@@ -35,3 +49,4 @@
         </div>
     </form>
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/products/edit.blade.php ENDPATH**/ ?>

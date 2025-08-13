@@ -16,9 +16,9 @@
                     <label for="selected_type" class="form-label small text-muted mb-1">تصفية حسب النوع</label>
                     <select class="form-select" wire:model.live="selected_type" id="selected_type">
                         <option value="">جميع الأنواع</option>
-                        @foreach ($types as $type)
-                            <option value="{{ $type->id }}">{{ $type->typename }}</option>
-                        @endforeach
+                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($type->id); ?>"><?php echo e($type->typename); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                     </select>
                 </div>
 
@@ -52,48 +52,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($products as $product)
+                        <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr class="align-middle" style="cursor: pointer;"
-                                wire:key="definition-{{ $product->definition->id }}">
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td class="fw-medium">{{ $product->definition->name }}</td>
-                                <td class="text-center">{{ $product->definition->code }}</td>
-                                <td class="text-center">{{ $product->definition->barcode }}</td>
+                                wire:key="definition-<?php echo e($product->definition->id); ?>">
+                                <td class="text-center"><?php echo e($loop->iteration); ?></td>
+                                <td class="fw-medium"><?php echo e($product->definition->name); ?></td>
+                                <td class="text-center"><?php echo e($product->definition->code); ?></td>
+                                <td class="text-center"><?php echo e($product->definition->barcode); ?></td>
                                 <td class="text-center">
                                     <span class="text-center">
-                                        {{ $product->definition->type->typename ?? 'غير محدد' }}
+                                        <?php echo e($product->definition->type->typename ?? 'غير محدد'); ?>
+
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    @if ($product->definition->is_active === 1)
+                                    <!--[if BLOCK]><![endif]--><?php if($product->definition->is_active === 1): ?>
                                         <span class="badge bg-success bg-opacity-10 text-success">
                                             <i class="fas fa-check-circle me-1"></i> نشط
                                         </span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="badge bg-danger bg-opacity-10 text-danger">
                                             <i class="fas fa-times-circle me-1"></i> غير نشط
                                         </span>
-                                    @endif
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </td>
                                 <td class="text-center">
                                     <span
                                         class="badge 
-        {{ $product->quantity <= 0
+        <?php echo e($product->quantity <= 0
             ? 'bg-danger'
             : ($product->quantity > 0 && $product->quantity < 5
                 ? 'bg-warning text-dark'
-                : 'bg-light text-dark') }}">
-                                        {{ $product->quantity }}
+                : 'bg-light text-dark')); ?>">
+                                        <?php echo e($product->quantity); ?>
+
                                     </span>
                                 </td>
 
 
-                                <td class="text-center">{{ number_format($product->price_sell) }}</td>
+                                <td class="text-center"><?php echo e(number_format($product->price_sell)); ?></td>
 
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
                                         <button data-bs-toggle="modal"
-                                            data-bs-target="#Edit{{ $product->definition->id }}"
+                                            data-bs-target="#Edit<?php echo e($product->definition->id); ?>"
                                             class="btn btn-sm btn-icon btn-outline-primary">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -103,9 +105,9 @@
                                 </td>
                             </tr>
                             <!-- Edit Modal -->
-                            <div class="modal fade" id="Edit{{ $product->definition->id }}" data-bs-backdrop="static"
+                            <div class="modal fade" id="Edit<?php echo e($product->definition->id); ?>" data-bs-backdrop="static"
                                 data-bs-keyboard="false" tabindex="-1"
-                                aria-labelledby="editModalLabel{{ $product->definition->id }}" aria-hidden="true">
+                                aria-labelledby="editModalLabel<?php echo e($product->definition->id); ?>" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -114,13 +116,28 @@
                                                 data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <livewire:products.edit :product_id="$product->id" :key="'product-edit-' . $product->definition->id" />
+                                            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('products.edit', ['productId' => $product->id,'product_id' => $product->id]);
+
+$__html = app('livewire')->mount($__name, $__params, 'product-edit-' . $product->definition->id, $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="9" class="text-center py-4">
                                     <div class="d-flex flex-column align-items-center justify-content-center">
@@ -129,13 +146,15 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </tbody>
                 </table>
                 <!-- Pagination -->
-                {{ $products->links('pagination::bootstrap-5') }}
+                <?php echo e($products->links('pagination::bootstrap-5')); ?>
+
 
             </div>
         </div>
     </div>
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/products/show.blade.php ENDPATH**/ ?>

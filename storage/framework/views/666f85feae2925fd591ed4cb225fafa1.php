@@ -33,6 +33,7 @@
                         <tr>
                             <th class="text-center" style="width: 25%">الاسم</th>
                             <th class="text-center" style="width: 15%">الباركود</th>
+                            <th class="text-center" style="width: 10%">الكميةb</th>
                             <th class="text-center" style="width: 10%">الكمية</th>
                             <th class="text-center" style="width: 15%">سعر الشراء</th>
                             <th class="text-center" style="width: 15%">سعر البيع</th>
@@ -47,10 +48,34 @@
                                            value="<?php echo e($product['name']); ?>">
                                 </td>
                                 <td class="text-center align-middle text-muted"><?php echo e($product['barcode']); ?></td>
-                                <td>
-                                    <input type="number" min="1" wire:model.live="products.<?php echo e($index); ?>.quantity"
+                              
+                               <td>
+                                    <input type="number" min="1" wire:model.live="products.<?php echo e($index); ?>.q_sold"
                                            class="form-control text-center" >
                                 </td>
+                                
+                                <td>
+    <input type="number" min="1" wire:model.live="products.<?php echo e($index); ?>.quantity"
+           class="form-control text-center <?php $__errorArgs = ['products.' . $index . '.quantity'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+    <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['products.' . $index . '.quantity'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+        <div class="invalid-feedback"><?php echo e($message); ?></div>
+    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+</td>
+                               
                                 <td>
                                     <input type="number" step="0.01" wire:model.live="products.<?php echo e($index); ?>.buy_price"
                                            class="form-control text-center">

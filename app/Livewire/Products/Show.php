@@ -36,7 +36,7 @@ class Show extends Component
 
     public function filterActive($status)
     {
-        $this->active_filter = ($status === 'active') ? 'active' : 'not active';
+        $this->active_filter = ($status === 'active') ? '1' : '0';
         $this->resetPage();
     }
 
