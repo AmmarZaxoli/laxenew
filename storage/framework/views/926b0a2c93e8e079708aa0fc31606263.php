@@ -191,9 +191,9 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     جاري البحث...
                 </span>
             </button>
-             <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px" onclick="location.reload();">
-                    <i class="fas fa-sync-alt me-1"></i> تحديث الصفحة
-                </button>
+            <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px"
+                onclick="location.reload();">
+                <i class="fas fa-sync-alt me-1"></i> تحديث </button>
         </div>
     </div>
 
@@ -347,8 +347,8 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                             </td>
                             <td class="text-center">
                                 <div class="dropstart">
-                                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                                        aria-expanded="false" aria-label="Invoice actions">
+                                    <button class="btn btn-outline-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Invoice actions">
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu shadow p-2"
@@ -383,8 +383,9 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-info mx-1"
-                                                wire:click="openDriverModal(<?php echo e($invoice->id); ?>)" data-bs-toggle="modal"
-                                                data-bs-target="#editDriverModal" title="تعديل السائق">
+                                                wire:click="openDriverModal(<?php echo e($invoice->id); ?>)"
+                                                data-bs-toggle="modal" data-bs-target="#editDriverModal"
+                                                title="تعديل السائق">
                                                 <i class="fas fa-user-edit"></i>
                                             </button>
                                         </li>
@@ -428,7 +429,8 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                             class="form-control shadow-sm">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" wire:click="updateBulkDateSell" class="btn btn-outline-primary shadow-sm">
+                        <button type="button" wire:click="updateBulkDateSell"
+                            class="btn btn-outline-primary shadow-sm">
                             <i class="fas fa-save me-2"></i>حفظ التغيير
                         </button>
                         <button type="button" class="btn btn-outline-secondary shadow-sm"
@@ -442,8 +444,8 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
     <!-- Edit Driver Modal -->
-    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1" aria-labelledby="editDriverModalLabel"
-        aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1"
+        aria-labelledby="editDriverModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content shadow-lg">
                 <div class="modal-header bg-light">
@@ -583,23 +585,23 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
         $__scriptKey = '3667539297-0';
         ob_start();
     ?>
-    <script>
-        $wire.on("confirmDelete", (event) => {
-            Swal.fire({
-                title: "هل أنت متأكد؟",
-                text: "لن تتمكن من التراجع!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "نعم، احذفه!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.call("delete", event.id);
-                }
+        <script>
+            $wire.on("confirmDelete", (event) => {
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "لن تتمكن من التراجع!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذفه!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call("delete", event.id);
+                    }
+                });
             });
-        });
-    </script>
+        </script>
         <?php
         $__output = ob_get_clean();
 
@@ -611,22 +613,22 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
         $__scriptKey = '3667539297-1';
         ob_start();
     ?>
-    <script>
-        $wire.on('confirm-payment', () => {
-            Swal.fire({
-                title: "تأكيد الدفع",
-                text: "هل تريد تأكيد دفع الفواتير المحددة؟",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "نعم، تأكيد",
-                cancelButtonText: "إلغاء"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.call('paymentmulti');
-                }
+        <script>
+            $wire.on('confirm-payment', () => {
+                Swal.fire({
+                    title: "تأكيد الدفع",
+                    text: "هل تريد تأكيد دفع الفواتير المحددة؟",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "نعم، تأكيد",
+                    cancelButtonText: "إلغاء"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call('paymentmulti');
+                    }
+                });
             });
-        });
-    </script>
+        </script>
         <?php
         $__output = ob_get_clean();
 
@@ -636,26 +638,27 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
         $__scriptKey = '3667539297-2';
         ob_start();
     ?>
-    <script>
-        $wire.on('confirmDeleteSelected', () => {
-            Swal.fire({
-                title: "هل أنت متأكد؟",
-                text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "نعم، احذفهم!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.call('deleteSelected');
-                }
+        <script>
+            $wire.on('confirmDeleteSelected', () => {
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذفهم!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call('deleteSelected');
+                    }
+                });
             });
-        });
-    </script>
+        </script>
         <?php
         $__output = ob_get_clean();
 
         \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
     ?>
-</div><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/drivers/invoice-controls/show.blade.php ENDPATH**/ ?>
+</div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/drivers/invoice-controls/show.blade.php ENDPATH**/ ?>

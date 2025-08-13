@@ -4,23 +4,14 @@ namespace App\Livewire\Print;
 
 use App\Models\Driver;
 use App\Models\Sell_invoice;
-use App\Models\Sellinfo;
 use Livewire\Component;
 use App\Models\Customer;
-use App\Models\Offer;
-use App\Models\Offer_sell;
-use App\Models\Product;
-use App\Models\Seling_product_info;
-use App\Models\SellingProduct;
-use App\Models\Sub_Buy_Products_invoice;
-use Livewire\Attributes\On;
-use Illuminate\Support\Facades\DB;
 
 class Multiinvoices extends Component
 {
     public $driverInvoices;
-    public $selectedInvoiceId;
-    public $selectedDriverId;
+    // public $selectedInvoiceId;
+    // public $selectedDriverId;
     public $drivers = [];
     public $search = '';
     public $selected_driver = '';
@@ -33,11 +24,11 @@ class Multiinvoices extends Component
     public $date_to;
     public $filteredByDate = false;
 
-    public $showBulkDateModal = false;
-    public $bulkNewDateSell;
+    // public $showBulkDateModal = false;
+    // public $bulkNewDateSell;
 
-    public $showBulkDriverModal = false;
-    public $bulkDriverId;
+    // public $showBulkDriverModal = false;
+    // public $bulkDriverId;
     public $printedStatus = 0;
 
     public function filterPrinted($status)

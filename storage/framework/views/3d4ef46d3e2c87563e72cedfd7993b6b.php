@@ -18,9 +18,9 @@
                     <label for="selected_type" class="form-label small text-muted mb-1">تصفية حسب النوع</label>
                     <select class="form-select" wire:model.live="selected_type" id="selected_type">
                         <option value="">جميع الأنواع</option>
-                        @foreach ($types as $type)
-                            <option value="{{ $type->id }}">{{ $type->typename }}</option>
-                        @endforeach
+                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($type->id); ?>"><?php echo e($type->typename); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                     </select>
                 </div>
 
@@ -73,99 +73,97 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($definitions as $definition)
+                        <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $definitions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $definition): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr class="align-middle" style="cursor: pointer;"
-                                wire:key="definition-{{ $definition->id }}">
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td class="fw-medium">{{ $definition->name }}</td>
+                                wire:key="definition-<?php echo e($definition->id); ?>">
+                                <td class="text-center"><?php echo e($loop->iteration); ?></td>
+                                <td class="fw-medium"><?php echo e($definition->name); ?></td>
                                 <td class="text-center">
                                     <span class="badge bg-success bg-opacity-10 text-success fs-6">
-                                        {{ $definition->code }}
+                                        <?php echo e($definition->code); ?>
+
                                     </span>
                                 </td>
-                                <td class="text-center">{{ $definition->barcode }}</td>
+                                <td class="text-center"><?php echo e($definition->barcode); ?></td>
                                 <td class="text-center">
                                     <span class="text-center">
-                                        {{ $definition->type->typename ?? 'غير محدد' }}
+                                        <?php echo e($definition->type->typename ?? 'غير محدد'); ?>
+
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    @if ($definition->is_active === 'active')
+                                    <!--[if BLOCK]><![endif]--><?php if($definition->is_active === 'active'): ?>
                                         <span class="badge bg-success bg-opacity-10 text-success">
                                             <i class="fas fa-check-circle me-1"></i> نشط
                                         </span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="badge bg-danger bg-opacity-10 text-danger">
                                             <i class="fas fa-times-circle me-1"></i> غير نشط
                                         </span>
-                                    @endif
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </td>
 
                                 <td class="text-center">
-                                    @if ($definition->delivery_type)
+                                    <!--[if BLOCK]><![endif]--><?php if($definition->delivery_type): ?>
                                         <span class="badge bg-success bg-opacity-10 text-success">
                                             <i class="fas fa-check"></i> نعم
                                         </span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="badge bg-danger bg-opacity-10 text-danger">
                                             <i class="fas fa-times"></i> لا
                                         </span>
-                                    @endif
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </td>
 
-                                <td class="text-center">{{ $definition->madin }}</td>
+                                <td class="text-center"><?php echo e($definition->madin); ?></td>
 
 
                                 <td class="text-center">
-                                    @if ($definition->image && file_exists(public_path('storage/' . $definition->image)))
-                                        <img src="{{ asset('storage/' . $definition->image) }}" width="40"
+                                    <!--[if BLOCK]><![endif]--><?php if($definition->image && file_exists(public_path('storage/' . $definition->image))): ?>
+                                        <img src="<?php echo e(asset('storage/' . $definition->image)); ?>" width="40"
                                             height="40" class="rounded-circle object-fit-cover border"
-                                            data-bs-toggle="modal" data-bs-target="#imageModal{{ $definition->id }}"
+                                            data-bs-toggle="modal" data-bs-target="#imageModal<?php echo e($definition->id); ?>"
                                             style="cursor: pointer;" alt="صورة المنتج">
-                                    @else
+                                    <?php else: ?>
                                         <span class="text-muted small">لا يوجد</span>
-                                    @endif
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button data-bs-toggle="modal" data-bs-target="#Edit{{ $definition->id }}"
+                                        <button data-bs-toggle="modal" data-bs-target="#Edit<?php echo e($definition->id); ?>"
                                             class="btn btn-sm btn-icon btn-outline-primary">
                                             <i class="fas fa-edit"></i>
                                         </button>
 
-                                        {{-- <button
-                                            wire:click.prevent="$dispatch('confirm', { id: {{ $definition->id }} })"
-                                            class="btn btn-sm btn-icon btn-outline-danger">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button> --}}
+                                        
                                     </div>
                                 </td>
                             </tr>
 
                             <!-- Image Modal -->
-                            @if ($definition->image && file_exists(public_path('storage/' . $definition->image)))
-                                <div class="modal fade" id="imageModal{{ $definition->id }}" tabindex="-1"
-                                    aria-labelledby="imageModalLabel{{ $definition->id }}" aria-hidden="true">
+                            <!--[if BLOCK]><![endif]--><?php if($definition->image && file_exists(public_path('storage/' . $definition->image))): ?>
+                                <div class="modal fade" id="imageModal<?php echo e($definition->id); ?>" tabindex="-1"
+                                    aria-labelledby="imageModalLabel<?php echo e($definition->id); ?>" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">صورة {{ $definition->name }}</h5>
+                                                <h5 class="modal-title">صورة <?php echo e($definition->name); ?></h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="إغلاق"></button>
                                             </div>
                                             <div class="modal-body text-center p-0">
-                                                <img src="{{ asset('storage/' . $definition->image) }}"
+                                                <img src="<?php echo e(asset('storage/' . $definition->image)); ?>"
                                                     class="img-fluid rounded" alt="صورة المنتج">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endif
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                             <!-- Edit Modal -->
-                            <div class="modal fade" id="Edit{{ $definition->id }}" data-bs-backdrop="static"
+                            <div class="modal fade" id="Edit<?php echo e($definition->id); ?>" data-bs-backdrop="static"
                                 data-bs-keyboard="false" tabindex="-1"
-                                aria-labelledby="editModalLabel{{ $definition->id }}" aria-hidden="true">
+                                aria-labelledby="editModalLabel<?php echo e($definition->id); ?>" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -174,12 +172,27 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <livewire:definitions.edit :definition_id="$definition->id" :key="'definition-edit-' . $definition->id" />
+                                            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('definitions.edit', ['definitionId' => $definition->id,'definition_id' => $definition->id]);
+
+$__html = app('livewire')->mount($__name, $__params, 'definition-edit-' . $definition->id, $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="9" class="text-center py-4">
                                     <div class="d-flex flex-column align-items-center justify-content-center">
@@ -188,13 +201,14 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </tbody>
                 </table>
 
                 <!-- Pagination -->
-                {{-- {{ $definitions->links('pagination::bootstrap-5') }} --}}
-                {{ $definitions->links() }}
+                
+                <?php echo e($definitions->links()); ?>
+
 
             </div>
         </div>
@@ -203,7 +217,10 @@
 
     <!-- Add Definition Modal -->
 
-    @script
+        <?php
+        $__scriptKey = '3684659423-0';
+        ob_start();
+    ?>
         <script>
             Livewire.on('definitionUpdated', ({
                 id
@@ -223,7 +240,11 @@
                 });
             });
         </script>
-    @endscript
+        <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -271,3 +292,4 @@
 
 
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/definitions/show.blade.php ENDPATH**/ ?>

@@ -83,15 +83,15 @@
                     </span>
                 </button>
 
-                <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px" onclick="location.reload();">
-                    <i class="fas fa-sync-alt me-1"></i> تحديث الصفحة
-                </button>
+                <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px"
+                    onclick="location.reload();">
+                    <i class="fas fa-sync-alt me-1"></i> تحديث </button>
 
 
             </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-md-5">
             <div class="btn-group w-100" role="group" style="height: 35px">
                 <button wire:click="filterPrinted(null)" type="button" class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-list me-1"></i> الكل

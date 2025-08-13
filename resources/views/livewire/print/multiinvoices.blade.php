@@ -87,7 +87,7 @@
             </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-md-5">
             <div class="btn-group w-100" role="group" style="height: 35px">
                 <button wire:click="filterPrinted(null)" type="button" class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-list me-1"></i> الكل
