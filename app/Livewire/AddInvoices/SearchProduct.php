@@ -78,7 +78,7 @@ public function getResultsProperty()
                 ->orWhere('code', 'like', '%' . $this->search . '%')
                 ->orWhere('barcode', 'like', '%' . $this->search . '%');
         })
-        ->where('is_active', 'active')  // <-- Add this line to filter active only
+        ->where('is_active', '1')  // <-- Add this line to filter active only
         ->whereHas('products')
         ->withCount('products')
         ->limit(7)

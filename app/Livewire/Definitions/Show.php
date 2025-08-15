@@ -64,7 +64,7 @@ class Show extends Component
     // Add this method for active/inactive filtering
     public function filterActive($status)
     {
-        $this->active_filter = ($status === 'active') ? 'active' : 'not active';
+        $this->active_filter = ($status === '1') ? '1' : '0';
         $this->resetPage();
     }
 

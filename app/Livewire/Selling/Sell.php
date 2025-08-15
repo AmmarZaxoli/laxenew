@@ -67,6 +67,8 @@ class Sell extends Component
     #[Session(key: 'cashornot')]
     public $cashornot = false;
 
+    public $delivery_type = false;
+
     protected $casts = [
         'cashornot' => 'boolean',
     ];
@@ -182,6 +184,11 @@ class Sell extends Component
             'selectedoffer',
         );
         $this->date_sell = now()->format('Y-m-d\TH:i');
+
+        if ($this->delivery_type === true) {
+            $this->discount -= $this->pricetaxi; // remove taxi price
+            $this->delivery_type = false;
+        }
     }
 
     public function ref()
@@ -280,48 +287,45 @@ class Sell extends Component
     {
         $offer = Offer::with('subOffers')->findOrFail($offerId);
 
-
+        // Check if already in cart
         $exists = collect($this->selectedoffer)->contains(fn($item) => $item['id'] === $offerId);
-
         if ($exists) {
-            flash()->warning('لا يمكن إضافة العرض، لأنه موجود بالفعل في السلة.');
+            flash()->warning('Offer already in cart.');
             return;
         }
-
 
         DB::beginTransaction();
 
         try {
+            // Check and reserve stock
             foreach ($offer->subOffers as $suboffer) {
-                $product = Product::lockForUpdate()->find($suboffer->product_id); // lock row
-
+                $product = Product::lockForUpdate()->find($suboffer->product_id);
                 if (!$product || $product->quantity < $suboffer->quantity) {
                     DB::rollBack();
-                    flash()->addError('لا يمكن تنفيذ العرض: بعض المنتجات غير متوفرة بالكمية المطلوبة.');
+                    flash()->error('Cannot add offer: insufficient stock.');
                     return;
                 }
-
-
                 $product->decrement('quantity', $suboffer->quantity);
             }
 
-
             DB::commit();
 
-
+            // Add to cart
             $this->selectedoffer[] = [
                 'id' => $offer->id,
                 'nameoffer' => $offer->nameoffer,
                 'quantity' => 1,
                 'code' => $offer->code,
                 'price' => $offer->price,
+                'delivery' => $offer->delivery,
             ];
 
-            $this->getTotalPriceProperty();
+            // Check for free delivery
+            $this->calculateDeliveryStatus();
             $this->calculateGeneralPrice();
         } catch (\Exception $e) {
             DB::rollBack();
-            flash()->addError('حدث خطأ أثناء إضافة العرض: ' . $e->getMessage());
+            flash()->error('Error adding offer: ' . $e->getMessage());
         }
     }
 
@@ -329,24 +333,21 @@ class Sell extends Component
 
     public function removeOffer($offerId)
     {
-        // Step 1: Find the offer in the cart
         $index = collect($this->selectedoffer)->search(fn($item) => $item['id'] == $offerId);
 
-        if ($index === false) {
-            return;
-        }
+        if ($index === false) return;
 
         $cartItem = $this->selectedoffer[$index];
+        $wasFreeDelivery = $cartItem['delivery'] === 1;
 
-        // Step 2: Restore product quantities from sub-offers
         DB::beginTransaction();
 
         try {
             $offer = Offer::with('subOffers')->findOrFail($offerId);
 
+            // Restore stock
             foreach ($offer->subOffers as $suboffer) {
                 $product = Product::lockForUpdate()->find($suboffer->product_id);
-
                 if ($product) {
                     $product->increment('quantity', $suboffer->quantity * $cartItem['quantity']);
                 }
@@ -354,14 +355,19 @@ class Sell extends Component
 
             DB::commit();
 
-            // Step 3: Remove offer from cart
+            // Remove from cart
             unset($this->selectedoffer[$index]);
-            $this->selectedoffer = array_values($this->selectedoffer); // reindex
+            $this->selectedoffer = array_values($this->selectedoffer);
+
+            // Recalculate delivery if needed
+            if ($wasFreeDelivery) {
+                $this->calculateDeliveryStatus();
+            }
 
             $this->calculateGeneralPrice();
         } catch (\Exception $e) {
             DB::rollBack();
-            flash()->addError('حدث خطأ أثناء حذف العرض: ' . $e->getMessage());
+            flash()->error('Error removing offer: ' . $e->getMessage());
         }
     }
 
@@ -437,31 +443,29 @@ class Sell extends Component
     }
     public function addProduct($productId)
     {
-        // Get product with definition
         $product = Product::with('definition')->lockForUpdate()->find($productId);
         if (!$product) return;
 
         DB::beginTransaction();
 
         try {
-            // Re-check live stock
             $availableStock = $product->quantity;
 
-            // Already in cart?
+            // Check if already in cart
             $index = collect($this->selectedProducts)->search(fn($item) => $item['id'] == $productId);
             if ($index !== false) {
-                flash()->warning('المنتج مضاف مسبقًا.');
+                flash()->warning('Product already in cart.');
                 DB::rollBack();
                 return;
             }
 
             if ($availableStock < 1) {
-                flash()->error('الكمية غير متوفرة.');
+                flash()->error('Quantity not available.');
                 DB::rollBack();
                 return;
             }
 
-            // Decrease stock in database
+            // Decrease stock
             $product->quantity -= 1;
             $product->save();
 
@@ -475,16 +479,54 @@ class Sell extends Component
                 'barcode' => $product->definition->barcode ?? '',
                 'type_id' => $product->definition->type_id ?? '',
                 'quantity' => 1,
-                'stock' => $availableStock - 1, // live updated stock
+                'stock' => $availableStock - 1,
                 'price' => $product->price_sell,
                 'total' => $product->price_sell,
+                'delivery_type' => $product->definition->delivery_type,
             ];
+
+            // Check for free delivery
+            $this->calculateDeliveryStatus();
             $this->calculateGeneralPrice();
         } catch (\Exception $e) {
             DB::rollBack();
-            flash()->error('حدث خطأ أثناء إضافة المنتج.');
+            flash()->error('Error adding product: ' . $e->getMessage());
         }
     }
+
+
+    public function calculateDeliveryStatus()
+    {
+        $hasFreeDelivery = false;
+
+        // Check products for free delivery
+        foreach ($this->selectedProducts as $product) {
+            if ($product['delivery_type'] === 1) {
+                $hasFreeDelivery = true;
+                break;
+            }
+        }
+
+        // Check offers if no free delivery found in products
+        if (!$hasFreeDelivery) {
+            foreach ($this->selectedoffer as $offer) {
+                if ($offer['delivery'] === 1) {
+                    $hasFreeDelivery = true;
+                    break;
+                }
+            }
+        }
+
+        // Update discount and delivery_type status
+        if ($hasFreeDelivery && !$this->delivery_type) {
+            $this->discount += $this->pricetaxi;
+            $this->delivery_type = true;
+        } elseif (!$hasFreeDelivery && $this->delivery_type) {
+            $this->discount -= $this->pricetaxi;
+            $this->delivery_type = false;
+        }
+    }
+
 
 
     public $test = true;
@@ -757,26 +799,32 @@ class Sell extends Component
 
     public function removeProduct($productId)
     {
-        // Step 1: Find the product in the cart
         $index = collect($this->selectedProducts)->search(fn($item) => $item['id'] == $productId);
 
         if ($index !== false) {
             $cartItem = $this->selectedProducts[$index];
+            $wasFreeDelivery = $cartItem['delivery_type'] === 1;
 
-            // Step 2: Restore quantity to DB
+            // Restore stock
             $product = Product::lockForUpdate()->find($productId);
             if ($product) {
-                $product->quantity += $cartItem['quantity']; // restore full cart quantity
+                $product->quantity += $cartItem['quantity'];
                 $product->save();
             }
 
-            // Step 3: Remove product from cart
+            // Remove from cart
             unset($this->selectedProducts[$index]);
-            $this->selectedProducts = array_values($this->selectedProducts); // reindex
+            $this->selectedProducts = array_values($this->selectedProducts);
+
+            // Recalculate delivery if needed
+            if ($wasFreeDelivery) {
+                $this->calculateDeliveryStatus();
+            }
 
             $this->calculateGeneralPrice();
         }
     }
+
     public function removeProductmulti()
     {
 
@@ -788,76 +836,67 @@ class Sell extends Component
                 $product->save();
             }
         }
-
-        //  $this->calculateGeneralPrice();
-
-
-
-        // Step 1: Find the product in the cart
-        // $index = collect($this->selectedProducts)->search(fn($item) => $item['id'] == $productId);
-
-        // if ($index !== false) {
-        //     $cartItem = $this->selectedProducts[$index];
-
-        //     // Step 2: Restore quantity to DB
-        //     $product = Product::lockForUpdate()->find($productId);
-        //     if ($product) {
-        //         $product->quantity += $cartItem['quantity']; // restore full cart quantity
-        //         $product->save();
-        //     }
-
-        //     // Step 3: Remove product from cart
-        //     unset($this->selectedProducts[$index]);
-        //     $this->selectedProducts = array_values($this->selectedProducts); // reindex
-
-        //     $this->calculateGeneralPrice();
-        // }
     }
 
     public function clearCart()
     {
+        $hadFreeDelivery = collect($this->selectedProducts)
+            ->contains(fn($item) => $item['delivery_type'] === 1);
+
+        // Restore all product quantities
         foreach ($this->selectedProducts as $cartItem) {
             $product = Product::lockForUpdate()->find($cartItem['id']);
             if ($product) {
-                $product->quantity += $cartItem['quantity']; // Restore quantity
+                $product->quantity += $cartItem['quantity'];
                 $product->save();
             }
         }
 
-        // Clear the cart
         $this->selectedProducts = [];
 
-        // Recalculate totals
+        // Update delivery status if needed
+        if ($hadFreeDelivery) {
+            $this->calculateDeliveryStatus();
+        }
+
         $this->calculateGeneralPrice();
     }
-    public function clearOffersCart()
+
+     public function clearOffersCart()
     {
+        $hadFreeDelivery = collect($this->selectedoffer)
+            ->contains(fn($item) => $item['delivery'] === 1);
 
         DB::beginTransaction();
 
         try {
+            // Restore all offer quantities
             foreach ($this->selectedoffer as $cartItem) {
-                $offerId = $cartItem['id'];
-                $offer = Offer::with('subOffers')->findOrFail($offerId);
-
-                foreach ($offer->subOffers as $suboffer) {
-                    $product = Product::lockForUpdate()->find($suboffer->product_id);
-                    if ($product) {
-                        $product->increment('quantity', $suboffer->quantity * $cartItem['quantity']);
+                $offer = Offer::with('subOffers')->find($cartItem['id']);
+                if ($offer) {
+                    foreach ($offer->subOffers as $suboffer) {
+                        $product = Product::lockForUpdate()->find($suboffer->product_id);
+                        if ($product) {
+                            $product->increment('quantity', $suboffer->quantity * $cartItem['quantity']);
+                        }
                     }
                 }
             }
 
-            // Clear the selected offers cart
-            $this->selectedoffer = [];
-
             DB::commit();
 
-            // Recalculate totals
+            $this->selectedoffer = [];
+
+            // Update delivery status if needed
+            if ($hadFreeDelivery) {
+                $this->calculateDeliveryStatus();
+            }
+
             $this->calculateGeneralPrice();
+
         } catch (\Exception $e) {
             DB::rollBack();
-            flash()->addError('حدث خطأ أثناء إفراغ العروض: ' . $e->getMessage());
+            flash()->error('Error clearing offers: ' . $e->getMessage());
         }
     }
 

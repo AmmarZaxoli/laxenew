@@ -104,8 +104,8 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="barcode">الباركود</label>
-                            <input type="text" id="searchInput" class="form-control"
-                                placeholder="أدخل باركود المنتج">
+                            <input type="text" id="searchInput" class="form-control" placeholder="أدخل باركود المنتج"
+                                autocomplete="off">
 
                         </div>
                         <div class="col-md-6 mb-3">
@@ -240,7 +240,7 @@
                     <div class="table-responsive">
                         <table class="table table-striped table-hover mb-0" id="product-table">
                             <thead class="table-light">
-                                <tr >
+                                <tr>
                                     <th>المنتج</th>
                                     <th class="text-center" width="120">الكود</th>
                                     <th class="text-center" width="100">السعر</th>
@@ -304,6 +304,7 @@
                                     <th class="text-center" width="80">الإجراء</th>
                                 </tr>
                             </thead>
+
                             <tbody id="selected-products-body">
                                 @forelse ($selectedProducts as $product)
                                     <tr>
@@ -440,65 +441,78 @@
 
 
     <div class="card h-100">
-        <div class="d-flex justify-content-between align-items-start p-3 flex-wrap" style="gap: 20px;">
-            <!-- Summary Card (اليسار) -->
-            <div class="card border-0 shadow-sm" style="width: 300px;">
-                <div class="card-body p-3">
-                    <!-- Subtotal -->
-                    <div class="mb-2 d-flex justify-content-between align-items-center">
-                        <span class="text-muted small">الإجمالي الفرعي:</span>
-                        <span class="fw-bold">{{ number_format($this->totalPrice) }}</span>
-                    </div>
+    <div class="d-flex justify-content-between align-items-start p-3 flex-wrap" style="gap: 20px;">
+        
+        <!-- Summary Card (اليسار) -->
+        <div class="card border-0 shadow-sm" style="width: 300px;">
+            <div class="card-body p-3">
+                <!-- Subtotal -->
+                <div class="mb-2 d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">الإجمالي الفرعي:</span>
+                    <span class="fw-bold">{{ number_format($this->totalPrice) }}</span>
+                </div>
 
-                    <!-- Discount -->
-                    <div class="mb-2 d-flex justify-content-between align-items-center">
-                        <span class="text-muted small">الخصم:</span>
-                        <div class="input-group input-group-sm" style="width: 120px;">
-                            <input type="number" class="form-control form-control-sm border-danger"
-                                wire:model.live="discount" min="0" step="1000">
-                        </div>
-                    </div>
-
-                    <!-- Total -->
-                    <div class="pt-2 mt-2 border-top d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold small">الإجمالي:</span>
-                        <span class="fw-bold text-success fs-5">
-                            {{ number_format($generalprice) }}
-                        </span>
+                <!-- Discount -->
+                <div class="mb-2 d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">الخصم:</span>
+                    <div class="input-group input-group-sm" style="width: 120px;">
+                        <input type="number" class="form-control form-control-sm border-danger"
+                            wire:model.live="discount" min="0" step="1000">
                     </div>
                 </div>
-            </div>
 
-            <!-- Action Buttons (اليمين) -->
-            <div class="d-flex gap-2 flex-wrap align-items-start" style="min-width: 200px;margin-top:50px">
-                <button type="submit"
-                    class="btn btn-outline-primary d-flex align-items-center justify-content-center py-2 px-4"
-                    wire:loading.attr="disabled" wire:target="gitprofit" wire:click="gitprofit">
-
-                    <span wire:loading.remove wire:target="gitprofit">
-                        <i class="fas fa-save me-2"></i> حفظ الفاتورة
+                <!-- Total -->
+                <div class="pt-2 mt-2 border-top d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold small">الإجمالي:</span>
+                    <span class="fw-bold text-success fs-5">
+                        {{ number_format($generalprice) }}
                     </span>
-                    <span wire:loading wire:target="gitprofit">
-                        <i class="fas fa-spinner fa-spin me-2"></i>
-                    </span>
-                </button>
-
-                <button type="button"
-                    class="btn btn-outline-danger d-flex align-items-center justify-content-center py-2 px-4"
-                    wire:loading.attr="disabled" wire:target="refresh" wire:click="refresh">
-                    <span wire:loading.remove wire:target="refresh">
-                        <i class="fas fa-trash-alt me-2"></i> مسح
-                    </span>
-                    <span wire:loading wire:target="refresh">
-                        <i class="fas fa-spinner fa-spin me-2"></i>
-                    </span>
-                </button>
-
+                </div>
             </div>
         </div>
+
+        <!-- Free Delivery Message (centered) -->
+        @if($delivery_type == 1)
+            <div class="d-flex align-items-center justify-content-center text-success fw-bold fs-5" 
+                 style="min-width: 200px;">
+                🚚 توصيل مجاني
+            </div>
+        @endif
+
+        <!-- Action Buttons (اليمين) -->
+        <div class="d-flex gap-2 flex-wrap align-items-start" style="min-width: 200px; margin-top:50px;">
+            <button type="submit"
+                class="btn btn-outline-primary d-flex align-items-center justify-content-center py-2 px-4"
+                wire:loading.attr="disabled" wire:target="gitprofit" wire:click="gitprofit">
+                <span wire:loading.remove wire:target="gitprofit">
+                    <i class="fas fa-save me-2"></i> حفظ الفاتورة
+                </span>
+                <span wire:loading wire:target="gitprofit">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                </span>
+            </button>
+
+            <button type="button"
+                class="btn btn-outline-danger d-flex align-items-center justify-content-center py-2 px-4"
+                wire:loading.attr="disabled" wire:target="refresh" wire:click="refresh">
+                <span wire:loading.remove wire:target="refresh">
+                    <i class="fas fa-trash-alt me-2"></i> مسح
+                </span>
+                <span wire:loading wire:target="refresh">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                </span>
+            </button>
+        </div>
+
     </div>
+</div>
+
 
     <style>
+        .border-green {
+            border: 1px solid green;
+        }
+
         .clear {
             color: rgb(187, 51, 51);
             border: 1px solid rgb(187, 51, 51);

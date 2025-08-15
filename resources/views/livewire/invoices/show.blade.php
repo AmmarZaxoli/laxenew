@@ -64,6 +64,7 @@
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                         </div>
+                                        
                                     </td>
                                 </tr>
                             @empty
@@ -87,21 +88,21 @@
     </div>
 
 
-   @if ($editModal)
-    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5)">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">تعديل الفاتورة</h5>
-                    <button type="button" wire:click="closeModal" class="btn-close"></button>
-                </div>
-                <div class="modal-body">
-                    <livewire:add-invoices.edit :invoiceId="$editingInvoiceId" :key="'edit-' . $editingInvoiceId" />
+    @if ($editModal)
+        <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5)">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تعديل الفاتورة</h5>
+                        <button type="button" wire:click="closeModal" class="btn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <livewire:add-invoices.edit :invoiceId="$editingInvoiceId" :key="'edit-' . $editingInvoiceId" />
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-@endif
+    @endif
 
 
 

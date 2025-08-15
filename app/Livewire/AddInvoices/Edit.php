@@ -8,12 +8,36 @@ use App\Models\Buy_Products_invoice;
 use App\Models\Sub_Buy_Products_invoice;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
+
 use Exception;
 
 class Edit extends Component
 {
+
+    public $showAddForm = false;
+    public $newProduct = [
+        'product_id' => null,
+        'name' => '',
+        'barcode' => '',
+        'quantity' => 1,
+        'buy_price' => 0,
+        'dateex' => null,
+        'q_sold' => 0,
+        'profit' => 0
+    ];
+
+    public $showUpdateButton = true; // initially visible
+
+    public function toggleAddForm()
+    {
+        $this->showAddForm = !$this->showAddForm;
+        $this->showUpdateButton = !$this->showAddForm;
+    }
+
     public $invoiceId;
     public $invoice;
+    public $namecompany;
     public $products = [];
 
     public $discount = 0;
@@ -48,6 +72,7 @@ class Edit extends Component
             $this->invoiceId = $invoiceId;
 
             $this->invoice = Buy_invoice::findOrFail($invoiceId);
+            $this->namecompany = $this->invoice->name_invoice;
 
             $this->products = Sub_Buy_Products_invoice::where('num_invoice_id', $invoiceId)
                 ->get()
@@ -60,7 +85,6 @@ class Edit extends Component
                         'quantity' => (float)$product->quantity,
                         'q_sold' => (float)$product->q_sold,
                         'buy_price' => (float)$product->buy_price,
-                        'sell_price' => (float)$product->sell_price,
                         'profit' => (float)$product->profit,
                         'dateex' => $product->dateex,
                     ];
@@ -125,32 +149,27 @@ class Edit extends Component
                 return;
             }
         }
+
         try {
             DB::transaction(function () {
                 try {
                     foreach ($this->products as $updatedProduct) {
-                        $invoiceProduct = Buy_Products_invoice::find($updatedProduct['id']);
+                        $invoiceProducto = Buy_Products_invoice::find($updatedProduct['id']);
 
-                        if ($invoiceProduct) {
-                            $productModel = Product::find($invoiceProduct->product_id);
+
+                        if ($invoiceProducto) {
+                            $productModel = Product::find($invoiceProducto->product_id);
 
                             if ($productModel) {
                                 // ارجع الكمية القديمة
-                                $productModel->quantity -= (float)$invoiceProduct->quantity;
+                                $productModel->quantity -= (float)$invoiceProducto->quantity;
                             }
 
-                            $invoiceProduct->update([
-                                'quantity' => (float)$updatedProduct['quantity'],
-                                'buy_price' => (float)$updatedProduct['buy_price'],
-                                'sell_price' => (float)$updatedProduct['sell_price'],
-                                'profit' => (float)$updatedProduct['profit'],
-                                'dateex' => $updatedProduct['dateex'] ?? null,
-                            ]);
+
 
                             if ($productModel) {
                                 // اضف الكمية الجديدة
                                 $productModel->quantity += (float)$updatedProduct['quantity'];
-                                $productModel->price_sell = (float)$updatedProduct['sell_price'];
                                 $productModel->save();
                             }
                         }
@@ -182,7 +201,19 @@ class Edit extends Component
                                 'quantity' => (float)$updatedProduct['quantity'],
                                 'q_sold' => (float)$updatedProduct['q_sold'],
                                 'buy_price' => (float)$updatedProduct['buy_price'],
-                                'sell_price' => (float)$updatedProduct['sell_price'],
+                                'profit' => (float)$updatedProduct['profit'],
+                                'dateex' => $updatedProduct['dateex'] ?? null,
+                            ]);
+                        }
+                    }
+                    foreach ($this->products as $updatedProduct) {
+                        $invoiceProduct = Buy_Products_invoice::find($updatedProduct['id']);
+
+                        if ($invoiceProduct) {
+                            $invoiceProduct->update([
+                                'quantity' => (float)$updatedProduct['quantity'],
+                                'q_sold' => (float)$updatedProduct['q_sold'],
+                                'buy_price' => (float)$updatedProduct['buy_price'],
                                 'profit' => (float)$updatedProduct['profit'],
                                 'dateex' => $updatedProduct['dateex'] ?? null,
                             ]);
@@ -193,20 +224,98 @@ class Edit extends Component
                 }
             });
 
+
+            // // ✅ Cleanup step AFTER saving
+            // DB::transaction(function () {
+            //     // 1. Remove products with quantity = 0 and q_sold = 0
+            //     $productsToDelete = Buy_Products_invoice::where('num_invoice_id', $this->invoiceId)
+            //         ->where('quantity', 0)
+            //         ->where('q_sold', 0)
+            //         ->get();
+            //     foreach ($productsToDelete as $prod) {
+            //         Sub_Buy_Products_invoice::where('id', $prod->id)->delete();
+            //         $prod->delete();
+            //     }
+
+            //     // 2. Remove invoice if total_price = 0
+            //     $invoice = Buy_invoice::find($this->invoiceId);
+            //     if ($invoice && $invoice->total_price == 0) {
+            //         // Also delete related products just in case
+            //         Buy_Products_invoice::where('num_invoice_id', $invoice->id)->delete();
+            //         Sub_Buy_Products_invoice::where('num_invoice_id', $invoice->id)->delete();
+            //         $invoice->delete();
+            //     }
+            // });
+
             session()->flash('success', 'تم تحديث الفاتورة بنجاح.');
-            // $this->dispatch('close-driver-modal');
+            return redirect()->route('show_Invoices.create');
         } catch (Exception $e) {
-            session()->flash('error', 'Failed to update invoice: ');
+            session()->flash('error', 'Failed to update invoice: ' . $e->getMessage());
         }
     }
 
+    public $id;
+
+    public function deleteConfirmation($id)
+    {
+        $this->id = $id;
+        // This sends the event to the browser (JS)
+        $this->dispatch('show-delete-confirmation');
+    }
+
+    #[On('deleteConfirmed')]
+    public function removeProduct()
+    {
+        $productInfo = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->id)->firstOrFail();
+
+        if (!$productInfo) {
+            session()->flash('error', 'المنتج غير موجود');
+            return;
+        }
+
+        if ($productInfo->q_sold === 0) {
+            DB::transaction(function () use ($productInfo) {
+                $invoice = Buy_invoice::find($this->invoiceId);
+                if ($invoice) {
+                    $amount = $productInfo->buy_price * $productInfo->quantity;
+                    $invoice->total_price -= $amount;
+                    $invoice->afterDiscountTotalPrice -= $amount;
+                    $invoice->residual -= $amount;
+                    $invoice->save();
+                }
+                // Get the last sell_price for the same product from Sub_Buy_Products_invoice
+
+
+                // Update product quantity
+                Product::where('definition_id', $productInfo->product_id)
+                    ->decrement('quantity', $productInfo->quantity ?? 0);
+
+                // Delete from related tables
+                Buy_Products_invoice::where('id', $productInfo->id)->delete();
+                Sub_Buy_Products_invoice::where('buy_product_invoice_id', $productInfo->id)->delete();
+                $productInfo->delete();
+
+
+                $lastSellPrice = Sub_Buy_Products_invoice::where('product_id', $productInfo->product_id)
+                    ->orderBy('created_at', 'desc')
+                    ->value('sell_price');
+
+                if ($lastSellPrice) {
+                    Product::where('definition_id', $productInfo->product_id)
+                        ->update(['price_sell' => $lastSellPrice]);
+                }
+            });
+
+            flash()->success('تم حذف المنتج وتحديث الكمية والسعر بنجاح');
+            return redirect()->route('show_Invoices.create');
+        } else {
+            flash()->warning('لا يمكن حذف المنتج لأنه تم بيع جزء منه');
+        }
+    }
+
+
     public function render()
     {
-        try {
-            return view('livewire.add-invoices.edit');
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to render view: ' . $e->getMessage());
-            return view('livewire.error-view');
-        }
+        return view('livewire.add-invoices.edit');
     }
 }

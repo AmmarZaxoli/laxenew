@@ -64,6 +64,7 @@
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                         </div>
+                                        
                                     </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -88,16 +89,16 @@
     </div>
 
 
-   <!--[if BLOCK]><![endif]--><?php if($editModal): ?>
-    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5)">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">تعديل الفاتورة</h5>
-                    <button type="button" wire:click="closeModal" class="btn-close"></button>
-                </div>
-                <div class="modal-body">
-                    <?php
+    <!--[if BLOCK]><![endif]--><?php if($editModal): ?>
+        <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5)">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تعديل الفاتورة</h5>
+                        <button type="button" wire:click="closeModal" class="btn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
@@ -113,11 +114,11 @@ unset($__params);
 unset($__split);
 if (isset($__slots)) unset($__slots);
 ?>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-<?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
 
 

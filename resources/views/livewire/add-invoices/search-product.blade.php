@@ -51,10 +51,23 @@
                                             </div>
                                         </a>
                                     @endforeach
+
                                 </div>
                             </div>
                         </div>
                     @endif
+                </div>
+                <div class="col-md-3">
+                    <label for="name" class="form-label fw-bold">اسم المنتج</label>
+
+                    <input type="search" autocomplete="off" wire:model.live="name" class="form-control" readonly>
+
+                </div>
+                <div class="col-md-3">
+                    <label for="code" class="form-label fw-bold">كود</label>
+
+                    <input type="search" autocomplete="off" wire:model.live="code" class="form-control" readonly>
+
                 </div>
             </div>
         </div>

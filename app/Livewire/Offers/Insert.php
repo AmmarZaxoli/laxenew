@@ -18,6 +18,7 @@ class Insert extends Component
     public $selectedProducts = [];
     public $quantities = [];
     public $nameoffer, $code, $price;
+    public $delivery = false;
 
     public function mount()
     {
@@ -30,13 +31,16 @@ class Insert extends Component
             'nameoffer' => 'required|string|max:255|unique:offers,nameoffer',
             'code'      => 'required|string|max:255|unique:offers,code',
             'price'     => 'required|integer|min:0',
+            'delivery'  => 'required|boolean',
         ]);
+
 
 
         $offer = Offer::create([
             'nameoffer' => $this->nameoffer,
             'code'      => $this->code,
             'price'     => $this->price,
+            'delivery'     => $this->delivery,
         ]);
 
         foreach ($this->selectedProducts as $product) {
@@ -48,7 +52,7 @@ class Insert extends Component
         }
 
         flash()->success('تم الإضافة بنجاح.');
-        $this->reset(['nameoffer', 'code', 'price', 'selectedProducts']);
+        $this->reset(['nameoffer', 'code', 'price', 'selectedProducts', 'delivery']);
     }
 
 
@@ -172,7 +176,7 @@ class Insert extends Component
         if (!empty($this->search_code_name) || !empty($this->selected_type)) {
             $products = Product::with(['definition', 'definition.type'])
                 ->whereHas('definition', function ($query) {
-                    $query->where('is_active', 'active')->where('quantity', '>', 0);
+                    $query->where('is_active', '1')->where('quantity', '>', 0);
 
                     if (!empty($this->search_code_name)) {
                         $query->where(function ($subQuery) {

@@ -36,7 +36,7 @@ class Show extends Component
 
     public function filterActive($status)
     {
-        $this->active_filter = ($status === 'active') ? '1' : '0';
+        $this->active_filter = ($status === '1') ? '1' : '0';
         $this->resetPage();
     }
 
@@ -57,7 +57,7 @@ class Show extends Component
                 }
 
                 if (!is_null($this->active_filter)) {
-                    $query->where('is_active', $this->active_filter === 'active' ? 'active' : 'not active');
+                    $query->where('is_active', $this->active_filter === '1' ? '1' : '0');
                 }
 
                 if ($this->selected_type) {

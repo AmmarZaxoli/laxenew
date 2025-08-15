@@ -30,7 +30,7 @@
                             @if ($showDropdown && count($companys) > 0)
                                 <div class="dropdown-menu show"
                                     style="position: absolute; top: 110%; left: 0; right: 0;
-                   max-height: 200px; overflow-y: auto; z-index: 1000;">
+                                           max-height: 200px; overflow-y: auto; z-index: 1000;">
                                     @foreach ($companys as $company)
                                         <button type="button" class="dropdown-item"
                                             wire:click="selectCompany({{ $company->id }})">

@@ -52,9 +52,9 @@
 
                                     <td class="text-center">
                                         @if ($product->definition->image && file_exists(public_path('storage/' . $product->definition->image)))
-                                            <img src="{{ asset('storage/' . $product->definition->image) }}" width="40"
-                                                height="40" class="rounded-circle object-fit-cover border"
-                                                data-bs-toggle="modal"
+                                            <img src="{{ asset('storage/' . $product->definition->image) }}"
+                                                width="40" height="40"
+                                                class="rounded-circle object-fit-cover border" data-bs-toggle="modal"
                                                 data-bs-target="#imageModal{{ $product->definition->id }}"
                                                 style="cursor: pointer;" alt="صورة المنتج">
                                         @else
@@ -63,7 +63,8 @@
                                     </td>
 
                                     <td>
-                                        <button class="btn btn-sm btn-primary" wire:click="addProduct({{ $product->id }})">
+                                        <button class="btn btn-sm btn-primary"
+                                            wire:click="addProduct({{ $product->id }})">
                                             <i class="fas fa-plus"></i>
 
                                         </button>
@@ -111,9 +112,10 @@
                                     <td class="text-center">{{ number_format($totalBuy[$productId] ?? 0) }}</td>
 
                                     <td class="text-center">
-                                        <input type="number" wire:model.live="selectedProducts.{{ $productId }}.quantity"
-                                            wire:change="validateQuantity({{ $productId }}, $event.target.value)" min="1"
-                                            max="{{ $product['stock'] }}"
+                                        <input type="number"
+                                            wire:model.live="selectedProducts.{{ $productId }}.quantity"
+                                            wire:change="validateQuantity({{ $productId }}, $event.target.value)"
+                                            min="1" max="{{ $product['stock'] }}"
                                             class="form-control form-control-sm text-center @if ($product['quantity'] > $product['stock']) is-invalid @endif"
                                             style="width: 70px; display: inline-block;"
                                             oninput="this.value = Math.max(1, Math.min(parseInt(this.value) || 1, {{ $product['stock'] }}))">
@@ -155,9 +157,10 @@
                         <!-- اسم العرض -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="nameoffer" class="form-label">اسم الاوفر</label>
-                            <input type="text" class="form-control shadow-sm" wire:model="nameoffer" autocomplete="off">
+                            <input type="text" class="form-control shadow-sm" wire:model="nameoffer"
+                                autocomplete="off">
                             @error('nameoffer')
-                                <div class="invalid-feedback d-block">{{ $message}}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -174,10 +177,26 @@
                         <!-- سعر الاوفر -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="price" class="form-label">سعر الاوفر</label>
-                            <input type="text" class="form-control shadow-sm" wire:model.lazy="price" id="name"
-                                autocomplete="off">
+                            <input type="text" class="form-control shadow-sm" wire:model.lazy="price"
+                                id="name" autocomplete="off">
                             @error('price')
-                                <div class="invalid-feedback d-block">{{ $message}}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3" >
+                            <label class="form-label">التوصيل مجاني ؟</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    wire:model.live="delivery" id="deliverableSwitch"
+                                    style="width: 3em; height: 1.5em; cursor: pointer;">
+                                <label class="form-check-label ms-2" for="deliverableSwitch">
+                                    <span class="fw-bold {{ $delivery ? 'text-success' : 'text-danger' }}">
+
+                                    </span>
+                                </label>
+                            </div>
+                            @error('delivery')
+                                <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
@@ -192,7 +211,7 @@
                             </button>
                         </div>
                     </div>
-                   
+
                 </form>
             </div>
         </div>
