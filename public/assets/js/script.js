@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', updateDateTimeOnceIfEmpty);
 /**
  * Delete Confirmation Dialog
  */
-window.addEventListener('show-delete-confirmation', event => {
+window.addEventListener('show-delete-buyinvoice', event => {
     Swal.fire({
         title: "هل أنت متأكد؟",
         text: "لن تتمكن من التراجع!",
@@ -256,6 +256,26 @@ window.addEventListener('show-delete-confirmation', event => {
     }).then((result) => {
         if (result.isConfirmed) {
             Livewire.dispatch('deleteConfirmed');
+        }
+    });
+});
+
+
+
+window.addEventListener('show-delete-productofinvoicebuy', event => {
+    Swal.fire({
+        title: "هل أنت متأكد؟",
+        text: "لن تتمكن من التراجع!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "111111نعم، احذفه!",
+        cancelButtonText: "إلغاء",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Livewire.dispatch('deletebuy');
         }
     });
 });

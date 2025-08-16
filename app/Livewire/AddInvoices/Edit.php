@@ -39,16 +39,26 @@ class Edit extends Component
     public function getFilteredProductsProperty()
     {
         if (empty($this->search)) {
-            return $this->products;
+            return collect($this->products)->map(function ($product, $index) {
+                $product['__index'] = $index;
+                return $product;
+            })->values()->all();
         }
 
-        $searchTerm = strtolower($this->search);
+        $searchTerm = mb_strtolower(trim($this->search));
 
-        return collect($this->products)->filter(function ($product) use ($searchTerm) {
-            return (isset($product['name']) && str_contains(strtolower($product['name']), $searchTerm)) ||
-                (isset($product['barcode']) && str_contains(strtolower($product['barcode']), $searchTerm));
+        return collect($this->products)->map(function ($product, $index) {
+            $product['__index'] = $index; // keep real index
+            return $product;
+        })->filter(function ($product) use ($searchTerm) {
+            return (isset($product['name']) && mb_strpos(mb_strtolower($product['name']), $searchTerm) !== false) ||
+                (isset($product['code']) && mb_strpos(mb_strtolower($product['code']), $searchTerm) !== false) ||
+                (isset($product['barcode']) && mb_strpos(mb_strtolower($product['barcode']), $searchTerm) !== false);
         })->values()->all();
     }
+
+
+
 
     public function toggleAddForm()
     {
@@ -84,10 +94,12 @@ class Edit extends Component
                 ->get()
                 ->map(function ($product) {
                     return [
+                        'id' => $product->id, // important for updates
                         'buy_product_invoice_id' => $product->buy_product_invoice_id,
                         'product_id' => $product->product_id,
                         'name' => $product->name,
-                        'barcode' => $product->barcode,
+                        'code' => $product->code,
+                        'barcode' => $product->barcode,   // ✅ add this
                         'quantity' => (float)$product->quantity,
                         'q_sold' => (float)$product->q_sold,
                         'buy_price' => (float)$product->buy_price,
@@ -95,6 +107,7 @@ class Edit extends Component
                         'dateex' => $product->dateex,
                     ];
                 })->toArray();
+
 
             $this->discount = (float)$this->invoice->discount;
             $this->cash = (float)$this->invoice->cash;
@@ -224,17 +237,18 @@ class Edit extends Component
         }
     }
 
-    public function deleteConfirmation($id)
+    public function delete($id)
     {
         $this->id = $id;
-        $this->dispatch('show-delete-confirmation');
+        $this->dispatch('show-delete-productofinvoicebuy');
     }
 
-    #[On('deleteConfirmed')]
+    #[On('deletebuy')]
     public function removeProduct()
     {
         $productInfo = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->id)->first();
-   
+     
+
         if (!$productInfo) {
             session()->flash('error', 'المنتج غير موجود');
             return;
@@ -257,6 +271,7 @@ class Edit extends Component
                     ->decrement('quantity', $productInfo->quantity ?? 0);
 
                 Buy_Products_invoice::where('id', $productInfo->buy_product_invoice_id)->delete();
+             
                 Sub_Buy_Products_invoice::where('buy_product_invoice_id', $productInfo->buy_product_invoice_id)->delete();
                 $productInfo->delete();
 

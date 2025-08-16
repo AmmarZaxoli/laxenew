@@ -67,7 +67,7 @@ if (isset($__slots)) unset($__slots);
                         <thead class="table-light">
                             <tr>
                                 <th class="text-center" style="width: 25%">الاسم</th>
-                                <th class="text-center" style="width: 15%">الباركود</th>
+                                <th class="text-center" style="width: 15%">code</th>
                                 <th class="text-center" style="width: 10%">كمية بيع</th>
                                 <th class="text-center" style="width: 10%">الكمية</th>
                                 <th class="text-center" style="width: 15%">سعر الشراء</th>
@@ -76,22 +76,23 @@ if (isset($__slots)) unset($__slots);
                             </tr>
                         </thead>
                         <tbody>
-                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->filteredProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->filteredProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
+                                    
                                     <td>
                                         <input type="text" readonly class="form-control-plaintext text-center"
                                             value="<?php echo e($product['name']); ?>">
                                     </td>
-                                    <td class="text-center align-middle text-muted"><?php echo e($product['barcode']); ?></td>
+                                    <td class="text-center align-middle text-muted"><?php echo e($product['code']); ?></td>
                                     <td>
                                         <input type="number" readonly
-                                            wire:model.live="products.<?php echo e($index); ?>.q_sold"
+                                            wire:model.live="products.<?php echo e($product['__index']); ?>.q_sold"
                                             class="form-control text-center">
                                     </td>
                                     <td>
                                         <input type="number" min="0"
-                                            wire:model.live="products.<?php echo e($index); ?>.quantity"
-                                            class="form-control text-center <?php $__errorArgs = ['products.' . $index . '.quantity'];
+                                            wire:model.live="products.<?php echo e($product['__index']); ?>.quantity"
+                                            class="form-control text-center <?php $__errorArgs = ['products.' . $product['__index'] . '.quantity'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -99,7 +100,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>">
-                                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['products.' . $index . '.quantity'];
+                                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['products.' . $product['__index'] . '.quantity'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -112,21 +113,24 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                                     </td>
                                     <td>
                                         <input type="number" step="0.01"
-                                            wire:model.live="products.<?php echo e($index); ?>.buy_price"
+                                            wire:model.live="products.<?php echo e($product['__index']); ?>.buy_price"
                                             class="form-control text-center">
                                     </td>
                                     <td>
-                                        <input type="date" wire:model.live="products.<?php echo e($index); ?>.dateex"
+                                        <input type="date"
+                                            wire:model.live="products.<?php echo e($product['__index']); ?>.dateex"
                                             class="form-control">
                                     </td>
                                     <td>
-                                        <button wire:click="deleteConfirmation(<?php echo e($product['buy_product_invoice_id']); ?>)"
+                                        <button
+                                            wire:click="delete(<?php echo e($product['buy_product_invoice_id']); ?>)"
                                             class="btn btn-sm btn-outline-danger">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+
                         </tbody>
                     </table>
                 </div>

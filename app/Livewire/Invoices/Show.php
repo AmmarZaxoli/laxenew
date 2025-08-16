@@ -58,14 +58,15 @@ class Show extends Component
     {
         $this->id = $id;
         // This sends the event to the browser (JS)
-        $this->dispatch('show-delete-confirmation');
+        $this->dispatch('show-delete-buyinvoice');
     }
 
     #[On('deleteConfirmed')]
     public function removeProduct()
     {
         $Sub_Buy = Sub_Buy_Products_invoice::where('num_invoice_id', $this->id)->get();
-        $Buy = Buy_Products_invoice::where('id', $this->id)->get();
+        $Buy = Buy_Products_invoice::where('num_invoice_id', $this->id)->get();
+
 
 
         if ($Sub_Buy->isEmpty() && $Buy->isEmpty()) {

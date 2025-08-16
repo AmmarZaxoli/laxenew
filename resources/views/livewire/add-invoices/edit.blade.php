@@ -51,7 +51,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th class="text-center" style="width: 25%">الاسم</th>
-                                <th class="text-center" style="width: 15%">الباركود</th>
+                                <th class="text-center" style="width: 15%">code</th>
                                 <th class="text-center" style="width: 10%">كمية بيع</th>
                                 <th class="text-center" style="width: 10%">الكمية</th>
                                 <th class="text-center" style="width: 15%">سعر الشراء</th>
@@ -60,43 +60,47 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($this->filteredProducts as $index => $product)
+                            @foreach ($this->filteredProducts as $product)
                                 <tr>
+                                    
                                     <td>
                                         <input type="text" readonly class="form-control-plaintext text-center"
                                             value="{{ $product['name'] }}">
                                     </td>
-                                    <td class="text-center align-middle text-muted">{{ $product['barcode'] }}</td>
+                                    <td class="text-center align-middle text-muted">{{ $product['code'] }}</td>
                                     <td>
                                         <input type="number" readonly
-                                            wire:model.live="products.{{ $index }}.q_sold"
+                                            wire:model.live="products.{{ $product['__index'] }}.q_sold"
                                             class="form-control text-center">
                                     </td>
                                     <td>
                                         <input type="number" min="0"
-                                            wire:model.live="products.{{ $index }}.quantity"
-                                            class="form-control text-center @error('products.' . $index . '.quantity') is-invalid @enderror">
-                                        @error('products.' . $index . '.quantity')
+                                            wire:model.live="products.{{ $product['__index'] }}.quantity"
+                                            class="form-control text-center @error('products.' . $product['__index'] . '.quantity') is-invalid @enderror">
+                                        @error('products.' . $product['__index'] . '.quantity')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </td>
                                     <td>
                                         <input type="number" step="0.01"
-                                            wire:model.live="products.{{ $index }}.buy_price"
+                                            wire:model.live="products.{{ $product['__index'] }}.buy_price"
                                             class="form-control text-center">
                                     </td>
                                     <td>
-                                        <input type="date" wire:model.live="products.{{ $index }}.dateex"
+                                        <input type="date"
+                                            wire:model.live="products.{{ $product['__index'] }}.dateex"
                                             class="form-control">
                                     </td>
                                     <td>
-                                        <button wire:click="deleteConfirmation({{ $product['buy_product_invoice_id'] }})"
+                                        <button
+                                            wire:click="delete({{ $product['buy_product_invoice_id'] }})"
                                             class="btn btn-sm btn-outline-danger">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>
