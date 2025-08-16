@@ -6,7 +6,6 @@ use Livewire\Component;
 
 use App\Models\Definition;
 use App\Models\Buy_Products_invoice;
-use Livewire\Attributes\On;
 class Searchproduct extends Component
 { 
      protected $listeners = ['clearSearchAndFocus'];

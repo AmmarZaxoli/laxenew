@@ -43,10 +43,10 @@ class Edit extends Component
         }
 
         $searchTerm = strtolower($this->search);
-        
+
         return collect($this->products)->filter(function ($product) use ($searchTerm) {
             return (isset($product['name']) && str_contains(strtolower($product['name']), $searchTerm)) ||
-                   (isset($product['barcode']) && str_contains(strtolower($product['barcode']), $searchTerm));
+                (isset($product['barcode']) && str_contains(strtolower($product['barcode']), $searchTerm));
         })->values()->all();
     }
 
@@ -84,7 +84,7 @@ class Edit extends Component
                 ->get()
                 ->map(function ($product) {
                     return [
-                        'id' => $product->id,
+                        'buy_product_invoice_id' => $product->buy_product_invoice_id,
                         'product_id' => $product->product_id,
                         'name' => $product->name,
                         'barcode' => $product->barcode,
@@ -233,12 +233,14 @@ class Edit extends Component
     #[On('deleteConfirmed')]
     public function removeProduct()
     {
-        $productInfo = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->id)->firstOrFail();
-
+        $productInfo = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->id)->first();
+   
         if (!$productInfo) {
             session()->flash('error', 'المنتج غير موجود');
             return;
         }
+
+
 
         if ($productInfo->q_sold === 0) {
             DB::transaction(function () use ($productInfo) {
@@ -254,8 +256,8 @@ class Edit extends Component
                 Product::where('definition_id', $productInfo->product_id)
                     ->decrement('quantity', $productInfo->quantity ?? 0);
 
-                Buy_Products_invoice::where('id', $productInfo->id)->delete();
-                Sub_Buy_Products_invoice::where('buy_product_invoice_id', $productInfo->id)->delete();
+                Buy_Products_invoice::where('id', $productInfo->buy_product_invoice_id)->delete();
+                Sub_Buy_Products_invoice::where('buy_product_invoice_id', $productInfo->buy_product_invoice_id)->delete();
                 $productInfo->delete();
 
                 $lastSellPrice = Sub_Buy_Products_invoice::where('product_id', $productInfo->product_id)

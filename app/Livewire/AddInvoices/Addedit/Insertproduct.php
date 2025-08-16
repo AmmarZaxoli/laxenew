@@ -7,12 +7,8 @@ use Livewire\Attributes\Validate;
 use App\Models\Buy_invoice;
 use App\Models\Buy_Products_invoice;
 use App\Models\Sub_Buy_Products_invoice;
-use App\Models\Company;
-use App\Models\Paymentinvoce;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
-
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 
 class Insertproduct extends Component
