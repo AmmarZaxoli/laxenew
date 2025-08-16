@@ -58,14 +58,32 @@
                                     <td class="text-center"><?php echo e(number_format($invoice->residual)); ?></td>
                                     <td class="text-center"><?php echo e($invoice->note); ?></td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-2">
+
+                                        <div class="d-flex justify-content-center align-items-center gap-2">
+                                            <button wire:click="payment(<?php echo e($invoice->id); ?>)"
+                                                class="btn btn-icon btn-outline-success btn-sm d-flex justify-content-center align-items-center"
+                                                style="width: 30px; height: 30px;">
+                                                <i class="fas fa-credit-card" style="font-size: 16px;"></i>
+                                            </button>
+
+
                                             <button wire:click="editInvoice(<?php echo e($invoice->id); ?>)"
-                                                class="btn btn-sm btn-icon btn-outline-primary">
-                                                <i class="fas fa-edit"></i>
+                                                class="btn btn-icon btn-outline-primary btn-sm d-flex justify-content-center align-items-center"
+                                                style="width: 30px; height: 30px;">
+                                                <i class="fas fa-edit" style="font-size: 16px;"></i>
+                                            </button>
+                                            
+                                            <button wire:click="deleteConfirmation(<?php echo e($invoice->id); ?>)"
+                                                class="btn btn-outline-danger btn-sm d-flex justify-content-center align-items-center"
+                                                style="width: 30px; height: 30px;">
+                                                <i class="fas fa-trash" style="font-size: 16px;"></i>
                                             </button>
                                         </div>
-                                        
                                     </td>
+
+
+
+
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
@@ -122,6 +140,7 @@ if (isset($__slots)) unset($__slots);
 
 
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </div>
 <?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/invoices/show.blade.php ENDPATH**/ ?>

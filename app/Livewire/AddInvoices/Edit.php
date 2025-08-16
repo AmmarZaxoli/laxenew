@@ -9,13 +9,22 @@ use App\Models\Sub_Buy_Products_invoice;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-
 use Exception;
 
 class Edit extends Component
 {
-
+    public $search = '';
     public $showAddForm = false;
+    public $showUpdateButton = true;
+    public $invoiceId;
+    public $invoice;
+    public $namecompany;
+    public $products = [];
+    public $discount = 0;
+    public $cash = 0;
+    public $note = '';
+    public $id;
+
     public $newProduct = [
         'product_id' => null,
         'name' => '',
@@ -27,7 +36,19 @@ class Edit extends Component
         'profit' => 0
     ];
 
-    public $showUpdateButton = true; // initially visible
+    public function getFilteredProductsProperty()
+    {
+        if (empty($this->search)) {
+            return $this->products;
+        }
+
+        $searchTerm = strtolower($this->search);
+        
+        return collect($this->products)->filter(function ($product) use ($searchTerm) {
+            return (isset($product['name']) && str_contains(strtolower($product['name']), $searchTerm)) ||
+                   (isset($product['barcode']) && str_contains(strtolower($product['barcode']), $searchTerm));
+        })->values()->all();
+    }
 
     public function toggleAddForm()
     {
@@ -35,42 +56,27 @@ class Edit extends Component
         $this->showUpdateButton = !$this->showAddForm;
     }
 
-    public $invoiceId;
-    public $invoice;
-    public $namecompany;
-    public $products = [];
-
-    public $discount = 0;
-    public $cash = 0;
-    public $note = '';
-
-    // Add this method to your Livewire component
     public function updatedProducts($value, $key)
     {
-        // Parse the index and field from the key (e.g., "0.quantity")
         $parts = explode('.', $key);
         $index = $parts[0];
         $field = $parts[1];
 
-        // Only validate if quantity is being updated
         if ($field === 'quantity') {
             $qSold = $this->products[$index]['q_sold'] ?? 0;
             $newQuantity = $value;
 
             if ($newQuantity < $qSold) {
-                // Reset to the previous valid quantity or q_sold, whichever is higher
                 $this->products[$index]['quantity'] = max($qSold, $this->products[$index]['quantity']);
-
-                // Show error message
                 session()->flash('error', 'لا يمكن أن تكون الكمية أقل من الكمية المباعة (' . $qSold . ')');
             }
         }
     }
+
     public function mount($invoiceId)
     {
         try {
             $this->invoiceId = $invoiceId;
-
             $this->invoice = Buy_invoice::findOrFail($invoiceId);
             $this->namecompany = $this->invoice->name_invoice;
 
@@ -98,12 +104,10 @@ class Edit extends Component
         }
     }
 
-    // السعر الكلي قبل الخصم
     public function getTotalPriceProperty()
     {
         try {
             return collect($this->products)->sum(function ($item) {
-                // Ensure both values are numeric before multiplication
                 $quantity = is_numeric($item['quantity']) ? (float)$item['quantity'] : 0;
                 $buyPrice = is_numeric($item['buy_price']) ? (float)$item['buy_price'] : 0;
                 return $quantity * $buyPrice;
@@ -114,7 +118,6 @@ class Edit extends Component
         }
     }
 
-    // السعر بعد الخصم
     public function getAfterDiscountTotalPriceProperty()
     {
         try {
@@ -127,7 +130,6 @@ class Edit extends Component
         }
     }
 
-    // المتبقي بعد الدفع
     public function getResidualProperty()
     {
         try {
@@ -142,7 +144,6 @@ class Edit extends Component
 
     public function updateInvoice()
     {
-        // Validate quantities before saving
         foreach ($this->products as $index => $product) {
             if ($product['quantity'] < $product['q_sold']) {
                 session()->flash('error', 'لا يمكن أن تكون الكمية أقل من الكمية المباعة للمنتج: ' . $product['name']);
@@ -156,19 +157,11 @@ class Edit extends Component
                     foreach ($this->products as $updatedProduct) {
                         $invoiceProducto = Buy_Products_invoice::find($updatedProduct['id']);
 
-
                         if ($invoiceProducto) {
                             $productModel = Product::find($invoiceProducto->product_id);
 
                             if ($productModel) {
-                                // ارجع الكمية القديمة
                                 $productModel->quantity -= (float)$invoiceProducto->quantity;
-                            }
-
-
-
-                            if ($productModel) {
-                                // اضف الكمية الجديدة
                                 $productModel->quantity += (float)$updatedProduct['quantity'];
                                 $productModel->save();
                             }
@@ -224,29 +217,6 @@ class Edit extends Component
                 }
             });
 
-
-            // // ✅ Cleanup step AFTER saving
-            // DB::transaction(function () {
-            //     // 1. Remove products with quantity = 0 and q_sold = 0
-            //     $productsToDelete = Buy_Products_invoice::where('num_invoice_id', $this->invoiceId)
-            //         ->where('quantity', 0)
-            //         ->where('q_sold', 0)
-            //         ->get();
-            //     foreach ($productsToDelete as $prod) {
-            //         Sub_Buy_Products_invoice::where('id', $prod->id)->delete();
-            //         $prod->delete();
-            //     }
-
-            //     // 2. Remove invoice if total_price = 0
-            //     $invoice = Buy_invoice::find($this->invoiceId);
-            //     if ($invoice && $invoice->total_price == 0) {
-            //         // Also delete related products just in case
-            //         Buy_Products_invoice::where('num_invoice_id', $invoice->id)->delete();
-            //         Sub_Buy_Products_invoice::where('num_invoice_id', $invoice->id)->delete();
-            //         $invoice->delete();
-            //     }
-            // });
-
             session()->flash('success', 'تم تحديث الفاتورة بنجاح.');
             return redirect()->route('show_Invoices.create');
         } catch (Exception $e) {
@@ -254,12 +224,9 @@ class Edit extends Component
         }
     }
 
-    public $id;
-
     public function deleteConfirmation($id)
     {
         $this->id = $id;
-        // This sends the event to the browser (JS)
         $this->dispatch('show-delete-confirmation');
     }
 
@@ -283,18 +250,13 @@ class Edit extends Component
                     $invoice->residual -= $amount;
                     $invoice->save();
                 }
-                // Get the last sell_price for the same product from Sub_Buy_Products_invoice
 
-
-                // Update product quantity
                 Product::where('definition_id', $productInfo->product_id)
                     ->decrement('quantity', $productInfo->quantity ?? 0);
 
-                // Delete from related tables
                 Buy_Products_invoice::where('id', $productInfo->id)->delete();
                 Sub_Buy_Products_invoice::where('buy_product_invoice_id', $productInfo->id)->delete();
                 $productInfo->delete();
-
 
                 $lastSellPrice = Sub_Buy_Products_invoice::where('product_id', $productInfo->product_id)
                     ->orderBy('created_at', 'desc')
@@ -312,7 +274,6 @@ class Edit extends Component
             flash()->warning('لا يمكن حذف المنتج لأنه تم بيع جزء منه');
         }
     }
-
 
     public function render()
     {
