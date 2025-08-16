@@ -67,14 +67,14 @@ class Show extends Component
         $Sub_Buy = Sub_Buy_Products_invoice::where('num_invoice_id', $this->id)->get();
         $Buy = Buy_Products_invoice::where('id', $this->id)->get();
 
-        Buy_invoice::where('id', $this->id)->delete();
 
-        // if ($Sub_Buy->isEmpty() && $Buy->isEmpty()) {
-        //     flash()->success('تم الحذف بنجاح');
-        // } else {
-        //     flash()->warning('لا يمكن الحذف لأنه يوجد منتجات في هذه الفاتورة');
-        //     return;
-        // }
+        if ($Sub_Buy->isEmpty() && $Buy->isEmpty()) {
+            Buy_invoice::where('id', $this->id)->delete();
+            flash()->success('تم الحذف بنجاح');
+        } else {
+            flash()->warning('لا يمكن الحذف لأنه يوجد منتجات في هذه الفاتورة');
+            return;
+        }
     }
 
 
