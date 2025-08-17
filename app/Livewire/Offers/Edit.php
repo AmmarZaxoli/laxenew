@@ -267,7 +267,7 @@ public function removeOffer($offerId)
     {
         $products = collect();
         $query = Product::with(['definition', 'type'])
-            ->whereHas('definition', fn($q) => $q->where('is_active', 'active'));
+            ->whereHas('definition', fn($q) => $q->where('is_active', '1'));
 
         if (trim($this->search)) {
             $term = '%' . $this->search . '%';

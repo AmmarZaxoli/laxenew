@@ -299,15 +299,15 @@
                             </td>
                             <td class="text-center">
                                 <div class="dropstart">
-                                    <button class="btn btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Invoice actions">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                                        aria-expanded="false" aria-label="Invoice actions">
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu shadow p-2"
                                         style="width: auto; white-space: nowrap; margin-right: 10px;">
                                         <li class="d-inline-block">
-                                            <button class="btn btn-outline-primary mx-1"
-                                                wire:click="print({{ $invoice->id }})" title="طباعة">
+                                            <button type="button" class="btn btn-outline-primary mx-1" title="طباعة"
+                                                onclick="printInvoice({{ $invoice->id }})">
                                                 <i class="fas fa-print"></i>
                                             </button>
                                         </li>
@@ -335,9 +335,8 @@
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-info mx-1"
-                                                wire:click="openDriverModal({{ $invoice->id }})"
-                                                data-bs-toggle="modal" data-bs-target="#editDriverModal"
-                                                title="تعديل السائق">
+                                                wire:click="openDriverModal({{ $invoice->id }})" data-bs-toggle="modal"
+                                                data-bs-target="#editDriverModal" title="تعديل السائق">
                                                 <i class="fas fa-user-edit"></i>
                                             </button>
                                         </li>
@@ -381,8 +380,7 @@
                             class="form-control shadow-sm">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" wire:click="updateBulkDateSell"
-                            class="btn btn-outline-primary shadow-sm">
+                        <button type="button" wire:click="updateBulkDateSell" class="btn btn-outline-primary shadow-sm">
                             <i class="fas fa-save me-2"></i>حفظ التغيير
                         </button>
                         <button type="button" class="btn btn-outline-secondary shadow-sm"
@@ -396,8 +394,8 @@
     @endif
 
     <!-- Edit Driver Modal -->
-    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1"
-        aria-labelledby="editDriverModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1" aria-labelledby="editDriverModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content shadow-lg">
                 <div class="modal-header bg-light">
@@ -432,6 +430,9 @@
     </div>
 
     <script>
+        document.addEventListener('print-single-invoice-browser', e => {
+            Livewire.dispatch('print-single-invoice', e.detail);
+        });
         document.addEventListener('livewire:init', () => {
             Livewire.on('close-driver-modal', () => {
                 const modalEl = document.getElementById('editDriverModal');
@@ -527,61 +528,61 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @script
-        <script>
-            $wire.on("confirmDelete", (event) => {
-                Swal.fire({
-                    title: "هل أنت متأكد؟",
-                    text: "لن تتمكن من التراجع!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "نعم، احذفه!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call("delete", event.id);
-                    }
-                });
+    <script>
+        $wire.on("confirmDelete", (event) => {
+            Swal.fire({
+                title: "هل أنت متأكد؟",
+                text: "لن تتمكن من التراجع!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "نعم، احذفه!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.call("delete", event.id);
+                }
             });
-        </script>
+        });
+    </script>
     @endscript
 
 
     @script
-        <script>
-            $wire.on('confirm-payment', () => {
-                Swal.fire({
-                    title: "تأكيد الدفع",
-                    text: "هل تريد تأكيد دفع الفواتير المحددة؟",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "نعم، تأكيد",
-                    cancelButtonText: "إلغاء"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call('paymentmulti');
-                    }
-                });
+    <script>
+        $wire.on('confirm-payment', () => {
+            Swal.fire({
+                title: "تأكيد الدفع",
+                text: "هل تريد تأكيد دفع الفواتير المحددة؟",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "نعم، تأكيد",
+                cancelButtonText: "إلغاء"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.call('paymentmulti');
+                }
             });
-        </script>
+        });
+    </script>
     @endscript
     @script
-        <script>
-            $wire.on('confirmDeleteSelected', () => {
-                Swal.fire({
-                    title: "هل أنت متأكد؟",
-                    text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "نعم، احذفهم!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call('deleteSelected');
-                    }
-                });
+    <script>
+        $wire.on('confirmDeleteSelected', () => {
+            Swal.fire({
+                title: "هل أنت متأكد؟",
+                text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "نعم، احذفهم!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.call('deleteSelected');
+                }
             });
-        </script>
+        });
+    </script>
     @endscript
 </div>

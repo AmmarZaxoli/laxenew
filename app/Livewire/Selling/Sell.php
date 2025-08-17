@@ -68,6 +68,8 @@ class Sell extends Component
     public $cashornot = false;
 
     public $delivery_type = false;
+    public bool $printAfterSave = false;
+    public $lastSavedInvoiceId = null;
 
     protected $casts = [
         'cashornot' => 'boolean',
@@ -708,6 +710,9 @@ class Sell extends Component
         $this->netProfit = $this->totalProfit - (float)($this->discount ?? 0);
 
         $this->storecustomerinfo($sellInvoice);
+        if ($this->printAfterSave) {
+            $this->dispatch('trigger-print', route('print.single', ['id' => $sellInvoice->id]));
+        }
     }
 
 
@@ -746,7 +751,7 @@ class Sell extends Component
             'discount' => (float)($this->discount ?? 0),
             'total_price_afterDiscount_invoice' => $this->generalprice,
             'cash' => $this->cashornot,
-            'user' => "developer",
+        'user' => auth('account')->user()->name, 
             'sell_invoice_id' => $idInvoice,
         ]);
     }
@@ -862,7 +867,7 @@ class Sell extends Component
         $this->calculateGeneralPrice();
     }
 
-     public function clearOffersCart()
+    public function clearOffersCart()
     {
         $hadFreeDelivery = collect($this->selectedoffer)
             ->contains(fn($item) => $item['delivery'] === 1);
@@ -893,7 +898,6 @@ class Sell extends Component
             }
 
             $this->calculateGeneralPrice();
-
         } catch (\Exception $e) {
             DB::rollBack();
             flash()->error('Error clearing offers: ' . $e->getMessage());

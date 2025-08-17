@@ -33,10 +33,10 @@
                                                     data-bs-target="#editOfferModal">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                   <button class="btn btn-sm btn-outline-danger"
-        wire:click="confirmRemoveOffer({{ $offer->id }})">
-        <i class="fas fa-trash"></i>
-    </button>
+                                                <button class="btn btn-sm btn-outline-danger"
+                                                    wire:click="confirmRemoveOffer({{ $offer->id }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @empty
@@ -54,7 +54,8 @@
     </div>
 
     <!-- Edit Offer Modal -->
-    <div wire:ignore.self data-bs-backdrop="static" class="modal fade" id="editOfferModal" tabindex="-1" aria-hidden="true" >
+    <div wire:ignore.self data-bs-backdrop="static" class="modal fade" id="editOfferModal" tabindex="-1"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <!-- Modal Header -->
@@ -80,7 +81,7 @@
                                     <div class="col-md-4">
                                         <select wire:model.live="selectedType" class="form-select">
                                             <option value="">كل الانواع</option>
-                                            @foreach($types as $type)
+                                            @foreach ($types as $type)
                                                 <option value="{{ $type->id }}">{{ $type->typename }}</option>
                                             @endforeach
                                         </select>
@@ -103,26 +104,31 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($search || $selectedType)
+                                            @if ($search || $selectedType)
                                                 @forelse($filteredProducts as $product)
-                                                    @if ($product->quantity !== null && $product->quantity !== 0 && $product->definition->is_active=='active')
+                                                    @if ($product->quantity !== null && $product->quantity !== 0 && $product->definition->is_active == '1')
                                                         <tr>
                                                             <td>{{ $loop->iteration }}</td>
                                                             <td>{{ $product->definition->name ?? 'N/A' }}</td>
-                                                            <td>{{ $product->definition->type->typename ?? 'N/A' }}</td>
+                                                            <td>{{ $product->definition->type->typename ?? 'N/A' }}
+                                                            </td>
                                                             <td>{{ $product->definition->code ?? 'N/A' }}</td>
                                                             <td>
-                                                                <span class="badge bg-{{ $product->quantity > 0 ? 'success' : 'danger' }}">
+                                                                <span
+                                                                    class="badge bg-{{ $product->quantity > 0 ? 'success' : 'danger' }}">
                                                                     {{ $product->quantity }}
                                                                 </span>
                                                             </td>
                                                             <td>
                                                                 @php
-                                                                    $isSelected = collect($selectedProducts)->contains('id', $product->id);
+                                                                    $isSelected = collect($selectedProducts)->contains(
+                                                                        'id',
+                                                                        $product->id,
+                                                                    );
                                                                 @endphp
                                                                 <button class="btn btn-sm btn-primary"
                                                                     wire:click="addProduct({{ $product->id }})"
-                                                                    @if($isSelected) disabled @endif>
+                                                                    @if ($isSelected) disabled @endif>
                                                                     <i class="fas fa-plus"></i>
                                                                 </button>
                                                             </td>
@@ -135,13 +141,14 @@
                                                 @endforelse
                                             @else
                                                 <tr>
-                                                    <td colspan="6" class="text-center text-muted">ابدأ بالبحث أو اختيار النوع لعرض المنتجات</td>
+                                                    <td colspan="6" class="text-center text-muted">ابدأ بالبحث أو
+                                                        اختيار النوع لعرض المنتجات</td>
                                                 </tr>
                                             @endif
                                         </tbody>
                                     </table>
-                                    @if($search || $selectedType)
-                                        {{ $filteredProducts->links() }}
+                                    @if ($search || $selectedType)
+                                        {{ $filteredProducts->links('pagination::bootstrap-5') }}
                                     @endif
                                 </div>
                             </div>
@@ -160,7 +167,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($selectedProducts as $index => $product)
+                                            @foreach ($selectedProducts as $index => $product)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $product['name'] }}</td>
@@ -168,11 +175,11 @@
                                                         <input type="number"
                                                             wire:model="selectedProducts.{{ $index }}.quantity"
                                                             wire:change="validateQuantity({{ $index }}, $event.target.value)"
-                                                            min="1"
-                                                            max="{{ $product['stock'] }}"
+                                                            min="1" max="{{ $product['stock'] }}"
                                                             class="form-control form-control-sm">
                                                     </td>
-<td class="text-center">{{ number_format($totalBuy[$product['id']] ?? 0) }}</td>
+                                                    <td class="text-center">
+                                                        {{ number_format($totalBuy[$product['id']] ?? 0) }}</td>
 
                                                     <td>
                                                         <button class="btn btn-sm btn-danger"
@@ -188,20 +195,20 @@
                             </div>
                         </div>
                     </div>
-              
-                </div>
-        @if (count($selectedProducts) > 0)
-                <div class="d-flex justify-content-end mt-3">
-                    <div class="bg-light border rounded px-4 py-2 fw-bold text-end">
-                        <span>مجموع الشراء:</span>
-                        <span class="text-primary">
-                            {{ number_format($this->getGrandTotalBuy()) }}
 
-                        </span>
-                        <span>د.ع</span>
-                    </div>
                 </div>
-            @endif
+                @if (count($selectedProducts) > 0)
+                    <div class="d-flex justify-content-end mt-3">
+                        <div class="bg-light border rounded px-4 py-2 fw-bold text-end">
+                            <span>مجموع الشراء:</span>
+                            <span class="text-primary">
+                                {{ number_format($this->getGrandTotalBuy()) }}
+
+                            </span>
+                            <span>د.ع</span>
+                        </div>
+                    </div>
+                @endif
                 <!-- Modal Footer / Offer Info -->
                 <div class="modal-footer">
                     <div class="container-fluid">
@@ -209,17 +216,23 @@
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <label class="form-label">اسم الاوفر</label>
                                 <input type="text" class="form-control" wire:model="nameoffer">
-                                @error('nameoffer') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('nameoffer')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <label class="form-label">الكود</label>
                                 <input type="text" class="form-control" wire:model="code">
-                                @error('code') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('code')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-2 mb-3 mb-md-0">
                                 <label class="form-label">السعر</label>
                                 <input type="number" class="form-control" wire:model="price">
-                                @error('price') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('price')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -238,31 +251,33 @@
         </div>
     </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    window.addEventListener('confirm-remove-offer', event => {
-        Swal.fire({
-            title: 'هل أنت متأكد؟',
-            text: "لن تتمكن من التراجع عن الحذف!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'نعم، احذف العرض!',
-            cancelButtonText: 'إلغاء'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Change this line to use the correct syntax
-                Livewire.dispatch('remove-offer', {offerId: event.detail.id});
-                 Swal.fire(
-                    'تم الحذف!',
-                    'تم حذف العرض بنجاح.',
-                    'success'
-                )
-            }
+    <script>
+        window.addEventListener('confirm-remove-offer', event => {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "لن تتمكن من التراجع عن الحذف!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذف العرض!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Change this line to use the correct syntax
+                    Livewire.dispatch('remove-offer', {
+                        offerId: event.detail.id
+                    });
+                    Swal.fire(
+                        'تم الحذف!',
+                        'تم حذف العرض بنجاح.',
+                        'success'
+                    )
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 </div>

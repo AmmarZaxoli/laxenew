@@ -85,7 +85,7 @@
             </button>
             <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px"
                 onclick="location.reload();">
-                <i class="fas fa-sync-alt me-1"></i> تحديث 
+                <i class="fas fa-sync-alt me-1"></i> تحديث
             </button>
         </div>
     </div>
@@ -188,12 +188,15 @@
                                     {{ $invoice->customer?->driver?->nameDriver ?? '—' }}
                                 </td>
                                 <td class="text-center align-middle text-truncate" style="max-width:150px;">
-                                    {{ $invoice->customer?->address ?? '—' }}</td>
+                                    {{ $invoice->customer?->address ?? '—' }}
+                                </td>
                                 <td class="text-center align-middle">{{ $invoice->customer?->mobile ?? '—' }}</td>
                                 <td class="text-center align-middle text-nowrap">
-                                    {{ number_format($invoice->sell?->taxi_price ?? 0) }} </td>
+                                    {{ number_format($invoice->sell?->taxi_price ?? 0) }}
+                                </td>
                                 <td class="text-center align-middle fw-bold text-nowrap">
-                                    {{ number_format($invoice->sell?->total_price_afterDiscount_invoice) }} </td>
+                                    {{ number_format($invoice->sell?->total_price_afterDiscount_invoice) }}
+                                </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex justify-content-center">
                                         {{ $invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : '' }}
@@ -207,27 +210,24 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="dropstart">
-                                        <button class="btn btn-outline-secondary dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-expanded="false"
-                                            aria-label="Invoice actions">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false" aria-label="Invoice actions">
                                             <i class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <ul class="dropdown-menu shadow p-2"
                                             style="width: 270px; white-space: nowrap; margin-right: 10px;">
                                             <div class="d-flex flex-nowrap gap-3">
                                                 <li class="d-inline-block">
-                                                    <!-- Print -->
-                                                    <button class="btn btn btn-outline-primary px-2"
-                                                        wire:click="print({{ $invoice->id }})"
-                                                        title="طباعة الفاتورة">
-                                                        <i class="fas fa-print me-1"></i>
+                                                    <button type="button" class="btn btn-outline-primary mx-1" title="طباعة"
+                                                        onclick="printInvoice({{ $invoice->id }})">
+                                                        <i class="fas fa-print"></i>
                                                     </button>
                                                 </li>
 
                                                 <li class="d-inline-block">
                                                     <!-- Add Products -->
-                                                    <button class="btn btn btn-outline-success px-2"
-                                                        data-bs-toggle="modal" data-bs-target="#addinvoiceproduct"
+                                                    <button class="btn btn btn-outline-success px-2" data-bs-toggle="modal"
+                                                        data-bs-target="#addinvoiceproduct"
                                                         wire:click="numinvoice({{ $invoice->num_invoice_sell }})"
                                                         title="إضافة منتجات">
                                                         <i class="fas fa-cart-plus me-1"></i>
@@ -236,16 +236,15 @@
                                                 <li class="d-inline-block">
                                                     <!-- Mark as Paid -->
                                                     <button class="btn btn-outline-danger px-2"
-                                                        wire:click="payment({{ $invoice->id }})"
-                                                        title="إرجاع الدفع">
+                                                        wire:click="payment({{ $invoice->id }})" title="إرجاع الدفع">
                                                         <i class="fas fa-money-bill-wave me-1"></i>
                                                     </button>
 
                                                 </li>
                                                 <li class="d-inline-block">
                                                     <!-- Edit Invoice -->
-                                                    <button class="btn btn btn-outline-warning px-2"
-                                                        data-bs-toggle="modal" data-bs-target="#EditInvoice"
+                                                    <button class="btn btn btn-outline-warning px-2" data-bs-toggle="modal"
+                                                        data-bs-target="#EditInvoice"
                                                         wire:click="numinvoice({{ $invoice->num_invoice_sell }})"
                                                         title="تعديل الفاتورة">
                                                         <i class="fas fa-edit me-1"></i>
@@ -273,14 +272,14 @@
                                         </ul>
                                     </div>
                                 </td>
-                            @empty
-                            <tr>
-                                <td colspan="11" class="text-center py-5 text-muted">
-                                    <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
-                                    <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
-                                </td>
-                            </tr>
-                        @endforelse
+                        @empty
+                                <tr>
+                                    <td colspan="11" class="text-center py-5 text-muted">
+                                        <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
+                                        <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
+                                    </td>
+                                </tr>
+                            @endforelse
                     </tbody>
                 </table>
             </div>
@@ -302,8 +301,7 @@
                                 class="form-control shadow-sm">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" wire:click="updateBulkDateSell"
-                                class="btn btn-outline-primary shadow-sm">
+                            <button type="button" wire:click="updateBulkDateSell" class="btn btn-outline-primary shadow-sm">
                                 <i class="fas fa-save me-2"></i>حفظ التغيير
                             </button>
                             <button type="button" class="btn btn-outline-secondary shadow-sm"
@@ -397,62 +395,62 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         @script
-            <script>
-                $wire.on("confirmDelete", (event) => {
-                    Swal.fire({
-                        title: "هل أنت متأكد؟",
-                        text: "لن تتمكن من التراجع!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "نعم، احذفه!"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $wire.call("delete", event.id);
-                        }
-                    });
+        <script>
+            $wire.on("confirmDelete", (event) => {
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "لن تتمكن من التراجع!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذفه!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call("delete", event.id);
+                    }
                 });
-            </script>
+            });
+        </script>
         @endscript
 
 
         @script
-            <script>
-                $wire.on('confirm-payment', () => {
-                    Swal.fire({
-                        title: "تأكيد الدفع",
-                        text: "هل تريد تأكيد دفع الفواتير المحددة؟",
-                        icon: "question",
-                        showCancelButton: true,
-                        confirmButtonText: "نعم، تأكيد",
-                        cancelButtonText: "إلغاء"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $wire.call('paymentmulti');
-                        }
-                    });
+        <script>
+            $wire.on('confirm-payment', () => {
+                Swal.fire({
+                    title: "تأكيد الدفع",
+                    text: "هل تريد تأكيد دفع الفواتير المحددة؟",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "نعم، تأكيد",
+                    cancelButtonText: "إلغاء"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call('paymentmulti');
+                    }
                 });
-            </script>
+            });
+        </script>
         @endscript
         @script
-            <script>
-                $wire.on('confirmDeleteSelected', () => {
-                    Swal.fire({
-                        title: "هل أنت متأكد؟",
-                        text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "نعم، احذفهم!"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $wire.call('deleteSelected');
-                        }
-                    });
+        <script>
+            $wire.on('confirmDeleteSelected', () => {
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذفهم!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call('deleteSelected');
+                    }
                 });
-            </script>
+            });
+        </script>
         @endscript
 
 

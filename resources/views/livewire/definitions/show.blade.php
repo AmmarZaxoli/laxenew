@@ -194,7 +194,7 @@
 
                 <!-- Pagination -->
                 {{-- {{ $definitions->links('pagination::bootstrap-5') }} --}}
-                {{ $definitions->links() }}
+                {{ $definitions->links('pagination::bootstrap-5') }}
 
             </div>
         </div>

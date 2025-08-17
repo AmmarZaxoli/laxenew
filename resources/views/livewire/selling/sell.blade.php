@@ -145,7 +145,7 @@
                             </button>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <div class="form-check form-switch">
+                            <div style="margin-right: 18px;" class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" role="switch" id="cashToggle"
                                     wire:model.live="cashornot" style="width: 3em; height: 1.5em;">
                                 <label class="form-check-label ms-2 fw-bold" for="cashToggle">
@@ -157,6 +157,12 @@
                                 </label>
                             </div>
                         </div>
+                    <div style="margin-right: 18px;" class="form-check form-switch">
+                    <input style="font-size: 20px;" type="checkbox" wire:model="printAfterSave" class="form-check-input">
+                    <label class="form-check-label ms-2 fw-bold">طباعة بعد الحفظ</label>
+                     </div>
+                     <iframe id="printFrame" style="display:none;"></iframe>
+
                     </div>
                 </div>
             </div>
@@ -284,9 +290,9 @@
     </div>
 
 
-    <div class="row" style="margin-top: -50px">
+    <div class="row" style="margin-top: -50px;">
         <!-- First Card -->
-        <div class="col-md-6">
+        <div  class="col-md-6">
             <div class="card">
                 <div class="card-header text-black d-flex justify-content-between align-items-center">
                     <h5 class="mb-2">المنتجات المحددة</h5>
@@ -506,6 +512,29 @@
 
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    Livewire.on('trigger-print', (url) => {
+        const iframe = document.getElementById('printFrame');
+        
+        // Reset src to force reload even if same URL
+        iframe.src = '';
+        
+        setTimeout(() => {
+            iframe.src = url;
+            iframe.onload = function() {
+                try {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                } catch (e) {
+                    console.error("Printing failed:", e);
+                }
+            };
+        }, 50);
+    });
+});
+</script>
+    <style>
 
 
     <style>

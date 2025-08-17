@@ -13,9 +13,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts - Tajawal -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/style.css')); ?>" />
 
-    @livewireStyles
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
+
 </head>
 
 <body>
@@ -51,23 +52,23 @@
                 <div class="nav-group-title">الرئيسية</div>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('dashboards.create') ? 'active' : '' }}"
-                            href="{{ route('dashboards.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('dashboards.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('dashboards.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
                             <span class="nav-text">لوحة التحكم</span>
                             <span class="nav-badge">New</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('getAPI.create') ? 'active' : '' }}"
-                            href="{{ route('getAPI.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('getAPI.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('getAPI.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>
                             <span class="nav-text">GET API</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('selling.create') ? 'active' : '' }}"
-                            href="{{ route('selling.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('selling.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('selling.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>
                             <span class="nav-text">بيع المنتجات</span>
                         </a>
@@ -80,19 +81,19 @@
                 <div class="nav-group-title">الإدارة</div>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('driver.create', 'driver.*') ? '' : 'collapsed' }}"
+                        <a class="nav-link <?php echo e(Route::is('driver.create', 'driver.*') ? '' : 'collapsed'); ?>"
                             data-bs-toggle="collapse" href="#driversMenu" role="button"
-                            aria-expanded="{{ Route::is('driver.create', 'driver.*') ? 'true' : 'false' }}">
+                            aria-expanded="<?php echo e(Route::is('driver.create', 'driver.*') ? 'true' : 'false'); ?>">
                             <span class="nav-icon"><i class="bi bi-truck"></i></span>
                             <span class="nav-text">إدارة السوائق</span>
                             <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
-                        <div class="collapse {{ Route::is('driver.create', 'driver.*') ? 'show' : '' }}"
+                        <div class="collapse <?php echo e(Route::is('driver.create', 'driver.*') ? 'show' : ''); ?>"
                             id="driversMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('driver.create') ? 'active' : '' }}"
-                                        href="{{ route('driver.create') }}">
+                                    <a class="nav-link <?php echo e(Route::is('driver.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('driver.create')); ?>">
                                         <span class="nav-text">إضافة سائق</span>
                                     </a>
                                 </li>
@@ -101,31 +102,31 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('invoice_control.create', 'invoice_control.*') ? 'active' : '' }}"
-                            href="{{ route('invoice_control.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('invoice_control.create', 'invoice_control.*') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('invoice_control.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-cash-coin"></i></span>
                             <span class="nav-text">دفع الديون</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('returnsell.create', 'returnsell.*') ? 'active' : '' }}"
-                            href="{{ route('returnsell.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('returnsell.create', 'returnsell.*') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('returnsell.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
                             <span class="nav-text">إرجاع الفواتير</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('expenses.create', 'expenses.*') ? 'active' : '' }}"
-                            href="{{ route('expenses.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('expenses.create', 'expenses.*') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('expenses.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
                             <span class="nav-text">مصروفات</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('print.create', 'print.*') ? 'active' : '' }}"
-                            href="{{ route('print.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('print.create', 'print.*') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('print.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-printer"></i></span>
                             <span class="nav-text">طباعة القوائم</span>
                         </a>
@@ -133,16 +134,16 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('companys.create') ? 'active' : '' }}"
-                            href="{{ route('companys.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('companys.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('companys.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-buildings"></i></span>
                             <span class="nav-text">إضافة شركة</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('accounts.create', 'accounts.*') ? 'active' : '' }}"
-                            href="{{ route('accounts.create') }}">
+                        <a class="nav-link <?php echo e(Route::is('accounts.create', 'accounts.*') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('accounts.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
                             <span class="nav-text">الحسابات</span>
                         </a>
@@ -150,31 +151,31 @@
 
                     <!-- Products Management -->
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('types.create', 'products.create', 'definitions.create') ? '' : 'collapsed' }}"
+                        <a class="nav-link <?php echo e(Route::is('types.create', 'products.create', 'definitions.create') ? '' : 'collapsed'); ?>"
                             data-bs-toggle="collapse" href="#productsMenu" role="button"
-                            aria-expanded="{{ Route::is('types.create', 'products.create', 'definitions.create') ? 'true' : 'false' }}">
+                            aria-expanded="<?php echo e(Route::is('types.create', 'products.create', 'definitions.create') ? 'true' : 'false'); ?>">
                             <span class="nav-icon"><i class="bi bi-box-seam"></i></span>
                             <span class="nav-text">إدارة المنتجات</span>
                             <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
-                        <div class="collapse {{ Route::is('types.create', 'products.create', 'definitions.create') ? 'show' : '' }}"
+                        <div class="collapse <?php echo e(Route::is('types.create', 'products.create', 'definitions.create') ? 'show' : ''); ?>"
                             id="productsMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('products.create') ? 'active' : '' }}"
-                                        href="{{ route('products.create') }}">
+                                    <a class="nav-link <?php echo e(Route::is('products.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('products.create')); ?>">
                                         <span class="nav-text">المخزن</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('types.create') ? 'active' : '' }}"
-                                        href="{{ route('types.create') }}">
+                                    <a class="nav-link <?php echo e(Route::is('types.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('types.create')); ?>">
                                         <span class="nav-text">إدارة الأنواع</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('definitions.create') ? 'active' : '' }}"
-                                        href="{{ route('definitions.create') }}">
+                                    <a class="nav-link <?php echo e(Route::is('definitions.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('definitions.create')); ?>">
                                         <span class="nav-text">تعريف المنتجات</span>
                                     </a>
                                 </li>
@@ -184,24 +185,24 @@
 
                     <!-- Invoices Management -->
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('add_Invoices.create') ? '' : 'collapsed' }}"
+                        <a class="nav-link <?php echo e(Route::is('add_Invoices.create') ? '' : 'collapsed'); ?>"
                             data-bs-toggle="collapse" href="#invoicesMenu" role="button"
-                            aria-expanded="{{ Route::is('add_Invoices.create') ? 'true' : 'false' }}">
+                            aria-expanded="<?php echo e(Route::is('add_Invoices.create') ? 'true' : 'false'); ?>">
                             <span class="nav-icon"><i class="bi bi-currency-dollar"></i></span>
                             <span class="nav-text">شراء القوائم</span>
                             <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
-                        <div class="collapse {{ Route::is('add_Invoices.create') ? 'show' : '' }}" id="invoicesMenu">
+                        <div class="collapse <?php echo e(Route::is('add_Invoices.create') ? 'show' : ''); ?>" id="invoicesMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
-                                        href="{{ route('add_Invoices.create') }}">
+                                    <a class="nav-link <?php echo e(Route::is('add_Invoices.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('add_Invoices.create')); ?>">
                                         <span class="nav-text">إضافة القوائم</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
-                                        href="{{ route('show_Invoices.create') }}">
+                                    <a class="nav-link <?php echo e(Route::is('add_Invoices.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('show_Invoices.create')); ?>">
                                         <span class="nav-text">عرض القوائم</span>
                                     </a>
                                 </li>
@@ -211,24 +212,24 @@
 
                     <!-- Offers Management -->
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('offers.create') ? '' : 'collapsed' }}"
+                        <a class="nav-link <?php echo e(Route::is('offers.create') ? '' : 'collapsed'); ?>"
                             data-bs-toggle="collapse" href="#offersMenu" role="button"
-                            aria-expanded="{{ Route::is('offers.create') ? 'true' : 'false' }}">
+                            aria-expanded="<?php echo e(Route::is('offers.create') ? 'true' : 'false'); ?>">
                             <span class="nav-icon"><i class="bi bi-gift"></i></span>
                             <span class="nav-text">إدارة العروضات</span>
                             <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
-                        <div class="collapse {{ Route::is('offers.create') ? 'show' : '' }}" id="offersMenu">
+                        <div class="collapse <?php echo e(Route::is('offers.create') ? 'show' : ''); ?>" id="offersMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('offers.create') ? 'active' : '' }}"
-                                        href="{{ route('offers.create') }}">
+                                    <a class="nav-link <?php echo e(Route::is('offers.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('offers.create')); ?>">
                                         <span class="nav-text">إنشاء العروض</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('offers.edit') ? 'active' : '' }}"
-                                        href="{{ route('offers.edit') }}">
+                                    <a class="nav-link <?php echo e(Route::is('offers.edit') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('offers.edit')); ?>">
                                         <span class="nav-text">تعديل العروض</span>
                                     </a>
                                 </li>
@@ -252,7 +253,7 @@
                         <div class="collapse" id="settingsMenu">
                             <ul class="submenu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('backup.index') }}">
+                                    <a class="nav-link" href="<?php echo e(route('backup.index')); ?>">
                                         <span class="nav-text">إعدادات الموقع</span>
                                     </a>
                                 </li>
@@ -264,8 +265,8 @@
                         <span class="nav-icon"><i class="bi bi-box-arrow-left"></i></span>
                         <span class="nav-text">تسجيل الخروج</span>
                     </a>
-                    <form id="logout-form" action="{{ route('logout') }}" style="display: none;">
-                        @csrf
+                    <form id="logout-form" action="<?php echo e(route('logout')); ?>" style="display: none;">
+                        <?php echo csrf_field(); ?>
                     </form>
                 </li>
                
@@ -280,8 +281,8 @@
                     <i class="bi bi-person"></i>
                 </div>
                 <div>
-                    <div class="user-name">{{ Auth::guard('account')->user()->name }}</div>
-                    <small class="text-muted">{{ Auth::guard('account')->user()->role }}</small>
+                    <div class="user-name"><?php echo e(Auth::guard('account')->user()->name); ?></div>
+                    <small class="text-muted"><?php echo e(Auth::guard('account')->user()->role); ?></small>
                 </div>
             </div>
         </div>
@@ -289,16 +290,32 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script src="<?php echo e(asset('assets/js/script.js')); ?>"></script>
 
-    @livewire('drivers.drivers-order')
-    @livewireScripts
+    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('drivers.drivers-order');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-1316489371-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
+
 
     <script>
         document.addEventListener('livewire:init', () => {
@@ -371,4 +388,4 @@
     </script>
 </body>
 
-</html>
+</html><?php /**PATH C:\Users\user\Desktop\laxe8-17login\resources\views/layouts/index.blade.php ENDPATH**/ ?>

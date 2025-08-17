@@ -270,7 +270,7 @@ window.addEventListener('show-delete-productofinvoicebuy', event => {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "111111نعم، احذفه!",
+        confirmButtonText: "نعم، احذفه!",
         cancelButtonText: "إلغاء",
         reverseButtons: true
     }).then((result) => {
