@@ -273,7 +273,7 @@
 
 <body>
     <div class="invoices-wrapper">
-        @foreach ($data['invoices'] as $invoice)
+        <?php $__currentLoopData = $data['invoices']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="invoice-container">
                         <!-- Star Decorations -->
                         <svg class="star-decoration star-top-left" viewBox="0 0 100 100">
@@ -288,24 +288,24 @@
                         <div class="invoice-header">
                             <!-- QR Code (left) -->
                             <div class="qr-container">
-                                <img src="{{ url('images/qrcode.jpg') }}" alt="QR Code" style="width: 25mm; height: 25mm;">
+                                <img src="<?php echo e(url('images/qrcode.jpg')); ?>" alt="QR Code" style="width: 25mm; height: 25mm;">
                             </div>
 
                             <!-- Logo (center) -->
                             <div class="logo-container">
-                                @php
+                                <?php
                                     $logoPath = public_path('images/laxelogo.png');
                                     $logoData = null;
                                     if (file_exists($logoPath)) {
                                         $logoData = base64_encode(file_get_contents($logoPath));
                                     }
-                                @endphp
+                                ?>
 
-                                @if($logoData)
-                                    <img src="data:image/png;base64,{{ $logoData }}" alt="Logo">
-                                @else
+                                <?php if($logoData): ?>
+                                    <img src="data:image/png;base64,<?php echo e($logoData); ?>" alt="Logo">
+                                <?php else: ?>
                                     <p style="color: red; font-size: 12px;">⚠ Logo not found</p>
-                                @endif
+                                <?php endif; ?>
                             </div>
 
                             <!-- Icons / Social Media (right) -->
@@ -367,25 +367,25 @@
                             <div class="customer-info" style="text-align: right;">
                                 <div class="info-line">
                                     <div class="info-label">السائق:</div>
-                                    <div class="info-value">{{ $invoice['driver_name'] }}</div>
+                                    <div class="info-value"><?php echo e($invoice['driver_name']); ?></div>
                                 </div>
                                 <div class="info-line">
                                     <div class="info-label">العنوان:</div>
-                                    <div class="info-value">{{ $invoice['address'] ?? '—' }}</div>
+                                    <div class="info-value"><?php echo e($invoice['address'] ?? '—'); ?></div>
                                 </div>
                                 <div class="info-line">
                                     <div class="info-label">الهاتف:</div>
-                                    <div class="info-value">{{ $invoice['mobile'] }}</div>
+                                    <div class="info-value"><?php echo e($invoice['mobile']); ?></div>
                                 </div>
                             </div>
 
                             <!-- Barcode (left) -->
                             <div style="text-align: center; margin-left: 4px;margin-top: 1px">
-                                {{-- <img src="data:image/png;base64,{{ $invoice['barcodePNG'] }}" alt="Invoice Barcode"
-                                    style="height: 30px; display: block; margin: 0 auto;"> --}}
+                                
                                 <span style="height: 30px; display: block; margin: 0 auto;color: #813434;">رقم القائمة</span>
                                 <div style="font-size: 12px; font-weight: bold; margin-top: 1px;color: #813434;">
-                                    {{ $invoice['invoice_number'] ?? '—' }}
+                                    <?php echo e($invoice['invoice_number'] ?? '—'); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -402,47 +402,47 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($invoice['products'] as $i => $product)
+                                <?php $__currentLoopData = $invoice['products']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
-                                        <td>{{ $i + 1 }}</td>
-                                        <td style="text-align: right;">{{ $product['name'] }}</td>
-                                        <td>{{ $product['qty'] }}</td>
-                                        <td>{{ number_format($product['price']) }} د.ع</td>
-                                        <td>{{ number_format($product['total']) }} د.ع</td>
+                                        <td><?php echo e($i + 1); ?></td>
+                                        <td style="text-align: right;"><?php echo e($product['name']); ?></td>
+                                        <td><?php echo e($product['qty']); ?></td>
+                                        <td><?php echo e(number_format($product['price'])); ?> د.ع</td>
+                                        <td><?php echo e(number_format($product['total'])); ?> د.ع</td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
 
-                        @if ($invoice['show_footer'])
+                        <?php if($invoice['show_footer']): ?>
                             <!-- Totals Section -->
                             <div class="total-section">
                                 <div class="total-line">
                                     <span>المجموع:</span>
-                                    <span>{{ number_format($invoice['total']) }} د.ع</span>
+                                    <span><?php echo e(number_format($invoice['total'])); ?> د.ع</span>
                                 </div>
                                 <div class="total-line">
                                     <span>التوصيل:</span>
-                                    <span>{{ number_format($invoice['taxi_price']) }} د.ع</span>
+                                    <span><?php echo e(number_format($invoice['taxi_price'])); ?> د.ع</span>
                                 </div>
                                 <div class="total-line">
                                     <span>الخصم:</span>
-                                    <span>{{ number_format($invoice['discount']) }} د.ع</span>
+                                    <span><?php echo e(number_format($invoice['discount'])); ?> د.ع</span>
                                 </div>
                                 <div class="total-line grand-total">
                                     <span>الإجمالي النهائي:</span>
-                                    <span>{{ number_format($invoice['total_price_afterDiscount_invoice']) }} د.ع</span>
+                                    <span><?php echo e(number_format($invoice['total_price_afterDiscount_invoice'])); ?> د.ع</span>
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
                     </div>
 
-                    @if (!$loop->last)
+                    <?php if(!$loop->last): ?>
                         <div class="page-break"></div>
-                    @endif
-        @endforeach
+                    <?php endif; ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </body>
 
-</html>
+</html><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/print/invoices.blade.php ENDPATH**/ ?>
