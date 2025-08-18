@@ -275,7 +275,7 @@ window.addEventListener('show-delete-productofinvoicebuy', event => {
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            Livewire.dispatch('deletebuy');
+            Livewire.dispatch('deleteProduct');
         }
     });
 });

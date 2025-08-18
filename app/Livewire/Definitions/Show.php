@@ -16,6 +16,7 @@ class Show extends Component
 
     public $delete_id;
     public $types = [];
+    
     public $selected_type = '';
     public $active_filter = null;
     public $search = '';

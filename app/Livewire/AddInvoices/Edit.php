@@ -2,298 +2,295 @@
 
 namespace App\Livewire\AddInvoices;
 
+use App\Models\Product;
 use Livewire\Component;
 use App\Models\Buy_invoice;
 use App\Models\Buy_Products_invoice;
 use App\Models\Sub_Buy_Products_invoice;
-use App\Models\Product;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Exception;
+use Illuminate\Support\Facades\DB;
 
 class Edit extends Component
 {
     public $search = '';
-    public $showAddForm = false;
-    public $showUpdateButton = true;
+
     public $invoiceId;
     public $invoice;
-    public $namecompany;
+    public $product_id;
     public $products = [];
-    public $discount = 0;
-    public $cash = 0;
-    public $note = '';
-    public $id;
 
-    public $newProduct = [
-        'product_id' => null,
-        'name' => '',
-        'barcode' => '',
-        'quantity' => 1,
-        'buy_price' => 0,
-        'dateex' => null,
-        'q_sold' => 0,
-        'profit' => 0
-    ];
+    // fields for editing
+    public $editProductId;
+    public $editName;
+    public $editCode;
+    public $editQuantity;
+    public $editBuyPrice;
+    public $editDateex;
+    public $totalPrice;
+    public $discount;
+    public $afterDiscountTotalPrice;
+    public $cash;
+    public $residual;
 
-    public function getFilteredProductsProperty()
-    {
-        if (empty($this->search)) {
-            return collect($this->products)->map(function ($product, $index) {
-                $product['__index'] = $index;
-                return $product;
-            })->values()->all();
-        }
-
-        $searchTerm = mb_strtolower(trim($this->search));
-
-        return collect($this->products)->map(function ($product, $index) {
-            $product['__index'] = $index; // keep real index
-            return $product;
-        })->filter(function ($product) use ($searchTerm) {
-            return (isset($product['name']) && mb_strpos(mb_strtolower($product['name']), $searchTerm) !== false) ||
-                (isset($product['code']) && mb_strpos(mb_strtolower($product['code']), $searchTerm) !== false) ||
-                (isset($product['barcode']) && mb_strpos(mb_strtolower($product['barcode']), $searchTerm) !== false);
-        })->values()->all();
-    }
-
-
-
-
-    public function toggleAddForm()
-    {
-        $this->showAddForm = !$this->showAddForm;
-        $this->showUpdateButton = !$this->showAddForm;
-    }
-
-    public function updatedProducts($value, $key)
-    {
-        $parts = explode('.', $key);
-        $index = $parts[0];
-        $field = $parts[1];
-
-        if ($field === 'quantity') {
-            $qSold = $this->products[$index]['q_sold'] ?? 0;
-            $newQuantity = $value;
-
-            if ($newQuantity < $qSold) {
-                $this->products[$index]['quantity'] = max($qSold, $this->products[$index]['quantity']);
-                session()->flash('error', 'لا يمكن أن تكون الكمية أقل من الكمية المباعة (' . $qSold . ')');
-            }
-        }
-    }
 
     public function mount($invoiceId)
     {
-        try {
-            $this->invoiceId = $invoiceId;
-            $this->invoice = Buy_invoice::findOrFail($invoiceId);
-            $this->namecompany = $this->invoice->name_invoice;
-
-            $this->products = Sub_Buy_Products_invoice::where('num_invoice_id', $invoiceId)
-                ->get()
-                ->map(function ($product) {
-                    return [
-                        'id' => $product->id, // important for updates
-                        'buy_product_invoice_id' => $product->buy_product_invoice_id,
-                        'product_id' => $product->product_id,
-                        'name' => $product->name,
-                        'code' => $product->code,
-                        'barcode' => $product->barcode,   // ✅ add this
-                        'quantity' => (float)$product->quantity,
-                        'q_sold' => (float)$product->q_sold,
-                        'buy_price' => (float)$product->buy_price,
-                        'profit' => (float)$product->profit,
-                        'dateex' => $product->dateex,
-                    ];
-                })->toArray();
+        $this->invoiceId = $invoiceId;
+        $this->invoice   = Buy_invoice::findOrFail($invoiceId);
 
 
-            $this->discount = (float)$this->invoice->discount;
-            $this->cash = (float)$this->invoice->cash;
-            $this->note = $this->invoice->note;
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to load invoice data: ' . $e->getMessage());
-        }
+        $this->totalPrice = $this->invoice->total_price;
+        $this->discount = $this->invoice->discount;
+        $this->afterDiscountTotalPrice = $this->invoice->afterDiscountTotalPrice;
+        $this->cash = $this->invoice->cash;
+        $this->residual = $this->invoice->residual;
+
+
+        $this->loadProducts();
     }
 
-    public function getTotalPriceProperty()
+    public function loadProducts()
     {
-        try {
-            return collect($this->products)->sum(function ($item) {
-                $quantity = is_numeric($item['quantity']) ? (float)$item['quantity'] : 0;
-                $buyPrice = is_numeric($item['buy_price']) ? (float)$item['buy_price'] : 0;
-                return $quantity * $buyPrice;
+        $query = Sub_Buy_Products_invoice::where('num_invoice_id', $this->invoiceId);
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('code', 'like', '%' . $this->search . '%')
+                    ->orWhere('barcode', 'like', '%' . $this->search . '%');
             });
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to calculate total price: ' . $e->getMessage());
-            return 0;
         }
+
+        $this->products = $query->get();
     }
 
-    public function getAfterDiscountTotalPriceProperty()
+    public function updatedSearch()
     {
-        try {
-            $total = $this->totalPrice;
-            $discount = is_numeric($this->discount) ? (float)$this->discount : 0;
-            return $total - ($total * $discount / 100);
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to calculate after discount price: ' . $e->getMessage());
-            return 0;
-        }
+        $this->loadProducts();
     }
 
-    public function getResidualProperty()
+    public function editProduct($id)
     {
-        try {
-            $afterDiscount = $this->afterDiscountTotalPrice;
-            $cash = is_numeric($this->cash) ? (float)$this->cash : 0;
-            return $afterDiscount - $cash;
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to calculate residual amount: ' . $e->getMessage());
-            return 0;
-        }
+        $product = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $id)->first();
+
+        $this->editProductId = $product->buy_product_invoice_id;
+        $this->product_id = $product->product_id;
+        $this->editName      = $product->name;
+        $this->editCode      = $product->code;
+        $this->editQuantity  = $product->quantity;
+        $this->editBuyPrice  = $product->buy_price;
+        $this->editDateex    = $product->dateex;
+
+        $this->dispatch('open-edit-modal'); // fire event to JS
     }
 
-    public function updateInvoice()
+    public function updateProduct()
     {
-        foreach ($this->products as $index => $product) {
-            if ($product['quantity'] < $product['q_sold']) {
-                session()->flash('error', 'لا يمكن أن تكون الكمية أقل من الكمية المباعة للمنتج: ' . $product['name']);
-                return;
+
+        $product = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->editProductId)->first();
+
+        // Check if the new quantity is less than q_sold
+        if ($this->editQuantity < $product->q_sold) {
+
+
+            flash()->warning("الكمية لا يمكن أن تكون أقل من المباعة ({$product->q_sold})");
+            return;
+        }
+
+        // Update the Sub_Buy_Products_invoice record
+        $product->update([
+            'name'      => $this->editName,
+            'code'      => $this->editCode,
+            'quantity'  => $this->editQuantity,
+            'buy_price' => $this->editBuyPrice,
+            'dateex'    => $this->editDateex,
+        ]);
+
+        // Update Buy_Products_invoice
+        $product1 = Buy_Products_invoice::findOrFail($this->editProductId);
+        $product1->update([
+            'name'      => $this->editName,
+            'code'      => $this->editCode,
+            'quantity'  => $this->editQuantity,
+            'buy_price' => $this->editBuyPrice,
+            'dateex'    => $this->editDateex,
+        ]);
+
+        $rows = Sub_Buy_Products_invoice::where('product_id', $this->product_id)
+            ->whereColumn('q_sold', '<', 'quantity')
+            ->get();
+
+        $totals = $rows->reduce(function ($carry, $row) {
+            $carry['total_quantity'] += $row->quantity;
+            $carry['total_sold']     += $row->q_sold;
+            return $carry;
+        }, ['total_quantity' => 0, 'total_sold' => 0]);
+
+        $remaining = $totals['total_quantity'] - $totals['total_sold'];
+
+
+
+        // Update Product quantity
+        $product2 = Product::where('definition_id', $this->product_id)->first();
+        if ($product2) {
+            $product2->update([
+                'quantity' => $remaining,
+            ]);
+        }
+
+
+        $invoiceId = $product->num_invoice_id ?? null;
+
+        if ($invoiceId) {
+            // Calculate total (before discount) for all items in this invoice
+            $totalPrice = Sub_Buy_Products_invoice::where('num_invoice_id', $invoiceId)
+                ->sum(DB::raw('quantity * buy_price'));
+
+            // Fetch the invoice
+            $invoice = Buy_invoice::find($invoiceId);
+
+
+            if ($invoice) {
+                // Get discount % (if null, set to 0)
+                $discount = floatval($invoice->discount ?? 0);
+
+                // Apply discount
+                $afterDiscountTotal = $totalPrice - ($totalPrice * $discount / 100);
+
+                // Get cash (if not passed in, use invoice->cash)
+                $cash = floatval($cash ?? $invoice->cash ?? 0);
+
+                // Calculate residual = cash - afterDiscountTotal
+                $residual = $afterDiscountTotal - $cash;
+
+                // Update invoice
+                $invoice->update([
+                    'total_price'          => $totalPrice,
+                    'afterDiscountTotalPrice' => $afterDiscountTotal,
+                    'residual'             => $residual,
+                ]);
             }
         }
 
-        try {
-            DB::transaction(function () {
-                try {
-                    foreach ($this->products as $updatedProduct) {
-                        $invoiceProducto = Buy_Products_invoice::find($updatedProduct['id']);
 
-                        if ($invoiceProducto) {
-                            $productModel = Product::find($invoiceProducto->product_id);
+        $this->invoice->refresh();
+        $this->totalPrice              = $this->invoice->total_price;
+        $this->discount                = $this->invoice->discount;
+        $this->afterDiscountTotalPrice = $this->invoice->afterDiscountTotalPrice;
+        $this->cash                    = $this->invoice->cash;
+        $this->residual                = $this->invoice->residual;
 
-                            if ($productModel) {
-                                $productModel->quantity -= (float)$invoiceProducto->quantity;
-                                $productModel->quantity += (float)$updatedProduct['quantity'];
-                                $productModel->save();
-                            }
-                        }
-                    }
+        $this->loadProducts();
 
-                    $invoice = Buy_invoice::find($this->invoiceId);
-                    if ($invoice) {
-                        $invoice->update([
-                            'total_price' => (float)$this->totalPrice,
-                            'discount' => (float)$this->discount,
-                            'cash' => (float)$this->cash,
-                            'afterDiscountTotalPrice' => (float)$this->afterDiscountTotalPrice,
-                            'residual' => (float)$this->residual,
-                            'note' => $this->note,
-                        ]);
-                    }
-                } catch (Exception $e) {
-                    throw new Exception('Failed to update main invoice: ' . $e->getMessage());
-                }
-            });
 
-            DB::transaction(function () {
-                try {
-                    foreach ($this->products as $updatedProduct) {
-                        $invoiceProduct = Sub_Buy_Products_invoice::find($updatedProduct['id']);
+        $this->reset(['editProductId', 'editName', 'editCode', 'editQuantity', 'editBuyPrice', 'editDateex']);
 
-                        if ($invoiceProduct) {
-                            $invoiceProduct->update([
-                                'quantity' => (float)$updatedProduct['quantity'],
-                                'q_sold' => (float)$updatedProduct['q_sold'],
-                                'buy_price' => (float)$updatedProduct['buy_price'],
-                                'profit' => (float)$updatedProduct['profit'],
-                                'dateex' => $updatedProduct['dateex'] ?? null,
-                            ]);
-                        }
-                    }
-                    foreach ($this->products as $updatedProduct) {
-                        $invoiceProduct = Buy_Products_invoice::find($updatedProduct['id']);
-
-                        if ($invoiceProduct) {
-                            $invoiceProduct->update([
-                                'quantity' => (float)$updatedProduct['quantity'],
-                                'q_sold' => (float)$updatedProduct['q_sold'],
-                                'buy_price' => (float)$updatedProduct['buy_price'],
-                                'profit' => (float)$updatedProduct['profit'],
-                                'dateex' => $updatedProduct['dateex'] ?? null,
-                            ]);
-                        }
-                    }
-                } catch (Exception $e) {
-                    throw new Exception('Failed to update sub invoice: ' . $e->getMessage());
-                }
-            });
-
-            session()->flash('success', 'تم تحديث الفاتورة بنجاح.');
-            return redirect()->route('show_Invoices.create');
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to update invoice: ' . $e->getMessage());
-        }
+        $this->dispatch('close-edit-modal'); // close modal
     }
 
-    public function delete($id)
+
+
+    public $id;
+    public function deleteConfirmationproduct($id)
     {
         $this->id = $id;
         $this->dispatch('show-delete-productofinvoicebuy');
     }
 
-    #[On('deletebuy')]
-    public function removeProduct()
+    #[On('deleteProduct')]
+    public function deleteProduct()
     {
-        $productInfo = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->id)->first();
-     
+        $product = Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->id)->first();
 
-        if (!$productInfo) {
-            session()->flash('error', 'المنتج غير موجود');
+        $this->product_id = $product->product_id;
+
+        if ($product->q_sold != 0) {
+
+            flash()->warning('لا يمكنك حذفه لأنه تم بيع بعض منه');
             return;
         }
 
+        Sub_Buy_Products_invoice::where('buy_product_invoice_id', $this->id)->delete();
+        Buy_Products_invoice::where('id', $this->id)->delete();
 
 
-        if ($productInfo->q_sold === 0) {
-            DB::transaction(function () use ($productInfo) {
-                $invoice = Buy_invoice::find($this->invoiceId);
-                if ($invoice) {
-                    $amount = $productInfo->buy_price * $productInfo->quantity;
-                    $invoice->total_price -= $amount;
-                    $invoice->afterDiscountTotalPrice -= $amount;
-                    $invoice->residual -= $amount;
-                    $invoice->save();
-                }
 
-                Product::where('definition_id', $productInfo->product_id)
-                    ->decrement('quantity', $productInfo->quantity ?? 0);
+        $rows = Sub_Buy_Products_invoice::where('product_id', $this->product_id)
+            ->whereColumn('q_sold', '<', 'quantity')
+            ->get();
 
-                Buy_Products_invoice::where('id', $productInfo->buy_product_invoice_id)->delete();
-             
-                Sub_Buy_Products_invoice::where('buy_product_invoice_id', $productInfo->buy_product_invoice_id)->delete();
-                $productInfo->delete();
+        $totals = $rows->reduce(function ($carry, $row) {
+            $carry['total_quantity'] += $row->quantity;
+            $carry['total_sold']     += $row->q_sold;
+            return $carry;
+        }, ['total_quantity' => 0, 'total_sold' => 0]);
 
-                $lastSellPrice = Sub_Buy_Products_invoice::where('product_id', $productInfo->product_id)
-                    ->orderBy('created_at', 'desc')
-                    ->value('sell_price');
+        $remaining = $totals['total_quantity'] - $totals['total_sold'];
 
-                if ($lastSellPrice) {
-                    Product::where('definition_id', $productInfo->product_id)
-                        ->update(['price_sell' => $lastSellPrice]);
-                }
-            });
 
-            flash()->success('تم حذف المنتج وتحديث الكمية والسعر بنجاح');
-            return redirect()->route('show_Invoices.create');
-        } else {
-            flash()->warning('لا يمكن حذف المنتج لأنه تم بيع جزء منه');
+
+        // Update Product quantity
+        $product2 = Product::where('definition_id', $this->product_id)->first();
+        if ($product2) {
+            $product2->update([
+                'quantity' => $remaining,
+            ]);
         }
+
+
+        $invoiceId = $product->num_invoice_id ?? null;
+
+        if ($invoiceId) {
+            // Calculate total (before discount) for all items in this invoice
+            $totalPrice = Sub_Buy_Products_invoice::where('num_invoice_id', $invoiceId)
+                ->sum(DB::raw('quantity * buy_price'));
+
+            // Fetch the invoice
+            $invoice = Buy_invoice::find($invoiceId);
+
+
+            if ($invoice) {
+                // Get discount % (if null, set to 0)
+                $discount = floatval($invoice->discount ?? 0);
+
+                // Apply discount
+                $afterDiscountTotal = $totalPrice - ($totalPrice * $discount / 100);
+
+                // Get cash (if not passed in, use invoice->cash)
+                $cash = floatval($cash ?? $invoice->cash ?? 0);
+
+                // Calculate residual = cash - afterDiscountTotal
+                $residual = $afterDiscountTotal - $cash;
+
+                // Update invoice
+                $invoice->update([
+                    'total_price'          => $totalPrice,
+                    'afterDiscountTotalPrice' => $afterDiscountTotal,
+                    'residual'             => $residual,
+                ]);
+            }
+        }
+
+
+        
+        
+        
+        $this->invoice->refresh();
+        $this->totalPrice              = $this->invoice->total_price;
+        $this->discount                = $this->invoice->discount;
+        $this->afterDiscountTotalPrice = $this->invoice->afterDiscountTotalPrice;
+        $this->cash                    = $this->invoice->cash;
+        $this->residual                = $this->invoice->residual;
+        
+        $this->loadProducts();
+        flash()->success('تم الحذف بنجاح');
     }
 
     public function render()
     {
-        return view('livewire.add-invoices.edit');
+        return view('livewire.add-invoices.edit', [
+            'invoice'  => $this->invoice,
+            'products' => $this->products,
+        ]);
     }
 }

@@ -690,7 +690,7 @@ class AddInvoiceProduct extends Component
         if (!empty($this->search_code_name) || !empty($this->selected_type)) {
             $products = product::with(['definition', 'definition.type'])
                 ->whereHas('definition', function ($query) {
-                    $query->where('is_active', 'active')->where('quantity', '>', 0);
+                    $query->where('is_active', '1')->where('quantity', '>', 0);
 
                     if (!empty($this->search_code_name)) {
                         $query->where(function ($subQuery) {

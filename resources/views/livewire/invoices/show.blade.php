@@ -67,12 +67,13 @@
                                             </button>
 
 
-                                            <button wire:click="editInvoice({{ $invoice->id }})"
+                                            <a href="{{ route('invoices.edit', $invoice->id) }}" target="_blank"
                                                 class="btn btn-icon btn-outline-primary btn-sm d-flex justify-content-center align-items-center"
                                                 style="width: 30px; height: 30px;">
                                                 <i class="fas fa-edit" style="font-size: 16px;"></i>
-                                            </button>
-                                            
+                                            </a>
+
+
                                             <button wire:click="deleteConfirmation({{ $invoice->id }})"
                                                 class="btn btn-outline-danger btn-sm d-flex justify-content-center align-items-center"
                                                 style="width: 30px; height: 30px;">
@@ -106,7 +107,7 @@
     </div>
 
 
-    @if ($editModal)
+    {{-- @if ($editModal)
         <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5)">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -120,7 +121,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endif --}}
 
 
 

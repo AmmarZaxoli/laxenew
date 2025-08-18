@@ -8,6 +8,8 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\PreventLoginWhenAuthenticated;
 use App\Http\Controllers\Printdriver;
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\Invoices\Edit;
+
 
 // Route::get('/print/invoice/{id}', [PrintController::class, 'printSingle'])
 //     ->name('print.single');
@@ -159,6 +161,14 @@ Route::middleware(['auth:account'])->group(function () {
         $data = session('receiptData');
         return view('receipts.sale-receipt', $data);
     })->name('receipt.print');
+
+
+
+
+Route::get('/invoices/edit/{id}', [Edit::class, 'index'])->name('invoices.edit');
+
+
+
 
     // Resource views
     Route::view('/drivers', 'drivers.create')->name('driver.create');

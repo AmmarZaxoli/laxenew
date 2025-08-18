@@ -27,12 +27,10 @@
                 <div class="col-md-3">
 
                     <div class="btn-group w-100" role="group" style="height: 35px">
-                        <button wire:click="filterActive('1')" type="button"
-                            class="btn btn-outline-success btn-sm">
+                        <button wire:click="filterActive('1')" type="button" class="btn btn-outline-success btn-sm">
                             <i class="fas fa-check-circle me-1"></i> نشط
                         </button>
-                        <button wire:click="filterActive('0')" type="button"
-                            class="btn btn-outline-danger btn-sm">
+                        <button wire:click="filterActive('0')" type="button" class="btn btn-outline-danger btn-sm">
                             <i class="fas fa-times-circle me-1"></i> غير نشط
                         </button>
                     </div>
@@ -193,8 +191,9 @@
                 </table>
 
                 <!-- Pagination -->
-                {{-- {{ $definitions->links('pagination::bootstrap-5') }} --}}
-                {{ $definitions->links('pagination::bootstrap-5') }}
+                {{ $definitions->links() }}
+                
+
 
             </div>
         </div>

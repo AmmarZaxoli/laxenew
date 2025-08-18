@@ -133,7 +133,7 @@
                     </tbody>
                 </table>
                 <!-- Pagination -->
-                {{ $products->links('pagination::bootstrap-5') }}
+                {{ $products->links() }}
 
             </div>
         </div>

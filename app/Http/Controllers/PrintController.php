@@ -9,6 +9,7 @@ use Milon\Barcode\DNS1D;
 
 class PrintController extends Controller
 {
+
     public function printSingle($id)
     {
 
@@ -85,6 +86,7 @@ class PrintController extends Controller
         $data = [
             'driver_name' => $invoice->customer->driver->nameDriver ?? '',
             'invoices'    => $preparedInvoices
+            
         ];
 
         return view('print.invoices', [
@@ -187,12 +189,16 @@ class PrintController extends Controller
                 ];
             }
         }
-
+        // جلب أسماء السواقين
+        $drivers = $invoices->pluck('customer.driver.nameDriver')->unique()->filter();
+        $driverName = $drivers->count() === 1 ? $drivers->first() : 'عدة سواق';
         $data = [
             'date'        => now()->format('Y-m-d'),
+            'driver_name' => $driverName, 
+
             'invoices'    => $preparedInvoices,
         ];
 
-        return view('print.invoices', compact('data'));
+        return view('print.multiprint', compact('data'));
     }
 }

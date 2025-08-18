@@ -1,31 +1,33 @@
 <div>
-    <div class="container py-4">
+    <div class="card" style="padding: 10px">
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="h4 mb-0">
                 <i class="fas fa-file-invoice text-primary me-2"></i>
                 تعديل الفاتورة رقم: {{ $invoice->num_invoice }}
             </h2>
-            <h1>{{ $namecompany }}</h1>
+            <h1>{{ $invoice->name_invoice }}</h1>
             <div>
-                @if ($showUpdateButton)
+                {{-- @if ($showUpdateButton)
                     <button wire:click="updateInvoice" class="btn btn-outline-primary me-2">
                         <i class="fas fa-save me-1"></i> حفظ التعديلات
                     </button>
-                @endif
+                @endif --}}
                 <button wire:click="toggleAddForm" class="btn btn-outline-success">
                     <i class="fas fa-plus me-1"></i> إضافة منتج
                 </button>
+
             </div>
         </div>
 
         <div class="input-group mb-3">
             <input type="search" autocomplete="off" wire:model.live.debounce.500ms="search" class="form-control"
                 placeholder="ابحث باسم المنتج أو الباركود...">
-            @if ($search)
+            {{-- @if ($search)
                 <button wire:click="$set('search', '')" class="btn btn-outline-secondary" type="button">
                     <i class="fas fa-times"></i>
                 </button>
-            @endif
+            @endif --}}
         </div>
 
         <div wire:loading.delay wire:target="search" class="text-center py-2">
@@ -34,15 +36,15 @@
             </div>
         </div>
 
-        @if ($showAddForm)
+        {{-- @if ($showAddForm)
             <livewire:add-invoices.addedit.insertproduct :invoice-id="$invoiceId" :company-name="$namecompany" />
-        @endif
+        @endif --}}
 
-        @if (count($this->filteredProducts) === 0 && $search)
+        {{-- @if (count($this->filteredProducts) === 0 && $search)
             <div class="alert alert-info text-center">
                 لا توجد نتائج مطابقة لبحثك
             </div>
-        @endif
+        @endif --}}
 
         <div class="card mb-4 border-0 shadow-sm">
             <div class="card-body p-0">
@@ -56,50 +58,49 @@
                                 <th class="text-center" style="width: 10%">الكمية</th>
                                 <th class="text-center" style="width: 15%">سعر الشراء</th>
                                 <th class="text-center" style="width: 20%">تاريخ الانتهاء</th>
+                                <th class="text-center" style="width: 20%">Edit</th>
                                 <th class="text-center" style="width: 20%">delete</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($this->filteredProducts as $product)
+                        <tbody>
+                            @foreach ($products as $product)
                                 <tr>
-                                    
                                     <td>
                                         <input type="text" readonly class="form-control-plaintext text-center"
-                                            value="{{ $product['name'] }}">
+                                            value="{{ $product->name }}">
                                     </td>
-                                    <td class="text-center align-middle text-muted">{{ $product['code'] }}</td>
-                                    <td>
-                                        <input type="number" readonly
-                                            wire:model.live="products.{{ $product['__index'] }}.q_sold"
-                                            class="form-control text-center">
-                                    </td>
-                                    <td>
-                                        <input type="number" min="0"
-                                            wire:model.live="products.{{ $product['__index'] }}.quantity"
-                                            class="form-control text-center @error('products.' . $product['__index'] . '.quantity') is-invalid @enderror">
-                                        @error('products.' . $product['__index'] . '.quantity')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                    <td>
-                                        <input type="number" step="0.01"
-                                            wire:model.live="products.{{ $product['__index'] }}.buy_price"
-                                            class="form-control text-center">
-                                    </td>
-                                    <td>
-                                        <input type="date"
-                                            wire:model.live="products.{{ $product['__index'] }}.dateex"
-                                            class="form-control">
-                                    </td>
-                                    <td>
-                                        <button
-                                            wire:click="delete({{ $product['buy_product_invoice_id'] }})"
-                                            class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash"></i>
+                                    <td class="text-center align-middle text-muted">{{ $product->code }}</td>
+                                    <td class="text-center align-middle text-muted">{{ $product->q_sold }}</td>
+                                    <td class="text-center align-middle text-muted">{{ $product->quantity }}</td>
+                                    <td class="text-center align-middle text-muted">{{ $product->buy_price }}</td>
+                                    <td class="text-center align-middle text-muted">{{ $product->dateex }}</td>
+                                    <td class="text-center">
+                                        <!-- Edit Button -->
+                                        <button wire:click="editProduct({{ $product->buy_product_invoice_id }})"
+                                            class="btn btn-sm btn-primary">
+                                            تعديل
                                         </button>
+
+
+
+
+                                    </td>
+                                    <td class="text-center">
+                                        <!-- Delete Button -->
+                                        <button
+                                            wire:click="deleteConfirmationproduct({{ $product->buy_product_invoice_id }})"
+                                            class="btn btn-sm btn-outline-danger d-flex align-items-center py-1">
+                                            <i class="fas fa-trash-alt mr-1"></i> حذف
+                                        </button>
+
+
+
                                     </td>
                                 </tr>
                             @endforeach
+                        </tbody>
+
 
                         </tbody>
                     </table>
@@ -174,110 +175,242 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <style>
-            .invoice-summary-container {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
 
-            .summary-card {
-                background: white;
-                border-radius: 12px;
-                padding: 1rem;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-                border: 1px solid #f0f0f0;
-                transition: all 0.3s ease;
-            }
 
-            .summary-card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-            }
+            <div wire:ignore.self class="modal fade" id="editProductModal" tabindex="-1" aria-hidden="true"
+                dir="rtl">
+                <div class="modal-dialog">
+                    <div class="modal-content border-0 shadow-lg">
+                        <!-- Modal Header -->
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title text-dark">
+                                <i class="fas fa-edit text-primary me-2"></i>
+                                تعديل المنتج
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="إغلاق"></button>
+                        </div>
 
-            .card-icon {
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-left: 12px;
-                flex-shrink: 0;
-            }
+                        <!-- Modal Body -->
+                        <div class="modal-body">
+                            <form wire:submit.prevent="updateProduct">
+                                <!-- Row 1: Name and Code -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label text-muted small mb-1">الاسم</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-transparent border-end-0">
+                                                <i class="fas fa-tag text-muted"></i>
+                                            </span>
+                                            <input type="text" class="form-control border-start-0 ps-2"
+                                                wire:model="editName">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small mb-1">الكود</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-transparent border-end-0">
+                                                <i class="fas fa-barcode text-muted"></i>
+                                            </span>
+                                            <input type="text" class="form-control border-start-0 ps-2"
+                                                wire:model="editCode">
+                                        </div>
+                                    </div>
+                                </div>
 
-            .card-content {
-                flex-grow: 1;
-            }
+                                <!-- Row 2: Quantity and Price -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label text-muted small mb-1">الكمية</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-transparent border-end-0">
+                                                <i class="fas fa-boxes text-muted"></i>
+                                            </span>
+                                            <input type="number" class="form-control border-start-0 ps-2"
+                                                wire:model="editQuantity">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small mb-1">سعر الشراء</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-transparent border-end-0">
+                                                <i class="fas fa-money-bill-wave text-muted"></i>
+                                            </span>
+                                            <input type="number" step="0.01"
+                                                class="form-control border-start-0 ps-2" wire:model="editBuyPrice">
+                                        </div>
+                                    </div>
+                                </div>
 
-            .card-label {
-                color: #666;
-                font-size: 0.9rem;
-                margin-bottom: 4px;
-            }
+                                <!-- Row 3: Expiry Date -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small mb-1">تاريخ الانتهاء</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-transparent border-end-0">
+                                                <i class="fas fa-calendar-day text-muted"></i>
+                                            </span>
+                                            <input type="date" class="form-control border-start-0 ps-2"
+                                                wire:model="editDateex">
+                                        </div>
+                                    </div>
+                                </div>
 
-            .card-value {
-                font-weight: 700;
-                font-size: 1.4rem;
-                color: #333;
-            }
+                                <!-- Submit Button -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary py-2">
+                                        <i class="fas fa-save me-2"></i> حفظ التعديلات
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            .card-value span {
-                font-size: 0.9rem;
-                color: #888;
-                margin-right: 4px;
-            }
+            <style>
+                .modal-content {
+                    border-radius: 10px;
+                }
 
-            /* Card Specific Styles */
-            .total-card .card-icon {
-                background-color: rgba(41, 98, 255, 0.1);
-                color: #2962FF;
-            }
+                .input-group-text {
+                    transition: all 0.2s ease;
+                }
 
-            .discount-card .card-icon {
-                background-color: rgba(255, 171, 0, 0.1);
-                color: #FFAB00;
-            }
+                .form-control:focus+.input-group-text,
+                .form-control:focus~.input-group-text {
+                    color: #4e73df;
+                }
 
-            .net-card .card-icon {
-                background-color: rgba(0, 200, 83, 0.1);
-                color: #00C853;
-            }
+                .form-control {
+                    border-left: none !important;
+                }
 
-            .paid-card .card-icon {
-                background-color: rgba(233, 30, 99, 0.1);
-                color: #E91E63;
-            }
+                .form-control:focus {
+                    box-shadow: none;
+                    border-color: #dee2e6;
+                }
+            </style>
+            <style>
+                .invoice-summary-container {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
 
-            .remaining-card .card-icon {
-                background-color: rgba(156, 39, 176, 0.1);
-                color: #9C27B0;
-            }
+                .summary-card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 1rem;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                    border: 1px solid #f0f0f0;
+                    transition: all 0.3s ease;
+                }
 
-            /* Responsive Adjustments */
-            @media (max-width: 576px) {
-                .card-value {
-                    font-size: 1.2rem;
+                .summary-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
                 }
 
                 .card-icon {
-                    width: 40px;
-                    height: 40px;
-                    font-size: 0.9rem;
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: 12px;
+                    flex-shrink: 0;
                 }
-            }
-        </style>
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <label for="note" class="form-label">ملاحظة</label>
-                <textarea wire:model="note" class="form-control" id="note" rows="3"
-                    placeholder="أضف ملاحظة إذا لزم الأمر..."></textarea>
+                .card-content {
+                    flex-grow: 1;
+                }
+
+                .card-label {
+                    color: #666;
+                    font-size: 0.9rem;
+                    margin-bottom: 4px;
+                }
+
+                .card-value {
+                    font-weight: 700;
+                    font-size: 1.4rem;
+                    color: #333;
+                }
+
+                .card-value span {
+                    font-size: 0.9rem;
+                    color: #888;
+                    margin-right: 4px;
+                }
+
+                /* Card Specific Styles */
+                .total-card .card-icon {
+                    background-color: rgba(41, 98, 255, 0.1);
+                    color: #2962FF;
+                }
+
+                .discount-card .card-icon {
+                    background-color: rgba(255, 171, 0, 0.1);
+                    color: #FFAB00;
+                }
+
+                .net-card .card-icon {
+                    background-color: rgba(0, 200, 83, 0.1);
+                    color: #00C853;
+                }
+
+                .paid-card .card-icon {
+                    background-color: rgba(233, 30, 99, 0.1);
+                    color: #E91E63;
+                }
+
+                .remaining-card .card-icon {
+                    background-color: rgba(156, 39, 176, 0.1);
+                    color: #9C27B0;
+                }
+
+                /* Responsive Adjustments */
+                @media (max-width: 576px) {
+                    .card-value {
+                        font-size: 1.2rem;
+                    }
+
+                    .card-icon {
+                        width: 40px;
+                        height: 40px;
+                        font-size: 0.9rem;
+                    }
+                }
+            </style>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <label for="note" class="form-label">ملاحظة</label>
+                    <textarea wire:model="note" class="form-control" id="note" rows="3"
+                        placeholder="أضف ملاحظة إذا لزم الأمر..."></textarea>
+                </div>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('open-edit-modal', () => {
+            var modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            modal.show();
+        });
+
+        window.addEventListener('close-edit-modal', () => {
+            var modalEl = document.getElementById('editProductModal');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) {
+                modal.hide();
+            }
+        });
+    </script>
+
+</div>
 </div>

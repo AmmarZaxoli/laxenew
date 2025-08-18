@@ -11,6 +11,8 @@ use Livewire\WithPagination;
 class Show extends Component
 {
     use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+
     protected $listeners = ['refreshTable' => '$refresh'];
 
     public $delete_id;

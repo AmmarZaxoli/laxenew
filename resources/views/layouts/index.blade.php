@@ -349,6 +349,32 @@
                 }
             });
         });
+        function printInvoice(invoiceId) {
+        if (!invoiceId) {
+            alert('Invoice ID is missing!');
+            return;
+        }
+
+        // Build the URL for single invoice printing
+        const url = `/print/invoice/${invoiceId}`; // adjust route if needed
+        try {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = url;
+            document.body.appendChild(iframe);
+
+            iframe.onload = function () {
+                setTimeout(() => {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                    setTimeout(() => document.body.removeChild(iframe), 500);
+                }, 500);
+            };
+        } catch (error) {
+            console.error('Print failed:', error);
+            alert('حدث خطأ أثناء الطباعة. الرجاء المحاولة مرة أخرى.');
+        }
+    }
     </script>
     <script>
         function confirmLogout() {
