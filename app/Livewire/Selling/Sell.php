@@ -302,6 +302,13 @@ class Sell extends Component
             return;
         }
 
+         // If delivery_type = 1 → require pricetaxi before adding
+            if ($offer->delivery == 1 && (empty($this->pricetaxi) || $this->pricetaxi == 0)) {
+                flash()->error('يرجى إدخال سعر التسليم (سعر التاكسي) قبل إضافة هذا المنتج.');
+                DB::rollBack();
+                return;
+            }
+
         DB::beginTransaction();
 
         try {
@@ -450,89 +457,88 @@ class Sell extends Component
         }
     }
 
-   public function addProductByBarcode()
-{
-    if (empty($this->barcodeInput)) {
-        flash()->error('الرجاء إدخال الباركود.');
-        return;
+    public function addProductByBarcode()
+    {
+        if (empty($this->barcodeInput)) {
+            flash()->error('الرجاء إدخال الباركود.');
+            return;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // ✅ البحث عن المنتج عبر جدول definitions
+            $product = Product::with('definition')
+                ->whereHas('definition', function ($q) {
+                    $q->where('barcode', $this->barcodeInput);
+                })
+                ->lockForUpdate()
+                ->first();
+
+            if (!$product) {
+                flash()->error('لم يتم العثور على منتج بهذا الباركود.');
+                DB::rollBack();
+                $this->barcodeInput = '';
+                return;
+            }
+
+            $availableStock = $product->quantity;
+
+            $index = collect($this->selectedProducts)
+                ->search(fn($item) => $item['id'] == $product->id);
+
+            if ($index !== false) {
+                flash()->warning('هذا المنتج موجود بالفعل في السلة.');
+                DB::rollBack();
+                $this->barcodeInput = '';
+                return;
+            }
+
+            if ($availableStock < 1) {
+                flash()->error('الكمية غير متوفرة.');
+                DB::rollBack();
+                $this->barcodeInput = '';
+                return;
+            }
+
+            if ($product->definition->delivery_type == 1 && (empty($this->pricetaxi) || $this->pricetaxi == 0)) {
+                flash()->error('يرجى إدخال سعر التاكسي قبل إضافة هذا المنتج.');
+                DB::rollBack();
+                return;
+            }
+
+            // تحديث الكمية
+            $product->quantity -= 1;
+            $product->save();
+
+            // إضافة للسلة
+            $this->selectedProducts[] = [
+                'id' => $product->id,
+                'name' => $product->definition->name ?? '',
+                'code' => $product->definition->code ?? '',
+                'barcode' => $product->definition->barcode ?? '',
+                'type_id' => $product->definition->type_id ?? '',
+                'quantity' => 1,
+                'stock' => $availableStock - 1,
+                'price' => $product->price_sell,
+                'total' => $product->price_sell,
+                'delivery_type' => $product->definition->delivery_type,
+                'pricetaxi' => $product->definition->delivery_type == 1 ? (int) $this->pricetaxi : 0,
+            ];
+
+            $this->calculateDeliveryStatus();
+            $this->calculateGeneralPrice();
+
+            DB::commit();
+
+            // ✅ تفريغ الباركود بعد الإضافة الناجحة
+            $this->barcodeInput = '';
+        } catch (\Exception $e) {
+            DB::rollBack();
+            flash()->error('حدث خطأ: ' . $e->getMessage());
+            $this->barcodeInput = '';
+        }
     }
-
-    DB::beginTransaction();
-
-    try {
-        // ✅ البحث عن المنتج عبر جدول definitions
-        $product = Product::with('definition')
-            ->whereHas('definition', function ($q) {
-                $q->where('barcode', $this->barcodeInput);
-            })
-            ->lockForUpdate()
-            ->first();
-
-        if (!$product) {
-            flash()->error('لم يتم العثور على منتج بهذا الباركود.');
-            DB::rollBack();
-            $this->barcodeInput = '';
-            return;
-        }
-
-        $availableStock = $product->quantity;
-
-        $index = collect($this->selectedProducts)
-            ->search(fn($item) => $item['id'] == $product->id);
-
-        if ($index !== false) {
-            flash()->warning('هذا المنتج موجود بالفعل في السلة.');
-            DB::rollBack();
-            $this->barcodeInput = '';
-            return;
-        }
-
-        if ($availableStock < 1) {
-            flash()->error('الكمية غير متوفرة.');
-            DB::rollBack();
-            $this->barcodeInput = '';
-            return;
-        }
-
-        if ($product->definition->delivery_type == 1 && (empty($this->pricetaxi) || $this->pricetaxi == 0)) {
-            flash()->error('يرجى إدخال سعر التاكسي قبل إضافة هذا المنتج.');
-            DB::rollBack();
-            return;
-        }
-
-        // تحديث الكمية
-        $product->quantity -= 1;
-        $product->save();
-
-        // إضافة للسلة
-        $this->selectedProducts[] = [
-            'id' => $product->id,
-            'name' => $product->definition->name ?? '',
-            'code' => $product->definition->code ?? '',
-            'barcode' => $product->definition->barcode ?? '',
-            'type_id' => $product->definition->type_id ?? '',
-            'quantity' => 1,
-            'stock' => $availableStock - 1,
-            'price' => $product->price_sell,
-            'total' => $product->price_sell,
-            'delivery_type' => $product->definition->delivery_type,
-            'pricetaxi' => $product->definition->delivery_type == 1 ? (int) $this->pricetaxi : 0,
-        ];
-
-        $this->calculateDeliveryStatus();
-        $this->calculateGeneralPrice();
-
-        DB::commit();
-
-        // ✅ تفريغ الباركود بعد الإضافة الناجحة
-        $this->barcodeInput = '';
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        flash()->error('حدث خطأ: ' . $e->getMessage());
-        $this->barcodeInput = '';
-    }
-}
 
     public function addProduct($productId)
     {

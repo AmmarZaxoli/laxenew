@@ -1,10 +1,8 @@
 
 
 <?php $__env->startSection('content'); ?>
-    <div class="card body formtype">
-
-
-
+    <div class="card body formtype"> 
+        
         <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
@@ -21,8 +19,6 @@ unset($__params);
 unset($__split);
 if (isset($__slots)) unset($__slots);
 ?>
-
-            <!-- Modal -->
             
     </div>
  

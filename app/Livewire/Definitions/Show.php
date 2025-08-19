@@ -16,7 +16,7 @@ class Show extends Component
 
     public $delete_id;
     public $types = [];
-    
+
     public $selected_type = '';
     public $active_filter = null;
     public $search = '';
@@ -84,37 +84,37 @@ class Show extends Component
 
     public $delivery_filter = null;
 
-public function filterDelivery($type)
-{
-    if ($type === 'all') {
-        $this->delivery_filter = null;
-    } elseif ($type === 'true' || $type === true) {
-        $this->delivery_filter = true;
-    } elseif ($type === 'false' || $type === false) {
-        $this->delivery_filter = false;
+    public function filterDelivery($type)
+    {
+        if ($type === 'all') {
+            $this->delivery_filter = null;
+        } elseif ($type === 'true' || $type === true) {
+            $this->delivery_filter = true;
+        } elseif ($type === 'false' || $type === false) {
+            $this->delivery_filter = false;
+        }
+        $this->resetPage();
     }
-    $this->resetPage();
-}
 
 
     public function render()
     {
-       $definitions = Definition::query()
-    ->when($this->search, function ($query) {
-        $query->where('name', 'like', "%{$this->search}%")
-            ->orWhere('code', 'like', "%{$this->search}%")
-            ->orWhere('barcode', 'like', "%{$this->search}%");
-    })
-    ->when($this->selected_type, function ($query) {
-        $query->where('type_id', $this->selected_type);
-    })
-    ->when(!is_null($this->active_filter), function ($query) {
-        $query->where('is_active', $this->active_filter);
-    })
-    ->when(!is_null($this->delivery_filter), function ($query) {
-        $query->where('delivery_type', $this->delivery_filter);
-    })
-    ->paginate(10);
+        $definitions = Definition::query()
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', "%{$this->search}%")
+                    ->orWhere('code', 'like', "%{$this->search}%")
+                    ->orWhere('barcode', 'like', "%{$this->search}%");
+            })
+            ->when($this->selected_type, function ($query) {
+                $query->where('type_id', $this->selected_type);
+            })
+            ->when(!is_null($this->active_filter), function ($query) {
+                $query->where('is_active', $this->active_filter);
+            })
+            ->when(!is_null($this->delivery_filter), function ($query) {
+                $query->where('delivery_type', $this->delivery_filter);
+            })
+            ->paginate(10);
 
 
         return view('livewire.definitions.show', [

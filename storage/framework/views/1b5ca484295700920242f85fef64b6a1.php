@@ -60,6 +60,7 @@
                                     <td class="text-center">
 
                                         <div class="d-flex justify-content-center align-items-center gap-2">
+
                                             <button wire:click="payment(<?php echo e($invoice->id); ?>)"
                                                 class="btn btn-icon btn-outline-success btn-sm d-flex justify-content-center align-items-center"
                                                 style="width: 30px; height: 30px;">
@@ -108,11 +109,40 @@
     </div>
 
 
-    
+    <!-- Payment Modal -->
 
+    <!--[if BLOCK]><![endif]--><?php if($showPaymentModal): ?>
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        
+                        <button type="button" class="btn-close" wire:click="$set('showPaymentModal', false)"></button>
+                    </div>
+                    <div class="modal-body">
 
+                        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('paymentinvoice.show', ['invoiceId' => $invoiceId]);
 
+$__html = app('livewire')->mount($__name, $__params, 'lw-2519169757-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </div>
 <?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/invoices/show.blade.php ENDPATH**/ ?>

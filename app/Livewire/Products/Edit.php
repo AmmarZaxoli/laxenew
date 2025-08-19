@@ -20,7 +20,7 @@ class Edit extends Component
 
         $this->price_sell = $this->product->price_sell;
         $this->name = $this->product->definition->name;
-        $this->is_active = (string) $this->product->definition->is_active; // for radio buttons
+        $this->is_active = (string) $this->product->definition->is_active; 
     }
 
     public function update()

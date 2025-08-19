@@ -109,28 +109,23 @@
 
 
     <!-- Payment Modal -->
+
     @if ($showPaymentModal)
         <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Payment</h5>
+                        
                         <button type="button" class="btn-close" wire:click="$set('showPaymentModal', false)"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Modal is open for invoice #{{ $invoiceId }}</p>
+
+                        <livewire:paymentinvoice.show :invoiceId="$invoiceId" />
+
                     </div>
                 </div>
             </div>
         </div>
     @endif
-</div>
-
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </div>

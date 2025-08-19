@@ -8,7 +8,7 @@
  * - Smooth animations and transitions
  */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize sidebar when DOM is fully loaded
     initSidebar();
 });
@@ -23,7 +23,7 @@ function initSidebar() {
     const sidebarBackdrop = document.getElementById('sidebarBackdrop');
     const sidebarToggler = document.querySelector('.sidebar-toggler');
     const body = document.body;
-    
+
     // Check if elements exist before proceeding
     if (!sidebar || !sidebarToggle || !sidebarBackdrop || !sidebarToggler) {
         console.error('Sidebar elements not found');
@@ -63,22 +63,22 @@ function adjustMainContent(sidebar, body) {
  */
 function setupEventListeners(sidebar, sidebarToggle, sidebarBackdrop, sidebarToggler, body) {
     // Desktop toggler
-    sidebarToggler.addEventListener('click', function() {
+    sidebarToggler.addEventListener('click', function () {
         toggleSidebar(sidebar, body);
     });
 
     // Mobile toggler
-    sidebarToggle.addEventListener('click', function() {
+    sidebarToggle.addEventListener('click', function () {
         toggleMobileSidebar(sidebar, sidebarBackdrop);
     });
 
     // Backdrop click
-    sidebarBackdrop.addEventListener('click', function() {
+    sidebarBackdrop.addEventListener('click', function () {
         toggleMobileSidebar(sidebar, sidebarBackdrop);
     });
 
     // Window resize handler
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
         handleResponsiveAdjustments(sidebar, body);
     });
 
@@ -129,7 +129,7 @@ function setActiveMenuItem(sidebar) {
         }
 
         // Handle click events
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             if (this.hasAttribute('data-bs-toggle')) return;
 
             // Remove active class from all links
@@ -140,7 +140,7 @@ function setActiveMenuItem(sidebar) {
 
             // Save active state to localStorage
             localStorage.setItem('activeLink', this.getAttribute('href'));
-            
+
             // Close mobile sidebar if open
             if (window.innerWidth < 992) {
                 toggleMobileSidebar(sidebar, document.getElementById('sidebarBackdrop'));
@@ -157,9 +157,9 @@ function setActiveMenuItem(sidebar) {
  */
 function initCollapseBehavior() {
     const collapseTriggers = document.querySelectorAll('[data-bs-toggle="collapse"]');
-    
+
     collapseTriggers.forEach(trigger => {
-        trigger.addEventListener('click', function() {
+        trigger.addEventListener('click', function () {
             const targetId = this.getAttribute('href');
             const isShowing = this.classList.contains('collapsed');
 
@@ -193,25 +193,25 @@ function handleResponsiveAdjustments(sidebar, body) {
  */
 function addRippleEffect() {
     const navItems = document.querySelectorAll('.nav-link');
-    
+
     navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', function (e) {
             // Remove any existing ripples
             const existingRipples = this.querySelectorAll('.ripple');
             existingRipples.forEach(ripple => ripple.remove());
-            
+
             // Create new ripple
             const ripple = document.createElement('span');
             ripple.classList.add('ripple');
             this.appendChild(ripple);
-            
+
             // Position ripple
             const rect = this.getBoundingClientRect();
             const size = Math.max(rect.width, rect.height);
             ripple.style.width = ripple.style.height = `${size}px`;
-            ripple.style.left = `${e.clientX - rect.left - size/2}px`;
-            ripple.style.top = `${e.clientY - rect.top - size/2}px`;
-            
+            ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+            ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
             // Remove ripple after animation
             ripple.addEventListener('animationend', () => {
                 ripple.remove();
@@ -280,6 +280,10 @@ window.addEventListener('show-delete-productofinvoicebuy', event => {
     });
 });
 
+
+
+
+
 /**
  * Success Notification
  */
@@ -297,9 +301,9 @@ window.addEventListener('driverDelete', event => {
 /**
  * Livewire Event Handlers
  */
-document.addEventListener('livewire:load', function() {
+document.addEventListener('livewire:load', function () {
     // Handle receipt printing
-    Livewire.on('receipt-printed', function(invoiceId) {
+    Livewire.on('receipt-printed', function (invoiceId) {
         window.open('/receipt/print', '_blank', 'width=600,height=800');
     });
 });

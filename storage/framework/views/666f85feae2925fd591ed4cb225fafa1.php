@@ -9,18 +9,15 @@
             </h2>
             <h1><?php echo e($invoice->name_invoice); ?></h1>
             <div>
-                
-                <button wire:click="toggleAddForm" class="btn btn-outline-success">
+                <button wire:click="$dispatch('openAddForm')" class="btn btn-outline-success">
                     <i class="fas fa-plus me-1"></i> إضافة منتج
                 </button>
-
             </div>
         </div>
 
         <div class="input-group mb-3">
             <input type="search" autocomplete="off" wire:model.live.debounce.500ms="search" class="form-control"
                 placeholder="ابحث باسم المنتج أو الباركود...">
-            
         </div>
 
         <div wire:loading.delay wire:target="search" class="text-center py-2">
@@ -29,9 +26,39 @@
             </div>
         </div>
 
-        
 
-        
+
+        <!-- Modal -->
+        <div class="modal fade" id="addFormModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">إضافة منتج</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('add-invoices.addedit.insertproduct', ['invoiceId' => $invoiceId,'companyName' => $namecompany]);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-1605306012-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="card mb-4 border-0 shadow-sm">
             <div class="card-body p-0">
@@ -98,7 +125,7 @@
         <div class="invoice-summary-container mb-5">
             <div class="row gy-3">
                 <!-- Total Price -->
-                <div class="col-12 col-sm-6 col-lg">
+                <div class="col-12 col-sm-4 col-lg">
                     <div class="summary-card total-card">
                         <div class="card-icon">
                             <i class="fas fa-file-invoice"></i>
@@ -111,7 +138,7 @@
                 </div>
 
                 <!-- Discount -->
-                <div class="col-6 col-sm-3 col-lg">
+                <div class="col-6 col-sm-4 col-lg">
                     <div class="summary-card discount-card">
                         <div class="card-icon">
                             <i class="fas fa-percent"></i>
@@ -124,7 +151,7 @@
                 </div>
 
                 <!-- After Discount -->
-                <div class="col-6 col-sm-3 col-lg">
+                <div class="col-6 col-sm-4 col-lg">
                     <div class="summary-card net-card">
                         <div class="card-icon">
                             <i class="fas fa-hand-holding-usd"></i>
@@ -256,6 +283,7 @@
                 </div>
             </div>
 
+
             <style>
                 .modal-content {
                     border-radius: 10px;
@@ -278,8 +306,7 @@
                     box-shadow: none;
                     border-color: #dee2e6;
                 }
-            </style>
-            <style>
+
                 .invoice-summary-container {
                     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 }
@@ -377,8 +404,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <label for="note" class="form-label">ملاحظة</label>
-                    <textarea wire:model="note" class="form-control" id="note" rows="3"
-                        placeholder="أضف ملاحظة إذا لزم الأمر..."></textarea>
+                    <textarea class="form-control" id="note" rows="3" placeholder="أضف ملاحظة إذا لزم الأمر..."></textarea>
                 </div>
             </div>
         </div>
@@ -396,6 +422,14 @@
             if (modal) {
                 modal.hide();
             }
+        });
+
+
+        document.addEventListener("livewire:init", () => {
+            Livewire.on("openAddForm", () => {
+                let myModal = new bootstrap.Modal(document.getElementById('addFormModal'));
+                myModal.show();
+            });
         });
     </script>
 

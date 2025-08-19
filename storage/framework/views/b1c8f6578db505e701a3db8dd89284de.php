@@ -5,7 +5,7 @@
 
             <div class="mb-3">
                 <label class="form-label">سعر البيع</label>
-                <input type="number" class="form-control"  step="250" wire:model.live="price_sell" placeholder="أدخل الكمية">
+                <input type="number" class="form-control"  step="1" wire:model="price_sell" placeholder="أدخل مبلغ">
                 <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['price_sell'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -15,7 +15,6 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
             </div>
-<?php echo e($price_sell); ?>
 
             <div class="mb-10">
                 <label class="form-label d-block">حالة المنتج</label>

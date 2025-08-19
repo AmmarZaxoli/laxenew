@@ -18,7 +18,7 @@ class Edit extends Component
     public $definition;
     public $definition_id;
 
-    // Form fields
+
     public $name;
     public $code;
     public $barcode;
@@ -27,7 +27,7 @@ class Edit extends Component
     public $is_active;
     public $delivery_type;
 
-    // Image handling
+    
     public $new_image;
     public $current_image;
     public $remove_image = false;
