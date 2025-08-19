@@ -71,33 +71,37 @@ class Multiinvoices extends Component
         $this->resetSelectedInvoices();
     }
 
-    public function updatedSelectAll($value)
-    {
-        $filteredInvoices = Sell_invoice::with(['customer', 'sell'])
-            ->whereHas('sell', fn($q) => $q->where('cash', 0))
-            ->when($this->search, function ($q) {
-                $q->where(function ($sub) {
-                    $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
-                        ->orWhereHas('customer', fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%'));
-                });
-            })
-            ->when(
-                $this->selected_driver,
-                fn($q) =>
-                $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
-            )
-            ->when(
-                $this->filteredByDate && $this->date_from && $this->date_to,
-                fn($q) =>
-                $q->whereDate('date_sell', '>=', $this->date_from)
-                    ->whereDate('date_sell', '<=', $this->date_to)
-            )
-            ->pluck('num_invoice_sell')
-            ->map(fn($num) => (string) $num)
-            ->toArray();
+   public function updatedSelectAll($value)
+{
+    $filteredInvoices = Sell_invoice::with(['customer', 'sell'])
+        ->whereHas('sell', fn($q) => $q->where('cash', 0))
+        ->when($this->search, function ($q) {
+            $q->where(function ($sub) {
+                $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('customer', fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%'));
+            });
+        })
+        ->when(
+            $this->selected_driver,
+            fn($q) =>
+            $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
+        )
+        ->when(
+            $this->filteredByDate && $this->date_from && $this->date_to,
+            fn($q) =>
+            $q->whereDate('date_sell', '>=', $this->date_from)
+                ->whereDate('date_sell', '<=', $this->date_to)
+        )
+        ->when(!is_null($this->printedStatus), function ($q) {
+            $q->whereHas('customer', fn($q) => $q->where('print', $this->printedStatus));
+        })
+        ->pluck('num_invoice_sell')
+        ->map(fn($num) => (string) $num)
+        ->toArray();
 
-        $this->selectedInvoices = $value ? $filteredInvoices : [];
-    }
+    $this->selectedInvoices = $value ? $filteredInvoices : [];
+}
+
 
     public function updatedSelectedInvoices()
     {

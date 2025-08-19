@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 class Edit extends Component
 {
     public $search = '';
+    public $namecompany = '';
 
     public $invoiceId;
     public $invoice;

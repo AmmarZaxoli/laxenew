@@ -70,6 +70,7 @@ class Sell extends Component
     public $delivery_type = false;
     public bool $printAfterSave = false;
     public $lastSavedInvoiceId = null;
+    public $barcodeInput;
 
     protected $casts = [
         'cashornot' => 'boolean',
@@ -83,7 +84,7 @@ class Sell extends Component
     public function updatedSearchOffer()
     {
         if (empty($this->search_offer)) {
-            $this->offers = []; // Optional: or Offer::all() if you want default load
+            $this->offers = [];
             return;
         }
 
@@ -188,7 +189,7 @@ class Sell extends Component
         $this->date_sell = now()->format('Y-m-d\TH:i');
 
         if ($this->delivery_type === true) {
-            $this->discount -= $this->pricetaxi; // remove taxi price
+            $this->discount -= $this->pricetaxi;
             $this->delivery_type = false;
         }
     }
@@ -218,6 +219,11 @@ class Sell extends Component
             'selectedoffer',
         );
         $this->date_sell = now()->format('Y-m-d\TH:i');
+
+        if ($this->delivery_type === true) {
+            $this->discount -= $this->pricetaxi;
+            $this->delivery_type = false;
+        }
     }
 
     public $dd;
@@ -443,6 +449,91 @@ class Sell extends Component
             flash()->addError('حدث خطأ أثناء التحديث: ' . $e->getMessage());
         }
     }
+
+   public function addProductByBarcode()
+{
+    if (empty($this->barcodeInput)) {
+        flash()->error('الرجاء إدخال الباركود.');
+        return;
+    }
+
+    DB::beginTransaction();
+
+    try {
+        // ✅ البحث عن المنتج عبر جدول definitions
+        $product = Product::with('definition')
+            ->whereHas('definition', function ($q) {
+                $q->where('barcode', $this->barcodeInput);
+            })
+            ->lockForUpdate()
+            ->first();
+
+        if (!$product) {
+            flash()->error('لم يتم العثور على منتج بهذا الباركود.');
+            DB::rollBack();
+            $this->barcodeInput = '';
+            return;
+        }
+
+        $availableStock = $product->quantity;
+
+        $index = collect($this->selectedProducts)
+            ->search(fn($item) => $item['id'] == $product->id);
+
+        if ($index !== false) {
+            flash()->warning('هذا المنتج موجود بالفعل في السلة.');
+            DB::rollBack();
+            $this->barcodeInput = '';
+            return;
+        }
+
+        if ($availableStock < 1) {
+            flash()->error('الكمية غير متوفرة.');
+            DB::rollBack();
+            $this->barcodeInput = '';
+            return;
+        }
+
+        if ($product->definition->delivery_type == 1 && (empty($this->pricetaxi) || $this->pricetaxi == 0)) {
+            flash()->error('يرجى إدخال سعر التاكسي قبل إضافة هذا المنتج.');
+            DB::rollBack();
+            return;
+        }
+
+        // تحديث الكمية
+        $product->quantity -= 1;
+        $product->save();
+
+        // إضافة للسلة
+        $this->selectedProducts[] = [
+            'id' => $product->id,
+            'name' => $product->definition->name ?? '',
+            'code' => $product->definition->code ?? '',
+            'barcode' => $product->definition->barcode ?? '',
+            'type_id' => $product->definition->type_id ?? '',
+            'quantity' => 1,
+            'stock' => $availableStock - 1,
+            'price' => $product->price_sell,
+            'total' => $product->price_sell,
+            'delivery_type' => $product->definition->delivery_type,
+            'pricetaxi' => $product->definition->delivery_type == 1 ? (int) $this->pricetaxi : 0,
+        ];
+
+        $this->calculateDeliveryStatus();
+        $this->calculateGeneralPrice();
+
+        DB::commit();
+
+        // ✅ تفريغ الباركود بعد الإضافة الناجحة
+        $this->barcodeInput = '';
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        flash()->error('حدث خطأ: ' . $e->getMessage());
+        $this->barcodeInput = '';
+    }
+}
+
     public function addProduct($productId)
     {
         $product = Product::with('definition')->lockForUpdate()->find($productId);
@@ -467,6 +558,15 @@ class Sell extends Component
                 return;
             }
 
+
+            // If delivery_type = 1 → require pricetaxi before adding
+            if ($product->definition->delivery_type == 1 && (empty($this->pricetaxi) || $this->pricetaxi == 0)) {
+                flash()->error('يرجى إدخال سعر التسليم (سعر التاكسي) قبل إضافة هذا المنتج.');
+                DB::rollBack();
+                return;
+            }
+
+
             // Decrease stock
             $product->quantity -= 1;
             $product->save();
@@ -485,6 +585,8 @@ class Sell extends Component
                 'price' => $product->price_sell,
                 'total' => $product->price_sell,
                 'delivery_type' => $product->definition->delivery_type,
+                'pricetaxi' => $product->definition->delivery_type == 1 ? (int) $this->pricetaxi : 0,
+
             ];
 
             // Check for free delivery
@@ -499,6 +601,7 @@ class Sell extends Component
 
     public function calculateDeliveryStatus()
     {
+
         $hasFreeDelivery = false;
 
         // Check products for free delivery
@@ -751,12 +854,15 @@ class Sell extends Component
             'discount' => (float)($this->discount ?? 0),
             'total_price_afterDiscount_invoice' => $this->generalprice,
             'cash' => $this->cashornot,
-        'user' => auth('account')->user()->name, 
+            'user' => auth('account')->user()->name,
             'sell_invoice_id' => $idInvoice,
         ]);
     }
 
-
+    public function updatedPricetaxi($value)
+    {
+        $this->pricetaxi = $value === null || $value === '' ? 0 : $value;
+    }
     public function sellingproduct($idInvoice)
     {
         $productsData = [];
@@ -914,9 +1020,10 @@ class Sell extends Component
         $this->date_sell = now()->format('Y-m-d\TH:i');
     }
 
-    public function updatedDiscount()
+    public function updatedDiscount($value)
     {
         $this->calculateGeneralPrice();
+        $this->discount = is_numeric($value) ? (int) $value : 0;
     }
 
     public function calculateGeneralPrice()

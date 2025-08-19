@@ -60,6 +60,7 @@
                                     <td class="text-center">
 
                                         <div class="d-flex justify-content-center align-items-center gap-2">
+
                                             <button wire:click="payment({{ $invoice->id }})"
                                                 class="btn btn-icon btn-outline-success btn-sm d-flex justify-content-center align-items-center"
                                                 style="width: 30px; height: 30px;">
@@ -107,24 +108,29 @@
     </div>
 
 
-    {{-- @if ($editModal)
-        <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5)">
-            <div class="modal-dialog modal-xl">
+    <!-- Payment Modal -->
+    @if ($showPaymentModal)
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">تعديل الفاتورة</h5>
-                        <button type="button" wire:click="closeModal" class="btn-close"></button>
+                        <h5 class="modal-title">Payment</h5>
+                        <button type="button" class="btn-close" wire:click="$set('showPaymentModal', false)"></button>
                     </div>
                     <div class="modal-body">
-                        <livewire:add-invoices.edit :invoiceId="$editingInvoiceId" :key="'edit-' . $editingInvoiceId" />
+                        <p>Modal is open for invoice #{{ $invoiceId }}</p>
                     </div>
                 </div>
             </div>
         </div>
-    @endif --}}
+    @endif
+</div>
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </div>

@@ -15,10 +15,19 @@ use function Laravel\Prompts\error;
 class Show extends Component
 {
     use WithPagination;
-    // In your Livewire component class
+
     public $editModal = false;
+    public $showPaymentModal = false;
+    public $invoiceId;
+
     public $editingInvoiceId = null;
     public $editingInvoice = null;
+
+    public function payment($invoiceId)
+    {
+        $this->invoiceId = $invoiceId;
+        $this->showPaymentModal = true;
+    }
 
     public function editInvoice($invoiceId)
     {
@@ -57,7 +66,7 @@ class Show extends Component
     public function deleteConfirmation($id)
     {
         $this->id = $id;
-        // This sends the event to the browser (JS)
+
         $this->dispatch('show-delete-buyinvoice');
     }
 

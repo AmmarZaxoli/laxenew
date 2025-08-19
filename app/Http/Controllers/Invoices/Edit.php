@@ -18,6 +18,6 @@ class Edit extends Controller
         $products = Sub_Buy_Products_invoice::where('num_invoice_id', $invoice->id)->get();
 
         // Pass both invoice and products to the view
-        return view('invoices.edit', compact('invoice', 'products'));
+        return view('Invoices.edit', compact('invoice', 'products'));
     }
 }

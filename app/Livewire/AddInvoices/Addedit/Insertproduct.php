@@ -99,6 +99,14 @@ class Insertproduct extends Component
         $this->profit = $buy > 0 ? round((($sell - $buy) / $buy) * 100, 2) : 0;
     }
 
+    public function removeProduct($index)
+    {
+        if (isset($this->products[$index])) {
+            unset($this->products[$index]);
+            $this->products = array_values($this->products); // إعادة ترتيب المصفوفة
+            sweetalert()->addInfo('تم حذف المنتج من الفاتورة.');
+        }
+    }
 
 
 

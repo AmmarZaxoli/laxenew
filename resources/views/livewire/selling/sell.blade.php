@@ -75,7 +75,7 @@
                                     <div class="input-container">
                                         <input type="number" id="pricetaxi" name="price"
                                             class="form-control price-input" wire:model.live="pricetaxi" min="0"
-                                            step="1000">
+                                            step="1000" @blur="$wire.set('pricetaxi', $event.target.value || 0)">
 
                                         <div class="input-actions">
                                             <button type="button" class="quick-select-btn"
@@ -87,16 +87,8 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                         </div>
-
-
-
-
                     </div>
 
 
@@ -105,9 +97,10 @@
                         <div class="col-md-6 mb-3">
                             <label for="barcode">الباركود</label>
                             <input type="text" id="searchInput" class="form-control" placeholder="أدخل باركود المنتج"
+                                wire:model.defer="barcodeInput" wire:keydown.enter.prevent="addProductByBarcode"
                                 autocomplete="off">
-
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label for="productCode">الكود</label>
                             <input type="text" name="code" id="productCode" wire:model.live='search_code_name'
@@ -157,11 +150,12 @@
                                 </label>
                             </div>
                         </div>
-                    <div style="margin-right: 18px;" class="form-check form-switch">
-                    <input style="font-size: 20px;" type="checkbox" wire:model="printAfterSave" class="form-check-input">
-                    <label class="form-check-label ms-2 fw-bold">طباعة بعد الحفظ</label>
-                     </div>
-                     <iframe id="printFrame" style="display:none;"></iframe>
+                        <div style="margin-right: 18px;" class="form-check form-switch">
+                            <input style="font-size: 20px;" type="checkbox" wire:model="printAfterSave"
+                                class="form-check-input">
+                            <label class="form-check-label ms-2 fw-bold">طباعة بعد الحفظ</label>
+                        </div>
+                        <iframe id="printFrame" style="display:none;"></iframe>
 
                     </div>
                 </div>
@@ -292,7 +286,7 @@
 
     <div class="row" style="margin-top: -50px;">
         <!-- First Card -->
-        <div  class="col-md-6">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header text-black d-flex justify-content-between align-items-center">
                     <h5 class="mb-2">المنتجات المحددة</h5>
@@ -447,98 +441,95 @@
 
 
     <div class="card h-100">
-    <div class="d-flex justify-content-between align-items-start p-3 flex-wrap" style="gap: 20px;">
-        
-        <!-- Summary Card (اليسار) -->
-        <div class="card border-0 shadow-sm" style="width: 300px;">
-            <div class="card-body p-3">
-                <!-- Subtotal -->
-                <div class="mb-2 d-flex justify-content-between align-items-center">
-                    <span class="text-muted small">الإجمالي الفرعي:</span>
-                    <span class="fw-bold">{{ number_format($this->totalPrice) }}</span>
-                </div>
+        <div class="d-flex justify-content-between align-items-start p-3 flex-wrap" style="gap: 20px;">
 
-                <!-- Discount -->
-                <div class="mb-2 d-flex justify-content-between align-items-center">
-                    <span class="text-muted small">الخصم:</span>
-                    <div class="input-group input-group-sm" style="width: 120px;">
-                        <input type="number" class="form-control form-control-sm border-danger"
-                            wire:model.live="discount" min="0" step="1000">
+            <!-- Summary Card (اليسار) -->
+            <div class="card border-0 shadow-sm" style="width: 300px;">
+                <div class="card-body p-3">
+                    <!-- Subtotal -->
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <span class="text-muted small">الإجمالي الفرعي:</span>
+                        <span class="fw-bold">{{ number_format($this->totalPrice) }}</span>
+                    </div>
+
+                    <!-- Discount -->
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <span class="text-muted small">الخصم:</span>
+                        <div class="input-group input-group-sm" style="width: 120px;">
+                            <input type="number" class="form-control form-control-sm border-danger"
+                                wire:model.live="discount" min="0" step="1000">
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="pt-2 mt-2 border-top d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold small">الإجمالي:</span>
+                        <span class="fw-bold text-success fs-5">
+                            {{ number_format($generalprice) }}
+                        </span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Total -->
-                <div class="pt-2 mt-2 border-top d-flex justify-content-between align-items-center">
-                    <span class="fw-semibold small">الإجمالي:</span>
-                    <span class="fw-bold text-success fs-5">
-                        {{ number_format($generalprice) }}
-                    </span>
+            <!-- Free Delivery Message (centered) -->
+            @if ($delivery_type == 1)
+                <div class="d-flex align-items-center justify-content-center text-success fw-bold fs-5"
+                    style="min-width: 200px;">
+                    🚚 توصيل مجاني
                 </div>
+            @endif
+
+            <!-- Action Buttons (اليمين) -->
+            <div class="d-flex gap-2 flex-wrap align-items-start" style="min-width: 200px; margin-top:50px;">
+                <button type="submit"
+                    class="btn btn-outline-primary d-flex align-items-center justify-content-center py-2 px-4"
+                    wire:loading.attr="disabled" wire:target="gitprofit" wire:click="gitprofit">
+                    <span wire:loading.remove wire:target="gitprofit">
+                        <i class="fas fa-save me-2"></i> حفظ الفاتورة
+                    </span>
+                    <span wire:loading wire:target="gitprofit">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                    </span>
+                </button>
+
+                <button type="button"
+                    class="btn btn-outline-danger d-flex align-items-center justify-content-center py-2 px-4"
+                    wire:loading.attr="disabled" wire:target="refresh" wire:click="refresh">
+                    <span wire:loading.remove wire:target="refresh">
+                        <i class="fas fa-trash-alt me-2"></i> مسح
+                    </span>
+                    <span wire:loading wire:target="refresh">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                    </span>
+                </button>
             </div>
+
         </div>
-
-        <!-- Free Delivery Message (centered) -->
-        @if($delivery_type == 1)
-            <div class="d-flex align-items-center justify-content-center text-success fw-bold fs-5" 
-                 style="min-width: 200px;">
-                🚚 توصيل مجاني
-            </div>
-        @endif
-
-        <!-- Action Buttons (اليمين) -->
-        <div class="d-flex gap-2 flex-wrap align-items-start" style="min-width: 200px; margin-top:50px;">
-            <button type="submit"
-                class="btn btn-outline-primary d-flex align-items-center justify-content-center py-2 px-4"
-                wire:loading.attr="disabled" wire:target="gitprofit" wire:click="gitprofit">
-                <span wire:loading.remove wire:target="gitprofit">
-                    <i class="fas fa-save me-2"></i> حفظ الفاتورة
-                </span>
-                <span wire:loading wire:target="gitprofit">
-                    <i class="fas fa-spinner fa-spin me-2"></i>
-                </span>
-            </button>
-
-            <button type="button"
-                class="btn btn-outline-danger d-flex align-items-center justify-content-center py-2 px-4"
-                wire:loading.attr="disabled" wire:target="refresh" wire:click="refresh">
-                <span wire:loading.remove wire:target="refresh">
-                    <i class="fas fa-trash-alt me-2"></i> مسح
-                </span>
-                <span wire:loading wire:target="refresh">
-                    <i class="fas fa-spinner fa-spin me-2"></i>
-                </span>
-            </button>
-        </div>
-
     </div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    Livewire.on('trigger-print', (url) => {
-        const iframe = document.getElementById('printFrame');
-        
-        // Reset src to force reload even if same URL
-        iframe.src = '';
-        
-        setTimeout(() => {
-            iframe.src = url;
-            iframe.onload = function() {
-                try {
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
-                } catch (e) {
-                    console.error("Printing failed:", e);
-                }
-            };
-        }, 50);
-    });
-});
-</script>
-    <style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Livewire.on('trigger-print', (url) => {
+                const iframe = document.getElementById('printFrame');
 
+                // Reset src to force reload even if same URL
+                iframe.src = '';
 
+                setTimeout(() => {
+                    iframe.src = url;
+                    iframe.onload = function() {
+                        try {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+                        } catch (e) {
+                            console.error("Printing failed:", e);
+                        }
+                    };
+                }, 50);
+            });
+        });
+    </script>
     <style>
-        .border-green {
+        <style>.border-green {
             border: 1px solid green;
         }
 

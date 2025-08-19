@@ -46,8 +46,8 @@ class Show extends Component
     public $customer;
     public $sell;
     public $totalprofit;
-public $startDate;
-public $endDate;
+    public $startDate;
+    public $endDate;
 
     #[Session('selectedoffer')]
     public $selectedoffer = [];
@@ -66,14 +66,14 @@ public $endDate;
     }
 
 
-   public function mount()
-{
-    $this->types = Type::all();
+    public function mount()
+    {
+        $this->types = Type::all();
 
-    $today = now()->format('Y-m-d');
-    $this->startDate = $today;
-    $this->endDate = $today;
-}
+        $today = now()->format('Y-m-d');
+        $this->startDate = $today;
+        $this->endDate = $today;
+    }
 
 
 
@@ -383,7 +383,7 @@ public $endDate;
 
         if ($this->customer) {
             $this->customer->profit_invoice += $totalProfit;
-            $this->customer->profit_invoice_after_discount = $this->customer->profit_invoice - (float)($this->discount ?? 0);
+
             $this->customer->save();
         }
         if ($this->sell) {
@@ -518,7 +518,7 @@ public $endDate;
             ->where('id', $offerId)
             ->first();
 
-         
+
 
         if ($selloffer && $selloffer->quantity == 0) {
             $selloffer->delete();
@@ -622,6 +622,10 @@ public $endDate;
     }
     public function EditInvoice()
     {
+        if(empty($this->discount)){
+            $this->discount=0;
+        }
+        
         $this->customer->mobile = $this->mobile;
         $this->customer->address = $this->address;
         $this->customer->note = $this->note;
