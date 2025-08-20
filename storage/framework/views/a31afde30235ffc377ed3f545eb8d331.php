@@ -1,5 +1,5 @@
 
-
+<?php $__env->startSection('title', 'لوحة بيع'); ?>
 <?php $__env->startSection('content'); ?>
    <?php
 $__split = function ($name, $params = []) {

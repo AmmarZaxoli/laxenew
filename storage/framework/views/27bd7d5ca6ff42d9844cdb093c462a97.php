@@ -2,9 +2,12 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <link rel="icon" type="image/png" href="<?php echo e(asset('images/logolaxe.png')); ?>">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم المتطورة</title>
+        <title><?php echo $__env->yieldContent('title', 'لوحة التحكم المتطورة'); ?></title> <!-- default title -->
+
     <!-- Bootstrap 5 RTL CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <!-- Bootstrap Icons -->
@@ -260,16 +263,16 @@
                             </ul>
                         </div>
                     </li>
-                        <li class="nav-item">
-                    <a class="nav-link text-danger" href="#" onclick="confirmLogout()">
-                        <span class="nav-icon"><i class="bi bi-box-arrow-left"></i></span>
-                        <span class="nav-text">تسجيل الخروج</span>
-                    </a>
-                    <form id="logout-form" action="<?php echo e(route('logout')); ?>" style="display: none;">
-                        <?php echo csrf_field(); ?>
-                    </form>
-                </li>
-               
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="#" onclick="confirmLogout()">
+                            <span class="nav-icon"><i class="bi bi-box-arrow-left"></i></span>
+                            <span class="nav-text">تسجيل الخروج</span>
+                        </a>
+                        <form id="logout-form" action="<?php echo e(route('logout')); ?>" style="display: none;">
+                            <?php echo csrf_field(); ?>
+                        </form>
+                    </li>
+
                 </ul>
             </div>
         </div>
@@ -319,14 +322,16 @@ if (isset($__slots)) unset($__slots);
 
     <script>
         document.addEventListener('livewire:init', () => {
-            Livewire.on('print-driver-invoices', async ({ url }) => {
+            Livewire.on('print-driver-invoices', async ({
+                url
+            }) => {
                 try {
                     const iframe = document.createElement('iframe');
                     iframe.style.display = 'none';
                     iframe.src = url;
                     document.body.appendChild(iframe);
 
-                    iframe.onload = function () {
+                    iframe.onload = function() {
                         setTimeout(() => {
                             iframe.contentWindow.focus();
                             iframe.contentWindow.print();
@@ -350,7 +355,7 @@ if (isset($__slots)) unset($__slots);
                     iframe.src = url;
                     document.body.appendChild(iframe);
 
-                    iframe.onload = function () {
+                    iframe.onload = function() {
                         setTimeout(() => {
                             iframe.contentWindow.focus();
                             iframe.contentWindow.print();
@@ -366,32 +371,33 @@ if (isset($__slots)) unset($__slots);
                 }
             });
         });
+
         function printInvoice(invoiceId) {
-        if (!invoiceId) {
-            alert('Invoice ID is missing!');
-            return;
-        }
+            if (!invoiceId) {
+                alert('Invoice ID is missing!');
+                return;
+            }
 
-        // Build the URL for single invoice printing
-        const url = `/print/invoice/${invoiceId}`; // adjust route if needed
-        try {
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = url;
-            document.body.appendChild(iframe);
+            // Build the URL for single invoice printing
+            const url = `/print/invoice/${invoiceId}`; // adjust route if needed
+            try {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = url;
+                document.body.appendChild(iframe);
 
-            iframe.onload = function () {
-                setTimeout(() => {
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
-                    setTimeout(() => document.body.removeChild(iframe), 500);
-                }, 500);
-            };
-        } catch (error) {
-            console.error('Print failed:', error);
-            alert('حدث خطأ أثناء الطباعة. الرجاء المحاولة مرة أخرى.');
+                iframe.onload = function() {
+                    setTimeout(() => {
+                        iframe.contentWindow.focus();
+                        iframe.contentWindow.print();
+                        setTimeout(() => document.body.removeChild(iframe), 500);
+                    }, 500);
+                };
+            } catch (error) {
+                console.error('Print failed:', error);
+                alert('حدث خطأ أثناء الطباعة. الرجاء المحاولة مرة أخرى.');
+            }
         }
-    }
     </script>
     <script>
         function confirmLogout() {
@@ -414,4 +420,5 @@ if (isset($__slots)) unset($__slots);
     </script>
 </body>
 
-</html><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/layouts/index.blade.php ENDPATH**/ ?>
+</html>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/layouts/index.blade.php ENDPATH**/ ?>

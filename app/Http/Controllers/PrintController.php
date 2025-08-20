@@ -185,7 +185,7 @@ class PrintController extends Controller
                     'taxi_price' => $taxi_price,
                     'total_price_afterDiscount_invoice' => $total_price_afterDiscount_invoice,
                     'show_header' => true,
-                    'show_footer' => $pageIndex === $pageCount - 1, // only last page
+                    'show_footer' => $pageIndex === $pageCount - 1, 
                 ];
             }
         }
