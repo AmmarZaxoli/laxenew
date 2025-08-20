@@ -13,7 +13,7 @@ class PrintController extends Controller
     public function printSingle($id)
     {
 
-        $itemsPerPage = 7; // max products per page
+        $itemsPerPage = 6; // max products per page
 
         $invoice = Sell_invoice::with(['customer.driver', 'products', 'offersell', 'sell'])
             ->findOrFail($id);
@@ -125,7 +125,7 @@ class PrintController extends Controller
         // $drivers = $invoices->pluck('customer.driver.nameDriver')->unique()->filter();
         // $driverName = $drivers->count() === 1 ? $drivers->first() : 'عدة سواق';
 
-        $itemsPerPage = 7; // Products per page
+        $itemsPerPage = 6; // Products per page
         $preparedInvoices = [];
         $barcodeGenerator = new DNS1D();
 
