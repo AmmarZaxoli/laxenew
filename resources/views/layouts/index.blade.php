@@ -6,7 +6,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>@yield('title', 'لوحة التحكم المتطورة')</title> <!-- default title -->
+    <title>@yield('title', 'لوحة التحكم المتطورة')</title> <!-- default title -->
 
     <!-- Bootstrap 5 RTL CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
@@ -82,26 +82,6 @@
             <div class="nav-group">
                 <div class="nav-group-title">الإدارة</div>
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::is('driver.create', 'driver.*') ? '' : 'collapsed' }}"
-                            data-bs-toggle="collapse" href="#driversMenu" role="button"
-                            aria-expanded="{{ Route::is('driver.create', 'driver.*') ? 'true' : 'false' }}">
-                            <span class="nav-icon"><i class="bi bi-truck"></i></span>
-                            <span class="nav-text">إدارة السوائق</span>
-                            <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
-                        </a>
-                        <div class="collapse {{ Route::is('driver.create', 'driver.*') ? 'show' : '' }}"
-                            id="driversMenu">
-                            <ul class="submenu">
-                                <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('driver.create') ? 'active' : '' }}"
-                                        href="{{ route('driver.create') }}">
-                                        <span class="nav-text">إضافة سائق</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('invoice_control.create', 'invoice_control.*') ? 'active' : '' }}"
@@ -112,21 +92,6 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('returnsell.create', 'returnsell.*') ? 'active' : '' }}"
-                            href="{{ route('returnsell.create') }}">
-                            <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
-                            <span class="nav-text">إرجاع الفواتير</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::is('expenses.create', 'expenses.*') ? 'active' : '' }}"
-                            href="{{ route('expenses.create') }}">
-                            <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
-                            <span class="nav-text">مصروفات</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ Route::is('print.create', 'print.*') ? 'active' : '' }}"
                             href="{{ route('print.create') }}">
                             <span class="nav-icon"><i class="bi bi-printer"></i></span>
@@ -136,18 +101,10 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('companys.create') ? 'active' : '' }}"
-                            href="{{ route('companys.create') }}">
-                            <span class="nav-icon"><i class="bi bi-buildings"></i></span>
-                            <span class="nav-text">إضافة شركة</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::is('accounts.create', 'accounts.*') ? 'active' : '' }}"
-                            href="{{ route('accounts.create') }}">
-                            <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
-                            <span class="nav-text">الحسابات</span>
+                        <a class="nav-link {{ Route::is('returnsell.create', 'returnsell.*') ? 'active' : '' }}"
+                            href="{{ route('returnsell.create') }}">
+                            <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
+                            <span class="nav-text">إرجاع الفواتير</span>
                         </a>
                     </li>
 
@@ -185,32 +142,6 @@
                         </div>
                     </li>
 
-                    <!-- Invoices Management -->
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::is('add_Invoices.create') ? '' : 'collapsed' }}"
-                            data-bs-toggle="collapse" href="#invoicesMenu" role="button"
-                            aria-expanded="{{ Route::is('add_Invoices.create') ? 'true' : 'false' }}">
-                            <span class="nav-icon"><i class="bi bi-currency-dollar"></i></span>
-                            <span class="nav-text">شراء القوائم</span>
-                            <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
-                        </a>
-                        <div class="collapse {{ Route::is('add_Invoices.create') ? 'show' : '' }}" id="invoicesMenu">
-                            <ul class="submenu">
-                                <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
-                                        href="{{ route('add_Invoices.create') }}">
-                                        <span class="nav-text">إضافة القوائم</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
-                                        href="{{ route('show_Invoices.create') }}">
-                                        <span class="nav-text">عرض القوائم</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
 
                     <!-- Offers Management -->
                     <li class="nav-item">
@@ -238,6 +169,96 @@
                             </ul>
                         </div>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('driver.create', 'driver.*') ? '' : 'collapsed' }}"
+                            data-bs-toggle="collapse" href="#driversMenu" role="button"
+                            aria-expanded="{{ Route::is('driver.create', 'driver.*') ? 'true' : 'false' }}">
+                            <span class="nav-icon"><i class="bi bi-truck"></i></span>
+                            <span class="nav-text">إدارة السوائق</span>
+                            <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
+                        </a>
+                        <div class="collapse {{ Route::is('driver.create', 'driver.*') ? 'show' : '' }}"
+                            id="driversMenu">
+                            <ul class="submenu">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('driver.create') ? 'active' : '' }}"
+                                        href="{{ route('driver.create') }}">
+                                        <span class="nav-text">إضافة سائق</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('expenses.create', 'expenses.*') ? 'active' : '' }}"
+                            href="{{ route('expenses.create') }}">
+                            <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
+                            <span class="nav-text">مصروفات</span>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('companys.create') ? 'active' : '' }}"
+                            href="{{ route('companys.create') }}">
+                            <span class="nav-icon"><i class="bi bi-buildings"></i></span>
+                            <span class="nav-text">إضافة شركة</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('accounting.create') ? 'active' : '' }}"
+                            href="{{ route('accounting.create') }}">
+                            <span class="nav-icon"><i class="bi bi-buildings"></i></span>
+                            <span class="nav-text">accounting</span>
+                        </a>
+                    </li>
+
+                    <!-- Invoices Management -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('add_Invoices.create') ? '' : 'collapsed' }}"
+                            data-bs-toggle="collapse" href="#invoicesMenu" role="button"
+                            aria-expanded="{{ Route::is('add_Invoices.create') ? 'true' : 'false' }}">
+                            <span class="nav-icon"><i class="bi bi-currency-dollar"></i></span>
+                            <span class="nav-text">شراء القوائم</span>
+                            <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
+                        </a>
+                        <div class="collapse {{ Route::is('add_Invoices.create') ? 'show' : '' }}" id="invoicesMenu">
+                            <ul class="submenu">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
+                                        href="{{ route('add_Invoices.create') }}">
+                                        <span class="nav-text">إضافة القوائم</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('add_Invoices.create') ? 'active' : '' }}"
+                                        href="{{ route('show_Invoices.create') }}">
+                                        <span class="nav-text">عرض القوائم</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('accounts.create', 'accounts.*') ? 'active' : '' }}"
+                            href="{{ route('accounts.create') }}">
+                            <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
+                            <span class="nav-text">إدارة المستخدمين</span>
+                        </a>
+                    </li>
+
+
+
+
+
                 </ul>
             </div>
 

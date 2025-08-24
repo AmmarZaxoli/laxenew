@@ -4,7 +4,7 @@
 @section('title', 'لوحة الحسابات')
     <div class="card body formtype">
         <div class="header d-flex justify-content-between align-items-center mb-1">
-            <a data-bs-toggle="modal" data-bs-target="#insertModal" class="btn btn-success">إضافة الحساب</a>
+            <a data-bs-toggle="modal" data-bs-target="#insertModal" class="btn btn-outline-success">إضافة المستخدمين</a>
         </div>
         <livewire:accounts.show />
     </div>

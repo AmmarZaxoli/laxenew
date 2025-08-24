@@ -3,7 +3,6 @@
     <button wire:click="toggleModal" class="btn position-fixed"
         style="
             width: 160px;
-
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
@@ -104,6 +103,12 @@ endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                         <div class="table-responsive">
+                            <!-- ✅ Total Orders -->
+                            <div class="mb-3">
+                                <strong>مجموع عدد الطلبات: </strong> <?php echo e($totalOrders); ?>
+
+                            </div>
+
                             <table class="table table-bordered table-hover">
                                 <thead class="table-light">
                                     <tr>
@@ -127,7 +132,7 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="3" class="text-center">
-                                                <!--[if BLOCK]><![endif]--><?php if($this->createdAt || $this->updatedAt): ?>
+                                                <!--[if BLOCK]><![endif]--><?php if($createdAt || $updatedAt): ?>
                                                     لا توجد بيانات في الفترة المحددة
                                                 <?php else: ?>
                                                     لا توجد بيانات اليوم

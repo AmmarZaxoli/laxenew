@@ -16,6 +16,7 @@ use App\Models\Sub_Buy_Products_invoice;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Session;
+use Livewire\Attributes\on;
 use Illuminate\Support\Facades\DB;
 
 
@@ -112,7 +113,7 @@ class Sell extends Component
 
         if (strlen($this->mobile) >= 1) {
             $this->phoneSuggestions = DB::table('customers as c1')
-                ->select('c1.mobile', 'c1.address')
+                ->select('c1.mobile', 'c1.address', 'c1.date_sell')
                 ->where('c1.mobile', 'like', "%{$this->mobile}%")
                 ->whereRaw('c1.id = (SELECT MAX(c2.id) FROM customers c2 WHERE c2.mobile = c1.mobile)')
                 ->limit(5)
@@ -141,6 +142,13 @@ class Sell extends Component
         }
         if ($customer->is_block) {
             flash()->success('This customer is blocked!');
+        }
+        // if ($customer->date_sell && date('Y-m-d', strtotime($customer->date_sell)) == date('Y-m-d')) {
+        //     flash()->warning('This customer already has a sale today!');
+        // }
+
+        if ($customer->date_sell && date('Y-m-d', strtotime($customer->date_sell)) == date('Y-m-d')) {
+            $this->dispatch('customer-sold-today');
         }
     }
 
@@ -217,6 +225,8 @@ class Sell extends Component
             'cashornot',
             'generalpriceoffer',
             'selectedoffer',
+            'ignoreMobileCheck',
+            
         );
         $this->date_sell = now()->format('Y-m-d\TH:i');
 
@@ -302,12 +312,12 @@ class Sell extends Component
             return;
         }
 
-         // If delivery_type = 1 → require pricetaxi before adding
-            if ($offer->delivery == 1 && (empty($this->pricetaxi) || $this->pricetaxi == 0)) {
-                flash()->error('يرجى إدخال سعر التسليم (سعر التاكسي) قبل إضافة هذا المنتج.');
-                DB::rollBack();
-                return;
-            }
+        // If delivery_type = 1 → require pricetaxi before adding
+        if ($offer->delivery == 1 && (empty($this->pricetaxi) || $this->pricetaxi == 0)) {
+            flash()->error('يرجى إدخال سعر التسليم (سعر التاكسي) قبل إضافة هذا المنتج.');
+            DB::rollBack();
+            return;
+        }
 
         DB::beginTransaction();
 
@@ -641,12 +651,29 @@ class Sell extends Component
 
 
     public $test = true;
+
+    public $ignoreMobileCheck = false;
+    #[On('ignore-mobile-check')]
+    public function ignoreMobileCheck()
+    {
+        $this->ignoreMobileCheck = true;
+
+        // أعد استدعاء نفس العملية بعد تجاهل الشرط
+        $this->gitprofit();
+    }
+
     public function errorMsg()
     {
+        if (!$this->ignoreMobileCheck && (empty($this->mobile) || strlen($this->mobile) !== 11)) {
+            $this->dispatch('confirm-wrong-mobile');
+            return false;
+        }
+
         if ($this->numsellinvoice === 0) {
             flash()->error('يجب عليك أولاً إنشاء فاتورة بيع');
             return false;
         }
+
 
         if (empty($this->date_sell)) {
             flash()->error('إنشاء تاريخ البيع');
@@ -819,6 +846,7 @@ class Sell extends Component
         $this->netProfit = $this->totalProfit - (float)($this->discount ?? 0);
 
         $this->storecustomerinfo($sellInvoice);
+
         if ($this->printAfterSave) {
             $this->dispatch('trigger-print', route('print.single', ['id' => $sellInvoice->id]));
         }
@@ -1055,11 +1083,6 @@ class Sell extends Component
 
         return $productsTotal + $offersTotal;
     }
-
-
-
-
-
 
     public function updatingSearchCodeName()
     {

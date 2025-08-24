@@ -13,6 +13,7 @@ class DriversOrder extends Component
     public $drivers = [];
     public $createdAt = null;
     public $updatedAt = null;
+    public $totalOrders = 0; // ✅ Total orders
 
     public function toggleModal()
     {
@@ -24,7 +25,7 @@ class DriversOrder extends Component
             $this->loadDrivers();
         } else {
             // Reset on close
-            $this->reset(['createdAt', 'updatedAt', 'drivers']);
+            $this->reset(['createdAt', 'updatedAt', 'drivers', 'totalOrders']);
         }
 
         $this->showModal = !$this->showModal;
@@ -71,6 +72,9 @@ class DriversOrder extends Component
                 })
                 ->orderByDesc('orders_count')
                 ->get();
+
+            // ✅ Calculate total orders
+            $this->totalOrders = collect($this->drivers)->sum('orders_count');
 
         } catch (\Exception $e) {
             Log::error("Error loading drivers: " . $e->getMessage());

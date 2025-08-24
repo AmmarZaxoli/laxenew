@@ -188,6 +188,7 @@ Route::get('/invoices/edit/{id}', [Edit::class, 'index'])->name('invoices.edit')
     Route::view('/dashboards', 'dashboards.create')->name('dashboards.create');
     Route::view('/getAPI', 'getAPI.create')->name('getAPI.create');
     Route::view('/returnsell', 'returnsell.create')->name('returnsell.create');
+    Route::view('/accounting', 'accounting.create')->name('accounting.create');
 
     // Backup routes
     Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');

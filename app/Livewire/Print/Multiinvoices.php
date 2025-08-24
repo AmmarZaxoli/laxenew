@@ -10,8 +10,6 @@ use App\Models\Customer;
 class Multiinvoices extends Component
 {
     public $driverInvoices;
-    // public $selectedInvoiceId;
-    // public $selectedDriverId;
     public $drivers = [];
     public $search = '';
     public $selected_driver = '';
@@ -36,6 +34,21 @@ class Multiinvoices extends Component
         $this->printedStatus = $status;
         $this->resetSelectedInvoices();
     }
+    public function updatedDateTo()
+{
+    $this->resetSelectedInvoices();
+}
+
+public function updatedSelectedDriver()
+{
+    $this->resetSelectedInvoices();
+}
+
+public function updatedPrintedStatus()
+{
+    $this->resetSelectedInvoices();
+}
+
 
     public function mount()
     {
@@ -43,6 +56,7 @@ class Multiinvoices extends Component
         $today = now()->format('Y-m-d');
         $this->date_from = $this->date_from ?? $today;
         $this->date_to = $this->date_to ?? $today;
+        
     }
 
     // Clear selected invoices when filters/search change
@@ -180,20 +194,6 @@ class Multiinvoices extends Component
             'invoices' => $this->driverInvoices
         ]);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public function printSelected()

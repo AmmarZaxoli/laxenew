@@ -1,8 +1,5 @@
 <div>
 
-
-
-
     <style>
         :root {
             --primary: #4361ee;
@@ -19,13 +16,7 @@
             --transition: all 0.3s ease;
         }
 
-        .body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #f5f7fb;
-            color: #333;
-            line-height: 1.6;
 
-        }
 
         .card {
             border: none;
@@ -55,6 +46,7 @@
             border: 1px solid #e2e8f0;
             transition: var(--transition);
             font-size: 18px;
+            font-weight: 400;
         }
 
         .form-control:focus,
@@ -121,7 +113,7 @@
             color: #64748b;
             font-weight: 600;
             padding: 12px 15px;
-            font-size: 14px;
+            font-size: 18px;
             border-top: 1px solid #e2e8f0;
         }
 
@@ -129,7 +121,8 @@
             padding: 12px 15px;
             vertical-align: middle;
             border-top: 1px solid #f1f5f9;
-            font-size: 14px;
+            font-size: 17px;
+            font-weight: 500;
         }
 
         .table tr:hover td {
@@ -349,7 +342,7 @@
                             </div>
 
                             <!-- New Invoice Button -->
-                            <div class="col-md-3 mb-3  align-items-end" style="margin-top: 53px">
+                            <div class="col-md-3 mb-3  align-items-end" style="margin-top: 56px">
                                 @if ($showNewButton)
                                     <button id="getNextInvoiceBtn"
                                         class="btn btn-outline-primary d-flex align-items-center"
@@ -827,7 +820,7 @@
 
                         <div class="d-flex gap-2">
                             <button type="submit"
-                                class="btn btn-primary d-flex align-items-center justify-content-center py-2 px-4"
+                                class="btn btn-outline-primary d-flex align-items-center justify-content-center py-2 px-4"
                                 wire:loading.attr="disabled" wire:target="gitprofit" wire:click="gitprofit">
                                 <span wire:loading.remove wire:target="gitprofit">
                                     <i class="fas fa-save me-2"></i> حفظ الفاتورة
@@ -884,6 +877,22 @@
 
                 if (suggestionList && !suggestionList.contains(event.target) && event.target !== input) {
                     @this.set('showSuggestions', false);
+                }
+            });
+        });
+
+        window.addEventListener('confirm-wrong-mobile', () => {
+            Swal.fire({
+                title: "تحذير",
+                text: "رقم الهاتف غير صحيح (يجب أن يكون 11 رقم). هل تريد الاستمرار؟",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "نعم، استمر",
+                cancelButtonText: "إلغاء",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.dispatch('ignore-mobile-check');
                 }
             });
         });

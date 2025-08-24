@@ -3,7 +3,6 @@
     <button wire:click="toggleModal" class="btn position-fixed"
         style="
             width: 160px;
-
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
@@ -69,6 +68,11 @@
                         @enderror
 
                         <div class="table-responsive">
+                            <!-- ✅ Total Orders -->
+                            <div class="mb-3">
+                                <strong>مجموع عدد الطلبات: </strong> {{ $totalOrders }}
+                            </div>
+
                             <table class="table table-bordered table-hover">
                                 <thead class="table-light">
                                     <tr>
@@ -91,7 +95,7 @@
                                     @empty
                                         <tr>
                                             <td colspan="3" class="text-center">
-                                                @if ($this->createdAt || $this->updatedAt)
+                                                @if ($createdAt || $updatedAt)
                                                     لا توجد بيانات في الفترة المحددة
                                                 @else
                                                     لا توجد بيانات اليوم

@@ -40,6 +40,31 @@ class Show extends Component
 
     public $showBulkDateModal = false;
     public $bulkNewDateSell;
+    private function resetSelection()
+{
+    $this->selectedInvoices = [];
+    $this->selectAll = false;
+}
+public function updatedSearch()
+{
+    $this->resetSelection();
+}
+
+public function updatedSelectedDriver()
+{
+    $this->resetSelection();
+}
+
+public function updatedDateFrom()
+{
+    $this->resetSelection();
+}
+
+public function updatedDateTo()
+{
+    $this->resetSelection();
+}
+
     public function openDateFilterModal()
     {
         $today = now()->format('Y-m-d');

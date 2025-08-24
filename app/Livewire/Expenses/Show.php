@@ -12,40 +12,25 @@ class Show extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $searchName = '';
-    public $createdAt = '';
-    public $updatedAt = '';
+    public $createdAt;
+    public $updatedAt;
     public $showResults = false;
-
-    public $name = '';
-    public $price = '';
-    public $namething = '';
 
     public $errorMessage = null;
     public $successMessage = null;
 
     protected $rules = [
-        'name' => 'required|string|max:255',
-        'price' => 'required|numeric|min:0.01',
-        'namething' => 'required|string|max:500',
+        'createdAt' => 'required|date',
+        'updatedAt' => 'required|date|after_or_equal:createdAt',
     ];
 
-    protected $messages = [
-        'name.required' => 'حقل الاسم مطلوب',
-        'price.required' => 'حقل السعر مطلوب',
-        'price.numeric' => 'يجب أن يكون السعر رقماً',
-        'price.min' => 'يجب أن يكون السعر أكبر من الصفر',
-        'namething.required' => 'حقل وصف المصروف مطلوب',
-    ];
     public function mount()
-{
-    $today = now()->format('Y-m-d');
-    if (!$this->createdAt) {
+    {
+        $today = now()->format('Y-m-d');
         $this->createdAt = $today;
-    }
-    if (!$this->updatedAt) {
         $this->updatedAt = $today;
+        $this->showResults = true; // Show today's expenses by default
     }
-}
 
     public function updatedSearchName()
     {
@@ -53,21 +38,13 @@ class Show extends Component
         $this->resetPage();
     }
 
-
-    public function getCanLoadDataProperty()
-    {
-        return $this->createdAt && $this->updatedAt;
-    }
-
-    public function getShouldShowResultsProperty()
-    {
-        return $this->showResults || strlen($this->searchName) > 0;
-    }
-
     public function resetSearch()
     {
-        $this->reset(['searchName', 'createdAt', 'updatedAt']);
-        $this->showResults = false;
+        $today = now()->format('Y-m-d');
+        $this->searchName = '';
+        $this->createdAt = $today;
+        $this->updatedAt = $today;
+        $this->showResults = true;
         $this->resetPage();
         $this->dismissAlert();
     }
@@ -81,88 +58,76 @@ class Show extends Component
             'updatedAt.after_or_equal' => 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية',
         ]);
 
-        $this->errorMessage = null;
         $this->showResults = true;
         $this->resetPage();
     }
 
-    protected $listeners = ['delete' => 'deleteExpense'];
-
+    public function dismissAlert()
+    {
+        $this->reset(['errorMessage', 'successMessage']);
+    }
 
     public function deleteExpense($id)
     {
-        if (! $expense = Expense::find($id)) {
+        $expense = Expense::find($id);
+        if (!$expense) {
             $this->errorMessage = 'المصروف غير موجود';
             return;
         }
 
         $expense->delete();
 
-        flash()->addSuccess('تم الحذف بنجاح.');
+        $this->successMessage = 'تم الحذف بنجاح.';
         $this->loadExpenses();
     }
-    public function dismissAlert()
+
+    // Total for filtered expenses
+    public function getTotalPriceProperty()
     {
-        $this->reset(['errorMessage', 'successMessage']);
+        if (!$this->showResults) return 0;
+
+        return Expense::query()
+            ->when($this->createdAt && $this->updatedAt, function ($q) {
+                $q->where(function ($query) {
+                    $query->whereBetween('created_at', [$this->createdAt, $this->updatedAt])
+                          ->orWhereBetween('updated_at', [$this->createdAt, $this->updatedAt]);
+                });
+            })
+            ->sum('price');
     }
 
+    // Total for search results
     public function getSearchTotalPriceProperty()
     {
         return Expense::query()
             ->when($this->searchName, fn($q) => $q->where('name', 'like', '%' . $this->searchName . '%'))
-            ->sum('price');
-    }
-
-    public function getTotalPriceProperty()
-    {
-        if (!$this->shouldShowResults) {
-            return 0;
-        }
-
-        return Expense::query()
-            ->when($this->createdAt, function ($q) {
+            ->when($this->createdAt && $this->updatedAt, function ($q) {
                 $q->where(function ($query) {
-                    $query->whereDate('created_at', '>=', $this->createdAt)
-                        ->orWhereDate('updated_at', '>=', $this->createdAt);
-                });
-            })
-            ->when($this->updatedAt, function ($q) {
-                $q->where(function ($query) {
-                    $query->whereDate('created_at', '<=', $this->updatedAt)
-                        ->orWhereDate('updated_at', '<=', $this->updatedAt);
+                    $query->whereBetween('created_at', [$this->createdAt, $this->updatedAt])
+                          ->orWhereBetween('updated_at', [$this->createdAt, $this->updatedAt]);
                 });
             })
             ->sum('price');
     }
-
 
     public function render()
     {
         $query = Expense::query()
-            ->when($this->searchName, fn($q) => $q->where('name', 'like', '%' . $this->searchName . '%'));
-
-        if ($this->shouldShowResults) {
-            $query->when($this->createdAt, function ($q) {
+            ->when($this->searchName, fn($q) => $q->where('name', 'like', '%' . $this->searchName . '%'))
+            ->when($this->createdAt && $this->updatedAt, function ($q) {
                 $q->where(function ($query) {
-                    $query->whereDate('created_at', '>=', $this->createdAt)
-                        ->orWhereDate('updated_at', '>=', $this->createdAt);
-                });
-            })->when($this->updatedAt, function ($q) {
-                $q->where(function ($query) {
-                    $query->whereDate('created_at', '<=', $this->updatedAt)
-                        ->orWhereDate('updated_at', '<=', $this->updatedAt);
+                    $query->whereBetween('created_at', [$this->createdAt, $this->updatedAt])
+                          ->orWhereBetween('updated_at', [$this->createdAt, $this->updatedAt]);
                 });
             });
-        }
 
         $expenses = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('livewire.expenses.show', [
             'expenses' => $expenses,
-            'canLoadData' => $this->canLoadData,
             'totalPrice' => $this->totalPrice,
             'searchTotalPrice' => $this->searchTotalPrice,
-            'showResults' => $this->shouldShowResults,
+            'showResults' => $this->showResults,
         ]);
     }
 }

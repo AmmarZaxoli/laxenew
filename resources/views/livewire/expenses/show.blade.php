@@ -14,7 +14,7 @@
                 <!-- Start Date -->
                 <div class="input-group" style="width: 200px;">
                     <span class="input-group-text"><i class="fas fa-calendar"></i> </span>
-                    <input type="date" wire:model="createdAt" autocomplete="off" wire:change="$refresh"
+                    <input type="date" wire:model="createdAt" autocomplete="off" 
                         class="form-control shadow-sm">
                 </div>
 
@@ -27,10 +27,17 @@
                 </div>
 
                 <!-- Load data button -->
-                <button wire:click="loadExpenses" style="margin-top: 5px" class="btn btn-outline-primary"
-                    @if (!$canLoadData) disabled @endif>
-                    <i class="fas fa-search"></i> عرض البيانات
-                </button>
+      <button  wire:click="loadExpenses"  style="margin-top: 5px"  class="btn btn-outline-primary" 
+    @if (!$showResults) disabled @endif
+    wire:loading.attr="disabled">
+    <span wire:loading.remove>
+        <i class="fas fa-search"></i> عرض البيانات
+    </span>
+    <span wire:loading>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> جاري التحميل...
+    </span>
+</button>
+
 
 
                 <!-- Reset button -->
