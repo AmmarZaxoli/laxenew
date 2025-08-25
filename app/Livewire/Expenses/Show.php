@@ -2,9 +2,10 @@
 
 namespace App\Livewire\Expenses;
 
-use App\Models\Expense;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\Expense;
+use Carbon\Carbon;
 
 class Show extends Component
 {
@@ -13,121 +14,137 @@ class Show extends Component
 
     public $searchName = '';
     public $createdAt;
-    public $updatedAt;
-    public $showResults = false;
+    public $createdAt1;
+    public $showResults = true;
+    public $totalPrice = 0;
+    public $searchTotalPrice = 0;
 
-    public $errorMessage = null;
-    public $successMessage = null;
-
-    protected $rules = [
-        'createdAt' => 'required|date',
-        'updatedAt' => 'required|date|after_or_equal:createdAt',
-    ];
+    // New properties for multi-select
+    public $selectedExpenses = [];
+    public $selectAll = false;
+    public $bulkDate;
+    public $showBulkModal = false;
+    public $pageExpenseIds = [];
 
     public function mount()
     {
-        $today = now()->format('Y-m-d');
+        $today = date('Y-m-d');
         $this->createdAt = $today;
-        $this->updatedAt = $today;
-        $this->showResults = true; // Show today's expenses by default
-    }
-
-    public function updatedSearchName()
-    {
-        $this->showResults = true;
-        $this->resetPage();
+        $this->createdAt1 = $today;
+        $this->bulkDate = $today;
     }
 
     public function resetSearch()
     {
-        $today = now()->format('Y-m-d');
         $this->searchName = '';
-        $this->createdAt = $today;
-        $this->updatedAt = $today;
+        $this->createdAt = Carbon::today()->format('Y-m-d');
+        $this->createdAt1 = Carbon::today()->format('Y-m-d');
         $this->showResults = true;
+        $this->selectedExpenses = [];
+        $this->selectAll = false;
         $this->resetPage();
-        $this->dismissAlert();
     }
 
-    public function loadExpenses()
+    public function getdatabtdate()
     {
-        $this->validate([
-            'createdAt' => 'required|date',
-            'updatedAt' => 'required|date|after_or_equal:createdAt',
-        ], [
-            'updatedAt.after_or_equal' => 'يجب أن يكون تاريخ النهاية بعد أو يساوي تاريخ البداية',
-        ]);
-
         $this->showResults = true;
         $this->resetPage();
     }
 
-    public function dismissAlert()
-    {
-        $this->reset(['errorMessage', 'successMessage']);
-    }
-
-    public function deleteExpense($id)
+    // Delete expense function
+    public function delete($id)
     {
         $expense = Expense::find($id);
-        if (!$expense) {
-            $this->errorMessage = 'المصروف غير موجود';
+        if ($expense) {
+            $expense->delete();
+
+            flash()->success('تم حذف المصروف بنجاح');
+        }
+    }
+
+    // Toggle selection of all visible expenses
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedExpenses = $this->pageExpenseIds;
+        } else {
+            $this->selectedExpenses = [];
+        }
+    }
+
+    // Update selected expenses when individual checkboxes change
+    public function updatedSelectedExpenses()
+    {
+        $this->selectAll = count($this->selectedExpenses) === count($this->pageExpenseIds);
+    }
+
+
+    public function updateBulkDates()
+    {
+        if (empty($this->selectedExpenses) || !$this->bulkDate) {
+            flash()->warning('لم يتم تحديد أي عناصر');
+
             return;
         }
 
-        $expense->delete();
+        Expense::whereIn('id', $this->selectedExpenses)
+            ->update(['created_at' => Carbon::parse($this->bulkDate)]);
 
-        $this->successMessage = 'تم الحذف بنجاح.';
-        $this->loadExpenses();
+        // Reset selection and close modal
+        $this->selectedExpenses = [];
+        $this->selectAll = false;
+        $this->showBulkModal = false;
+        $this->bulkDate = date('Y-m-d');
+
+        // Show success message
+        flash()->success('تم تحديث تواريخ العناصر المحددة بنجاح');
     }
 
-    // Total for filtered expenses
-    public function getTotalPriceProperty()
+    // Open bulk update modal
+    public function openBulkModal()
     {
-        if (!$this->showResults) return 0;
+        if (empty($this->selectedExpenses)) {
+            flash()->warning('لم يتم تحديد أي عناصر');
 
-        return Expense::query()
-            ->when($this->createdAt && $this->updatedAt, function ($q) {
-                $q->where(function ($query) {
-                    $query->whereBetween('created_at', [$this->createdAt, $this->updatedAt])
-                          ->orWhereBetween('updated_at', [$this->createdAt, $this->updatedAt]);
-                });
-            })
-            ->sum('price');
+            return;
+        }
+
+        $this->showBulkModal = true;
     }
 
-    // Total for search results
-    public function getSearchTotalPriceProperty()
+    // Close bulk update modal
+    public function closeBulkModal()
     {
-        return Expense::query()
-            ->when($this->searchName, fn($q) => $q->where('name', 'like', '%' . $this->searchName . '%'))
-            ->when($this->createdAt && $this->updatedAt, function ($q) {
-                $q->where(function ($query) {
-                    $query->whereBetween('created_at', [$this->createdAt, $this->updatedAt])
-                          ->orWhereBetween('updated_at', [$this->createdAt, $this->updatedAt]);
-                });
-            })
-            ->sum('price');
+        $this->showBulkModal = false;
     }
 
     public function render()
     {
+        if (!$this->showResults) {
+            return view('livewire.expenses.show', ['expenses' => collect()]);
+        }
+
+        // Query with filters
         $query = Expense::query()
+            ->whereDate('created_at', '>=', $this->createdAt)
+            ->whereDate('created_at', '<=', $this->createdAt1)
             ->when($this->searchName, fn($q) => $q->where('name', 'like', '%' . $this->searchName . '%'))
-            ->when($this->createdAt && $this->updatedAt, function ($q) {
-                $q->where(function ($query) {
-                    $query->whereBetween('created_at', [$this->createdAt, $this->updatedAt])
-                          ->orWhereBetween('updated_at', [$this->createdAt, $this->updatedAt]);
-                });
-            });
+            ->orderBy('created_at', 'desc');
 
-        $expenses = $query->orderBy('created_at', 'desc')->paginate(10);
+        $expenses = $query->paginate(15);
 
-        return view('livewire.expenses.show', [
-            'expenses' => $expenses,
-            'totalPrice' => $this->totalPrice,
-            'searchTotalPrice' => $this->searchTotalPrice,
-            'showResults' => $this->showResults,
-        ]);
+        // Store current page expense IDs for select all functionality
+        $this->pageExpenseIds = $expenses->pluck('id')->toArray();
+
+        $this->totalPrice = Expense::whereDate('created_at', '>=', $this->createdAt)
+            ->whereDate('created_at', '<=', $this->createdAt1)
+            ->sum('price');
+
+        $this->searchTotalPrice = Expense::whereDate('created_at', '>=', $this->createdAt)
+            ->whereDate('created_at', '<=', $this->createdAt1)
+            ->when($this->searchName, fn($q) => $q->where('name', 'like', '%' . $this->searchName . '%'))
+            ->sum('price');
+
+        return view('livewire.expenses.show', compact('expenses'));
     }
 }

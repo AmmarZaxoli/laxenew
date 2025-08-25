@@ -195,22 +195,22 @@
         <div class="driver-section">
             <div class="info-box">
                 اسم السائق:
-                <span>{{ $data['driver_name'] ?? '—' }}</span>
+                <span><?php echo e($data['driver_name'] ?? '—'); ?></span>
             </div>
             <div class="info-box">
                 تاريخ التقرير:
-                <span>{{ $data['date'] ?? 'غير محدد' }}</span>
+                <span><?php echo e($data['date'] ?? 'غير محدد'); ?></span>
             </div>
         </div>
 
         <div class="report-content">
-             @php
+             <?php
                 $chunkSize = 11;
                 $chunks = array_chunk($data['driverInvoices'], $chunkSize);
                 $totalChunks = count($chunks);
-            @endphp
+            ?>
 
-            @foreach($chunks as $chunkIndex => $invoiceChunk)
+            <?php $__currentLoopData = $chunks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $chunkIndex => $invoiceChunk): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <table class="invoice-table">
                     <thead>
                         <tr >
@@ -225,50 +225,51 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($invoiceChunk as $index => $invoice)
+                        <?php $__currentLoopData = $invoiceChunk; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-            <td>{{ $index + 1 + ($chunkIndex * $chunkSize) }}</td>
-                                <td>{{ $invoice['invoice_number'] ?? '—' }}</td>
-                                <td class="address">{{ $invoice['address'] ?? '—' }}</td>
+            <td><?php echo e($index + 1 + ($chunkIndex * $chunkSize)); ?></td>
+                                <td><?php echo e($invoice['invoice_number'] ?? '—'); ?></td>
+                                <td class="address"><?php echo e($invoice['address'] ?? '—'); ?></td>
                                 <td class="phone">
-                                    @php
+                                    <?php
                                         $phones = explode(',', $invoice['mobile'] ?? '');
                                         foreach ($phones as $phone) {
                                             echo '<span class="phone-number">' . trim($phone) . '</span>';
                                         }
-                                    @endphp
+                                    ?>
                                 </td>
-                                <td style="width: 20px;">{{ number_format($invoice['taxi_price'] ?? 0) }}</td>
-                                <td>{{ number_format($invoice['total'] ?? 0) }}</td>
-                                <td>{{ number_format($invoice['grand_total'] ?? 0) }}</td>
+                                <td style="width: 20px;"><?php echo e(number_format($invoice['taxi_price'] ?? 0)); ?></td>
+                                <td><?php echo e(number_format($invoice['total'] ?? 0)); ?></td>
+                                <td><?php echo e(number_format($invoice['grand_total'] ?? 0)); ?></td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
 
-                @if($chunkIndex + 1 < $totalChunks)
+                <?php if($chunkIndex + 1 < $totalChunks): ?>
                     <div style="page-break-after: always;"></div>
-                @endif
+                <?php endif; ?>
 
-                @if($chunkIndex + 1 === $totalChunks)
+                <?php if($chunkIndex + 1 === $totalChunks): ?>
                         <div class="totals-grid">
                             <div class="info-box">
                                 إجمالي الفواتير:
-                                <label class="summary-label">{{ number_format($data['total_invoice_total'] ?? 0) }}</label>
+                                <label class="summary-label"><?php echo e(number_format($data['total_invoice_total'] ?? 0)); ?></label>
                             </div>
                             <div class="info-box">
                                 إجمالي التوصيل:
-                                <label class="summary-label">{{ number_format($data['total_taxi_price'] ?? 0) }}</label>
+                                <label class="summary-label"><?php echo e(number_format($data['total_taxi_price'] ?? 0)); ?></label>
                             </div>
                             <div class="info-box">
                                 الإجمالي الكلي:
-                                <label class="summary-label">{{ number_format(($data['total_invoice_total'] ?? 0) + ($data['total_taxi_price'] ?? 0)) }}</label>
+                                <label class="summary-label"><?php echo e(number_format(($data['total_invoice_total'] ?? 0) + ($data['total_taxi_price'] ?? 0))); ?></label>
                             </div>
                         </div>
-                @endif
-            @endforeach
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </body>
 
 </html>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/print/printdrivers.blade.php ENDPATH**/ ?>
