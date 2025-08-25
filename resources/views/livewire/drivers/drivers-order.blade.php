@@ -75,20 +75,20 @@
 
                             <table class="table table-bordered table-hover">
                                 <thead class="table-light">
-                                    <tr>
+                                    <tr style="text-align: center;">
                                         <th>اسم السائق</th>
                                         <th>عدد الطلبات</th>
-                                        <th>آخر تحديث</th>
+                                        <th>التاريخ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($drivers as $driver)
-                                        <tr>
+                                        <tr style="text-align: center;">
                                             <td>{{ $driver->nameDriver }}</td>
                                             <td>{{ $driver->orders_count }}</td>
                                             <td>
                                                 {{ optional($driver->customers->first())->date_sell
-                                                    ? \Carbon\Carbon::parse($driver->customers->first()->date_sell)->format('Y-m-d H:i')
+                                                    ? \Carbon\Carbon::parse($driver->customers->first()->date_sell)->format('Y-m-d')
                                                     : 'N/A' }}
                                             </td>
                                         </tr>

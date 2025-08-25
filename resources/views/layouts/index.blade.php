@@ -211,13 +211,64 @@
                             <span class="nav-text">إضافة شركة</span>
                         </a>
                     </li>
+
+
                     <li class="nav-item">
+                        <a class="nav-link {{ Route::is('accounting.create', 'accounting.*') ? '' : 'collapsed' }}"
+                            data-bs-toggle="collapse" href="#accountingMenu" role="button"
+                            aria-expanded="{{ Route::is('accounting.create', 'accounting.*') ? 'true' : 'false' }}">
+                            <span class="nav-icon"><i class="bi bi-calculator"></i></span>
+                            <span class="nav-text">إدارة المحاسبة</span>
+                            <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
+                        </a>
+
+                        <div class="collapse {{ Route::is('accounting.create', 'accounting.*') ? 'show' : '' }}"
+                            id="accountingMenu">
+                            <ul class="submenu">
+
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('accounting.create') ? 'active' : '' }}"
+                                        href="{{ route('accounting.create') }}">
+                                        
+                                        <span class="nav-text">الحسابات</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('accounting.createbuyproduct') ? 'active' : '' }}"
+                                        href="{{ route('accounting.createbuyproduct') }}">
+                                        
+                                        <span class="nav-text">createbuyproduct</span>
+                                    </a>
+                                </li>
+
+                                {{-- <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('accounting.index') ? 'active' : '' }}"
+                                        href="{{ route('accounting.index') }}">
+                                        <span class="nav-icon"><i class="bi bi-journal-text"></i></span>
+                                        <span class="nav-text">دفتر القيود</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('accounting.reports') ? 'active' : '' }}"
+                                        href="{{ route('accounting.reports') }}">
+                                        <span class="nav-icon"><i class="bi bi-graph-up"></i></span>
+                                        <span class="nav-text">التقارير المالية</span>
+                                    </a>
+                                </li> --}}
+
+                            </ul>
+                        </div>
+                    </li>
+
+
+                    {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::is('accounting.create') ? 'active' : '' }}"
                             href="{{ route('accounting.create') }}">
                             <span class="nav-icon"><i class="bi bi-buildings"></i></span>
                             <span class="nav-text">accounting</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <!-- Invoices Management -->
                     <li class="nav-item">

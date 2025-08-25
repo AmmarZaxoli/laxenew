@@ -14,15 +14,10 @@
                         </select>
                     </div>
                 </div>
-               
+
             </div>
 
-            <!-- Message Section -->
-            @if ($responseMessage)
-                <div class="response-message">
-                    {{ $responseMessage }}
-                </div>
-            @endif
+
 
             <!-- Orders Table -->
             <div class="table-wrapper">
@@ -30,38 +25,48 @@
                     <table class="orders-table">
                         <thead>
                             <tr>
+                                <th class="text-center">#</th>
                                 <th class="text-center" style="width: 40px;">
                                     <input type="checkbox" wire:model="selectAll">
                                 </th>
-                                <th class="text-center">Order ID</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Created At</th>
-                                <th class="text-center">Customer</th>
                                 <th class="text-center">Phone</th>
                                 <th class="text-center">Address</th>
+                                <th class="text-center">paymentMethod</th>
+                                <th class="text-center">Created At</th>
                                 <th class="text-center">Total (IQD)</th>
+                                <th class="text-center">View</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($orders as $order)
                                 <tr>
+                                    <td class="text-center">{{ $loop->iteration }}</td>
                                     <td class="text-center">
-                                        <input type="checkbox" wire:model="selectedOrders" value="{{ $order['id'] }}">
+                                        <input type="checkbox" wire:model="selectedOrders"
+                                            wire:click="check('{{ $order['id'] }}')" value="{{ $order['id'] }}">
+
                                     </td>
-                                    <td class="font-medium text-center">{{ $order['id'] }}</td>
-                                    <td class="text-center">
-                                        <span class="status-tag {{ strtolower($order['status']) }}">
-                                            {{ $order['status'] }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        {{ \Carbon\Carbon::parse($order['createdAt'])->format('d M Y, H:i') }}</td>
-                                    <td class="text-center">{{ $order['user']['name'] ?? 'N/A' }}</td>
+
                                     <td class="text-center">{{ $order['phoneNumber'] ?? 'N/A' }}</td>
                                     <td class="text-center">{{ $order['address']['location'] ?? 'N/A' }}</td>
+                                    <td class="font-medium text-center">{{ $order['paymentMethod'] }}</td>
+                                    <td class="text-center">
+                                        {{ \Carbon\Carbon::parse($order['createdAt'])->format('d M Y, H:i') }}</td>
                                     <td class="text-center font-semibold">{{ number_format($order['total']) }}</td>
+
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <button wire:click="view('{{ $order['id'] }}')" class="action-btn"
+                                                data-bs-toggle="modal" href="#exampleModalToggle" role="button">
+                                                View
+                                            </button>
+                                        </div>
+                                    </td>
+
+
                                 </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 @else
@@ -79,6 +84,46 @@
                     </div>
                 @endif
             </div>
+
+
+            <!-- Modal -->
+            <div wire:ignore.self class="modal fade" id="exampleModalToggle" tabindex="-1"
+                aria-labelledby="exampleModalToggleLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalToggleLabel">Order Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product Code</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($modalProducts as $product)
+                                        <tr>
+                                            <td>{{ $product['productCode'] }}</td>
+                                            <td>{{ $product['quantity'] }}</td>
+                                            <td>{{ number_format($product['price']) }}</td>
+                                            <td>{{ number_format($product['total_price']) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
 
             <!-- Footer Actions -->
             @if (!empty($orders))
@@ -186,7 +231,7 @@
             }
 
             .order-dashboard {
-                
+
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
                 color: var(--dark);
                 background-color: white;

@@ -13,11 +13,10 @@ class PrintController extends Controller
     public function printSingle($id)
     {
 
-        $itemsPerPage = 6; // max products per page
+        $itemsPerPage = 8; // max products per page
 
         $invoice = Sell_invoice::with(['customer.driver', 'products', 'offersell', 'sell'])
             ->findOrFail($id);
-
         if ($invoice->customer) {
             $invoice->customer->update(['print' => 1]);
         }
@@ -78,17 +77,18 @@ class PrintController extends Controller
                 'discount'  => $discount,
                 'taxi_price' => $taxi_price,
                 'total_price_afterDiscount_invoice' => $total_price_afterDiscount_invoice,
-                'show_header' => true, // always show header
-                'show_footer' => $pageIndex === $pageCount - 1, // only on last page
+                'date_sell'      => $invoice->date_sell->format('Y-m-d'),
+
+                'show_header' => $pageIndex === 0, // ✅ only first page shows header
+                'show_footer' => $pageIndex === $pageCount - 1, // ✅ only last page shows footer
             ];
         }
 
         $data = [
             'driver_name' => $invoice->customer->driver->nameDriver ?? '',
             'invoices'    => $preparedInvoices
-            
-        ];
 
+        ];
         return view('print.invoices', [
             'data' => $data,
             'invoice' => $invoice,
@@ -125,7 +125,7 @@ class PrintController extends Controller
         // $drivers = $invoices->pluck('customer.driver.nameDriver')->unique()->filter();
         // $driverName = $drivers->count() === 1 ? $drivers->first() : 'عدة سواق';
 
-        $itemsPerPage = 6; // Products per page
+        $itemsPerPage = 8; // Products per page
         $preparedInvoices = [];
         $barcodeGenerator = new DNS1D();
 
@@ -184,8 +184,10 @@ class PrintController extends Controller
                     'discount'  => $discount,
                     'taxi_price' => $taxi_price,
                     'total_price_afterDiscount_invoice' => $total_price_afterDiscount_invoice,
-                    'show_header' => true,
-                    'show_footer' => $pageIndex === $pageCount - 1, 
+                    'date_sell'      => $invoice->date_sell->format('Y-m-d'),
+
+                    'show_header' => $pageIndex === 0, // ✅ only first page shows header
+                    'show_footer' => $pageIndex === $pageCount - 1, // ✅ only last page shows footer
                 ];
             }
         }
@@ -194,7 +196,7 @@ class PrintController extends Controller
         $driverName = $drivers->count() === 1 ? $drivers->first() : 'عدة سواق';
         $data = [
             'date'        => now()->format('Y-m-d'),
-            'driver_name' => $driverName, 
+            'driver_name' => $driverName,
 
             'invoices'    => $preparedInvoices,
         ];

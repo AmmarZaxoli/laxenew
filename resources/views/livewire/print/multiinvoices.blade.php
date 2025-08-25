@@ -204,6 +204,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="mt-3">
+    {{ $invoices->links() }}
+</div>
             </div>
         </div>
 

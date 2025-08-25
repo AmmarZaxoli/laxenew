@@ -2,11 +2,11 @@
 
 namespace App\Livewire\GetAPI;
 
+use App\Models\Definition;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Http;
 use App\Models\Driver;
-
 
 class Show extends Component
 {
@@ -18,10 +18,14 @@ class Show extends Component
     public $orders = [];
     public $loading = false;
     public $totalOrders = 0;
-    public $perPage = 5;
+    public $perPage = 10;
     public $currentPage = 1;
     public $token;
     public $drivers;
+
+    public $showModal = false;
+    public $modalProducts = [];
+    public $selected_driver;
 
     public function mount()
     {
@@ -106,6 +110,70 @@ class Show extends Component
     {
         return $this->totalOrders > 0 ? ceil($this->totalOrders / $this->perPage) : 1;
     }
+
+    public function view($id)
+    {
+        $order = collect($this->orders)->firstWhere('id', $id);
+
+        if ($order) {
+            $products = [];
+            foreach ($order['items'] as $item) {
+                $products[] = [
+                    'productCode' => $item['product']['productCode'] ?? 'null',
+                    'quantity'    => $item['quantity'],
+                    'price'       => $item['price'],
+                    'total_price' => $item['quantity'] * $item['price'],
+                ];
+            }
+
+            $this->modalProducts = $products;
+
+            // Dispatch browser event to open modal
+            $this->dispatch('openOrderModal');
+        } else {
+            $this->modalProducts = [];
+            session()->flash('error', "Order not found!");
+        }
+    }
+    public function check($id)
+    {
+        dd($this->orders);
+        $order = collect($this->orders)->firstWhere('id', $id);
+
+        if (!$order) {
+            flash()->error("Order with ID {$id} not found!");
+            return false;
+        }
+
+        $missingProducts = [];
+
+        foreach ($order['items'] as $item) {
+            $productCode = $item['product']['productCode'] ?? 'null';
+            $exists = Definition::where('code', $productCode)->exists();
+
+            if (!$exists) {
+                $missingProducts[] = $productCode;
+            }
+        }
+
+        if (!empty($missingProducts)) {
+            $codes = implode(', ', $missingProducts);
+            flash()->warning("المنتجات التالية غير متوفرة في قاعدة البيانات المحلية: {$codes}");
+
+            // Remove from selectedOrders to uncheck
+            if (($key = array_search($id, $this->selectedOrders)) !== false) {
+                unset($this->selectedOrders[$key]);
+                $this->selectedOrders = array_values($this->selectedOrders); // reindex array
+            }
+
+            return false;
+        }
+
+        return true; // All products exist
+    }
+
+    public $selectedOrders = [];
+
 
     public function render()
     {

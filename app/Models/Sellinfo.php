@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Sell_invoice;
+
 class Sellinfo extends Model
 {
     protected $table = 'sells';
@@ -20,7 +22,7 @@ class Sellinfo extends Model
 
     // Each Sell belongs to a SellInvoice
     public function invoice()
-    {
-        return $this->belongsTo(Sell_Invoice::class, 'sell_invoice_id');
-    }
+{
+    return $this->belongsTo(Sell_invoice::class, 'sell_invoice_id');
+}
 }

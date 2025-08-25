@@ -248,7 +248,7 @@
                 <tr>
                     <td>{{ $index + 1 + ($chunkIndex * 12) }}</td>
                     <td >{{ $invoice['invoice_number'] ?? '—' }}</td>
-                    <td style="width: 300px;text-align: center;" class="address">{{ $invoice['address'] ?? '—' }}</td>
+                    <td style="width: 300px;text-align: right;" class="address">{{ $invoice['address'] ?? '—' }}</td>
                     <td style="letter-spacing: 1px;" class="phone">
                         @php
                             $phones = explode(',', $invoice['mobile'] ?? '');

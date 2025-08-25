@@ -190,6 +190,8 @@ Route::get('/invoices/edit/{id}', [Edit::class, 'index'])->name('invoices.edit')
     Route::view('/returnsell', 'returnsell.create')->name('returnsell.create');
     Route::view('/accounting', 'accounting.create')->name('accounting.create');
 
+    Route::view('/accounting/createbuy', 'accounting.createbuyproduct')->name('accounting.createbuyproduct');
+
     // Backup routes
     Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
     Route::post('/backup', [BackupController::class, 'backup'])->name('backup');

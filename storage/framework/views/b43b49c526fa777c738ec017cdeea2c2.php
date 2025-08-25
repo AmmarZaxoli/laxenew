@@ -111,20 +111,20 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                             <table class="table table-bordered table-hover">
                                 <thead class="table-light">
-                                    <tr>
+                                    <tr style="text-align: center;">
                                         <th>اسم السائق</th>
                                         <th>عدد الطلبات</th>
-                                        <th>آخر تحديث</th>
+                                        <th>التاريخ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                        <tr>
+                                        <tr style="text-align: center;">
                                             <td><?php echo e($driver->nameDriver); ?></td>
                                             <td><?php echo e($driver->orders_count); ?></td>
                                             <td>
                                                 <?php echo e(optional($driver->customers->first())->date_sell
-                                                    ? \Carbon\Carbon::parse($driver->customers->first()->date_sell)->format('Y-m-d H:i')
+                                                    ? \Carbon\Carbon::parse($driver->customers->first()->date_sell)->format('Y-m-d')
                                                     : 'N/A'); ?>
 
                                             </td>

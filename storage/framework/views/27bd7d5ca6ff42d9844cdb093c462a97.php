@@ -212,13 +212,44 @@
                             <span class="nav-text">إضافة شركة</span>
                         </a>
                     </li>
+
+
                     <li class="nav-item">
-                        <a class="nav-link <?php echo e(Route::is('accounting.create') ? 'active' : ''); ?>"
-                            href="<?php echo e(route('accounting.create')); ?>">
-                            <span class="nav-icon"><i class="bi bi-buildings"></i></span>
-                            <span class="nav-text">accounting</span>
+                        <a class="nav-link <?php echo e(Route::is('accounting.create', 'accounting.*') ? '' : 'collapsed'); ?>"
+                            data-bs-toggle="collapse" href="#accountingMenu" role="button"
+                            aria-expanded="<?php echo e(Route::is('accounting.create', 'accounting.*') ? 'true' : 'false'); ?>">
+                            <span class="nav-icon"><i class="bi bi-calculator"></i></span>
+                            <span class="nav-text">إدارة المحاسبة</span>
+                            <span class="nav-arrow"><i class="bi bi-chevron-left"></i></span>
                         </a>
+
+                        <div class="collapse <?php echo e(Route::is('accounting.create', 'accounting.*') ? 'show' : ''); ?>"
+                            id="accountingMenu">
+                            <ul class="submenu">
+
+                                <li class="nav-item">
+                                    <a class="nav-link <?php echo e(Route::is('accounting.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('accounting.create')); ?>">
+                                        
+                                        <span class="nav-text">الحسابات</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link <?php echo e(Route::is('accounting.createbuyproduct') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('accounting.createbuyproduct')); ?>">
+                                        
+                                        <span class="nav-text">createbuyproduct</span>
+                                    </a>
+                                </li>
+
+                                
+
+                            </ul>
+                        </div>
                     </li>
+
+
+                    
 
                     <!-- Invoices Management -->
                     <li class="nav-item">

@@ -6,9 +6,13 @@ use App\Models\Driver;
 use App\Models\Sell_invoice;
 use Livewire\Component;
 use App\Models\Customer;
+use Livewire\WithPagination;
 
 class Multiinvoices extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
     public $driverInvoices;
     public $drivers = [];
     public $search = '';
@@ -85,9 +89,28 @@ public function updatedPrintedStatus()
         $this->resetSelectedInvoices();
     }
 
-   public function updatedSelectAll($value)
+public function updatedSelectAll($value)
 {
-    $filteredInvoices = Sell_invoice::with(['customer', 'sell'])
+    // Get only the invoices from the current page
+    $currentPageInvoices = $this->getCurrentPageInvoices();
+
+    if ($value) {
+        // Add their invoice numbers to selectedInvoices
+        $this->selectedInvoices = array_unique(array_merge(
+            $this->selectedInvoices,
+            $currentPageInvoices->pluck('num_invoice_sell')->map(fn($num) => (string) $num)->toArray()
+        ));
+    } else {
+        // Remove only current page invoices from selectedInvoices
+        $this->selectedInvoices = array_diff(
+            $this->selectedInvoices,
+            $currentPageInvoices->pluck('num_invoice_sell')->map(fn($num) => (string) $num)->toArray()
+        );
+    }
+}
+protected function getCurrentPageInvoices()
+{
+    $query = Sell_invoice::with(['customer', 'sell'])
         ->whereHas('sell', fn($q) => $q->where('cash', 0))
         ->when($this->search, function ($q) {
             $q->where(function ($sub) {
@@ -95,28 +118,29 @@ public function updatedPrintedStatus()
                     ->orWhereHas('customer', fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%'));
             });
         })
-        ->when(
-            $this->selected_driver,
-            fn($q) =>
-            $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
-        )
-        ->when(
-            $this->filteredByDate && $this->date_from && $this->date_to,
-            fn($q) =>
-            $q->whereDate('date_sell', '>=', $this->date_from)
-                ->whereDate('date_sell', '<=', $this->date_to)
-        )
         ->when(!is_null($this->printedStatus), function ($q) {
             $q->whereHas('customer', fn($q) => $q->where('print', $this->printedStatus));
         })
-        ->pluck('num_invoice_sell')
-        ->map(fn($num) => (string) $num)
-        ->toArray();
+        ->when(
+            $this->selected_driver,
+            fn($q) => $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
+        );
 
-    $this->selectedInvoices = $value ? $filteredInvoices : [];
+    if ($this->filteredByDate && $this->date_from && $this->date_to) {
+        $query->whereBetween('date_sell', [$this->date_from, $this->date_to]);
+    }
+
+    return $query->paginate(30); // 👈 same as render()
 }
 
+public function updatedPage($page)
+{
+    // Uncheck "select all" when changing page
+    $this->selectAll = false;
 
+    // Forget selected invoices from the previous page
+    $this->selectedInvoices = [];
+}
     public function updatedSelectedInvoices()
     {
         $filteredInvoices = Sell_invoice::with(['customer', 'sell'])
@@ -187,11 +211,13 @@ public function updatedPrintedStatus()
                 ->whereDate('date_sell', '<=', $this->date_to);
         }
 
-        $this->driverInvoices = $query->get();
+      $driverInvoices = $query->paginate(30);
+
 
         return view('livewire.print.multiinvoices', [
-            'driverInvoices' => $this->driverInvoices,
-            'invoices' => $this->driverInvoices
+            'driverInvoices' => $driverInvoices,
+                'invoices' => $driverInvoices, // 👈 just alias
+
         ]);
     }
 
