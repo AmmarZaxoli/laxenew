@@ -21,7 +21,8 @@ return new class extends Migration
             $table->boolean('is_block')->default(false);
             $table->string('note')->nullable();
 
-            
+            $table->string('waypayment')->nullable();
+            $table->string('buywith')->nullable();
 
             $table->unsignedBigInteger('sell_invoice_id');
             $table->unsignedBigInteger('driver_id');

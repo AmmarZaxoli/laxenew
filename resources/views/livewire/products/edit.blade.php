@@ -5,7 +5,7 @@
 
             <div class="mb-3">
                 <label class="form-label">سعر البيع</label>
-                <input type="number" class="form-control"  step="1" wire:model="price_sell" placeholder="أدخل مبلغ">
+                <input type="number" class="form-control"  step="1" wire:model.live="price_sell" placeholder="أدخل مبلغ">
                 @error('price_sell') <small class="text-danger">{{ $message }}</small> @enderror
             </div>
 

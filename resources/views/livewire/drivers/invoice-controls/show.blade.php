@@ -248,14 +248,16 @@
 
                         </th>
                         <th width="50" class="align-middle">#</th>
-                        <th class="text-center align-middle">رقم الفاتورة</th>
+                        <th class="text-center align-middle">الفاتورة</th>
                         <th class="text-center align-middle">السائق</th>
                         <th class="text-center align-middle">العنوان</th>
                         <th class="text-center align-middle">الجوال</th>
                         <th class="text-center align-middle">التوصيل</th>
                         <th class="text-center align-middle">الإجمالي</th>
                         <th class="text-center align-middle">التاريخ</th>
-                        <th class="text-center align-middle">profit</th>
+                        <th class="text-center align-middle">الدفع</th>
+                        <th class="text-center align-middle">طلب من</th>
+                        <th class="text-center align-middle">بائع</th>
                         <th class="text-center align-middle pe-3">خيارات</th>
                     </tr>
                 </thead>
@@ -291,23 +293,49 @@
                                     {{ $invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : '' }}
                                 </div>
                             </td>
+
+
+                            <td class="text-center align-middle"width="30px">
+                                @if ($invoice->customer?->waypayment)
+                                    <div class="modern-chip">
+                                        <span class="chip-icon bg-success"></span>
+                                        <span class="chip-text">{{ $invoice->customer->waypayment }}</span>
+                                    </div>
+                                @endif
+                            </td>
+
+                            <td class="text-center align-middle" width="30px">
+                                @if ($invoice->customer?->buywith)
+                                    <div class="modern-chip">
+                                        <span class="chip-icon bg-primary"></span>
+                                        <span class="chip-text">{{ $invoice->customer->buywith }}</span>
+                                    </div>
+                                @endif
+                            </td>
+
+
+
                             <td class="text-center align-middle">
                                 <div class="d-flex justify-content-center">
-                                    {{ number_format($invoice->customer?->profit_invoice ?? 0) }}<br>
-                                    {{ number_format($invoice->customer?->profit_invoice_after_discount ?? 0) }}
-
+                                    {{ $invoice->sell?->user }}
+                                </div>
                             </td>
+                            {{-- <td class="text-center align-middle">
+                                <div class="d-flex justify-content-center">
+                                    {{ $invoice->customer?->note }}
+                                </div>
+                            </td> --}}
                             <td class="text-center">
                                 <div class="dropstart">
-                                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                                        aria-expanded="false" aria-label="Invoice actions">
+                                    <button class="btn btn-outline-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Invoice actions">
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu shadow p-2"
                                         style="width: auto; white-space: nowrap; margin-right: 10px;">
                                         <li class="d-inline-block">
-                                            <button type="button" class="btn btn-outline-primary mx-1" title="طباعة"
-                                                onclick="printInvoice({{ $invoice->id }})">
+                                            <button type="button" class="btn btn-outline-primary mx-1"
+                                                title="طباعة" onclick="printInvoice({{ $invoice->id }})">
                                                 <i class="fas fa-print"></i>
                                             </button>
                                         </li>
@@ -335,8 +363,9 @@
                                         </li>
                                         <li class="d-inline-block">
                                             <button class="btn btn-outline-info mx-1"
-                                                wire:click="openDriverModal({{ $invoice->id }})" data-bs-toggle="modal"
-                                                data-bs-target="#editDriverModal" title="تعديل السائق">
+                                                wire:click="openDriverModal({{ $invoice->id }})"
+                                                data-bs-toggle="modal" data-bs-target="#editDriverModal"
+                                                title="تعديل السائق">
                                                 <i class="fas fa-user-edit"></i>
                                             </button>
                                         </li>
@@ -380,7 +409,8 @@
                             class="form-control shadow-sm">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" wire:click="updateBulkDateSell" class="btn btn-outline-primary shadow-sm">
+                        <button type="button" wire:click="updateBulkDateSell"
+                            class="btn btn-outline-primary shadow-sm">
                             <i class="fas fa-save me-2"></i>حفظ التغيير
                         </button>
                         <button type="button" class="btn btn-outline-secondary shadow-sm"
@@ -394,8 +424,8 @@
     @endif
 
     <!-- Edit Driver Modal -->
-    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1" aria-labelledby="editDriverModalLabel"
-        aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="editDriverModal" tabindex="-1"
+        aria-labelledby="editDriverModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content shadow-lg">
                 <div class="modal-header bg-light">
@@ -451,18 +481,9 @@
             const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
             modal.hide();
         });
-
-
-        // document.addEventListener('livewire:load', () => {
-        //     Livewire.on('close-driver-modal', () => {
-        //         const modalEl = document.getElementById('editDriverModal');
-        //         const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-        //         modal.hide();
-        //     });
-        // });
     </script>
 
-    <style>
+    {{-- <style>
         /* Counter Styles */
         .counter-btn {
             width: 40px;
@@ -523,66 +544,126 @@
         .shadow-sm {
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
         }
-    </style>
+    </style> --}}
+    <style>
+        .modern-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            /* full pill */
+            background-color: #f8f9fa;
+            /* light neutral background */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
+        /* Hover effect */
+        .modern-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            cursor: default;
+        }
+
+        /* Icon circle */
+        .chip-icon {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Colors for different chips */
+        .chip-icon.bg-success {
+            background-color: #28a745;
+        }
+
+        .chip-icon.bg-primary {
+            background-color: #0d6efd;
+        }
+
+        /* Text inside chip */
+        .chip-text {
+            color: #212529;
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @script
-    <script>
-        $wire.on("confirmDelete", (event) => {
-            Swal.fire({
-                title: "هل أنت متأكد؟",
-                text: "لن تتمكن من التراجع!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "نعم، احذفه!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.call("delete", event.id);
-                }
+        <script>
+            $wire.on("confirmDelete", (event) => {
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "لن تتمكن من التراجع!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذفه!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call("delete", event.id);
+                    }
+                });
             });
-        });
-    </script>
+        </script>
     @endscript
 
 
     @script
-    <script>
-        $wire.on('confirm-payment', () => {
-            Swal.fire({
-                title: "تأكيد الدفع",
-                text: "هل تريد تأكيد دفع الفواتير المحددة؟",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "نعم، تأكيد",
-                cancelButtonText: "إلغاء"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.call('paymentmulti');
-                }
+        <script>
+            $wire.on('confirm-payment', () => {
+                Swal.fire({
+                    title: "تأكيد الدفع",
+                    text: "هل تريد تأكيد دفع الفواتير المحددة؟",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "نعم، تأكيد",
+                    cancelButtonText: "إلغاء"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call('paymentmulti');
+                    }
+                });
             });
-        });
-    </script>
+        </script>
     @endscript
     @script
-    <script>
-        $wire.on('confirmDeleteSelected', () => {
-            Swal.fire({
-                title: "هل أنت متأكد؟",
-                text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "نعم، احذفهم!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.call('deleteSelected');
-                }
+        <script>
+            $wire.on('confirmDeleteSelected', () => {
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذفهم!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call('deleteSelected');
+                    }
+                });
             });
-        });
-    </script>
+        </script>
+        <script>
+            $wire.on('confirmDeleteSelected', () => {
+                Swal.fire({
+                    title: "هل أنت متأكد؟",
+                    text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "نعم، احذفهم!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $wire.call('customer-sold-today');
+                    }
+                });
+            });
+        </script>
     @endscript
 </div>

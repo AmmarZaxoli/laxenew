@@ -201,49 +201,52 @@
                                     <tr>
 
                                         <td>{{ $gitoffer['nameoffer'] }}</td>
-                                        <td class="text-center">{{ $gitoffer['id'] }}</td>
+                                        <td class="text-center">{{ $gitoffer['code'] }}</td>
                                         <td class="text-center">
-                                           <div class="quantity-control d-flex align-items-center justify-content-center">
-    <!-- زر زيادة الكمية -->
-    <button 
-        class="btn btn-quantity plus"
-        title="زيادة الكمية"
-        wire:click="incrementOffer({{ $gitoffer['id'] }})"
-        wire:loading.attr="disabled"
-        wire:target="incrementOffer({{ $gitoffer['id'] }})"
-    >
-        <span wire:loading.remove wire:target="incrementOffer({{ $gitoffer['id'] }})">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-        </span>
-        <span wire:loading wire:target="incrementOffer({{ $gitoffer['id'] }})">
-            <i class="fas fa-spinner fa-spin fa-xs"></i>
-        </span>
-    </button>
+                                            <div
+                                                class="quantity-control d-flex align-items-center justify-content-center">
+                                                <!-- زر زيادة الكمية -->
+                                                <button class="btn btn-quantity plus" title="زيادة الكمية"
+                                                    wire:click="incrementOffer({{ $gitoffer['id'] }})"
+                                                    wire:loading.attr="disabled"
+                                                    wire:target="incrementOffer({{ $gitoffer['id'] }})">
+                                                    <span wire:loading.remove
+                                                        wire:target="incrementOffer({{ $gitoffer['id'] }})">
+                                                        <svg width="12" height="12" viewBox="0 0 12 12"
+                                                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M6 1V11M1 6H11" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" />
+                                                        </svg>
+                                                    </span>
+                                                    <span wire:loading
+                                                        wire:target="incrementOffer({{ $gitoffer['id'] }})">
+                                                        <i class="fas fa-spinner fa-spin fa-xs"></i>
+                                                    </span>
+                                                </button>
 
-    <!-- عرض القيمة -->
-    <span class="quantity-value mx-2">{{ $gitoffer['quantity'] }}</span>
+                                                <!-- عرض القيمة -->
+                                                <span class="quantity-value mx-2">{{ $gitoffer['quantity'] }}</span>
 
-    <!-- زر إنقاص الكمية -->
-    <button 
-        class="btn btn-quantity minus"
-        title="إنقاص الكمية"
-        wire:click="decrementOffer({{ $gitoffer['id'] }})"
-        wire:loading.attr="disabled"
-        wire:target="decrementOffer({{ $gitoffer['id'] }})"
-        @if($gitoffer['quantity'] <= 0) disabled @endif
-    >
-        <span wire:loading.remove wire:target="decrementOffer({{ $gitoffer['id'] }})">
-            <svg width="12" height="2" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 1H1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-        </span>
-        <span wire:loading wire:target="decrementOffer({{ $gitoffer['id'] }})">
-            <i class="fas fa-spinner fa-spin fa-xs"></i>
-        </span>
-    </button>
-</div>
+                                                <!-- زر إنقاص الكمية -->
+                                                <button class="btn btn-quantity minus" title="إنقاص الكمية"
+                                                    wire:click="decrementOffer({{ $gitoffer['id'] }})"
+                                                    wire:loading.attr="disabled"
+                                                    wire:target="decrementOffer({{ $gitoffer['id'] }})"
+                                                    @if ($gitoffer['quantity'] <= 0) disabled @endif>
+                                                    <span wire:loading.remove
+                                                        wire:target="decrementOffer({{ $gitoffer['id'] }})">
+                                                        <svg width="12" height="2" viewBox="0 0 12 2"
+                                                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11 1H1" stroke="currentColor" stroke-width="2"
+                                                                stroke-linecap="round" />
+                                                        </svg>
+                                                    </span>
+                                                    <span wire:loading
+                                                        wire:target="decrementOffer({{ $gitoffer['id'] }})">
+                                                        <i class="fas fa-spinner fa-spin fa-xs"></i>
+                                                    </span>
+                                                </button>
+                                            </div>
 
                                         </td>
                                         <td class="text-center">{{ number_format($gitoffer['price']) }}</td>

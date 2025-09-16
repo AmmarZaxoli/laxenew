@@ -61,14 +61,13 @@ class PrintController extends Controller
         // Totals
         $total = $allItems->sum('total');
         $discount = $invoice->sell->discount ?? 0;
-        $taxi_price = $invoice->customer->driver->taxiprice ?? 0;
+        $taxi_price = $invoice->sell->taxi_price ?? $invoice->customer->driver->taxiprice ?? 0;
         $total_price_afterDiscount_invoice = ($total + $taxi_price) - $discount;
 
         $preparedInvoices = [];
         foreach ($chunks as $pageIndex => $chunk) {
             $preparedInvoices[] = [
                 'barcodePNG'  => $barcodePNG,  // ← add this
-
                 'invoice_number' => $invoice->num_invoice_sell, // ← add this
                 'address'   => $invoice->customer->address ?? '',
                 'mobile'    => $invoice->customer->mobile ?? '',
@@ -78,7 +77,7 @@ class PrintController extends Controller
                 'taxi_price' => $taxi_price,
                 'total_price_afterDiscount_invoice' => $total_price_afterDiscount_invoice,
                 'date_sell'      => $invoice->date_sell->format('Y-m-d'),
-
+'note' => $invoice->customer->note ?? '',
                 'show_header' => $pageIndex === 0, // ✅ only first page shows header
                 'show_footer' => $pageIndex === $pageCount - 1, // ✅ only last page shows footer
             ];
@@ -185,7 +184,7 @@ class PrintController extends Controller
                     'taxi_price' => $taxi_price,
                     'total_price_afterDiscount_invoice' => $total_price_afterDiscount_invoice,
                     'date_sell'      => $invoice->date_sell->format('Y-m-d'),
-
+                    'note' => $invoice->customer->note ?? '',
                     'show_header' => $pageIndex === 0, // ✅ only first page shows header
                     'show_footer' => $pageIndex === $pageCount - 1, // ✅ only last page shows footer
                 ];

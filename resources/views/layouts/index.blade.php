@@ -69,6 +69,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ Route::is('getAPI.approved') ? 'active' : '' }}"
+                            href="{{ route('getAPI.approved') }}">
+                            <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>
+                            <span class="nav-text">GET </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ Route::is('selling.create') ? 'active' : '' }}"
                             href="{{ route('selling.create') }}">
                             <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>

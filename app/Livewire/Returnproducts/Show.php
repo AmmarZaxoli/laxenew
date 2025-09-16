@@ -37,7 +37,7 @@ class Show extends Component
     public $total_price_invoice = 0;
 
     #[Session(key: 'note')]
-    public $note = "";
+    public $note = null;
     public $totalPrice = 0;
     public $offers = [];
     public $search_offer = '';
@@ -611,6 +611,7 @@ class Show extends Component
         $this->mobile = $this->customer?->mobile ?? '';
         $this->address = $this->customer?->address ?? '';
         $this->totalprofit = $this->customer?->profit_invoice ?? '';
+        $this->note = $this->customer?->note ?? '';
 
 
         $this->sell = $this->Sell_invoice?->sell;

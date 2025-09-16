@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sell_invoice;
-use App\Models\Driver;
-use Carbon\Carbon;
+
 
 class Printdriver extends Controller
 {
@@ -13,7 +12,7 @@ class Printdriver extends Controller
 public function printInvoices(Request $request)
 {
     $invoiceIds = array_filter(explode(',', $request->invoiceIds));
-    $driverName = $request->driverName ?? '—'; // ضمان وجود اسم
+    $driverName = $request->driverName ?? '—'; 
 
     if (empty($invoiceIds)) {
         abort(404, 'No invoices specified.');
@@ -33,7 +32,8 @@ public function printInvoices(Request $request)
         'driver_name' => $driverName,
         'date' => now()->format('Y-m-d'),
         'driverInvoices' => $invoices->map(function ($invoice) {
-            // إذا كانت علاقة sell مجموعة نأخذ أول عنصر أو نحسب المجموع حسب حاجتك
+           
+            
             $sell = is_iterable($invoice->sell) ? $invoice->sell->first() : $invoice->sell;
 
             return [

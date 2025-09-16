@@ -1,21 +1,42 @@
 <div>
     <div>
         <div class="order-dashboard">
-            <!-- Header Section -->
-            <div class="dashboard-header ">
-                <div class="header-left">
-                    <h1 class="dashboard-title">اسم السائق</h1>
-                    <div class="action-controls" style="width: 300px">
-                        <select id="nameDriver" wire:model.live="selected_driver" class="form-select">
-                            <option value="">اختر السائق</option>
-                            @foreach ($drivers as $driver)
-                                <option value="{{ $driver->id }}">{{ $driver->nameDriver }}</option>
-                            @endforeach
-                        </select>
+            <div class="dashboard-header d-flex ">
+                <div class="row g-6">
+
+
+
+                    <!-- Driver Selection -->
+                    <div class="col-md-4 mb-3">
+                        <label for="nameDriver" class="dashboard-title">اسم السائق</label>
+                        <div class="input-group">
+                            <select id="nameDriver" wire:model.live="selected_driver" class="form-select">
+                                <option value="">اختر السائق</option>
+                                @foreach ($drivers as $driver)
+                                    <option value="{{ $driver->id }}">{{ $driver->nameDriver }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
+
+                    <!-- Second: Date picker -->
+                    <div class="col-md-4 col-sm-12">
+                        <label for="date_sell" class="dashboard-title">تاريخ البيع</label>
+                        <input type="date" id="date_sell" wire:model.live="date_sell" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <label for="pricetaxi" class="dashboard-title">سعر التوصيل</label>
+                        <input type="number" id="pricetaxi" name="price" class="form-control"
+                            wire:model.live="pricetaxi" min="0" step="1000" required>
+
+                    </div>
+
+
                 </div>
 
             </div>
+
 
 
 
@@ -26,15 +47,14 @@
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
-                                <th class="text-center" style="width: 40px;">
-                                    <input type="checkbox" wire:model="selectAll">
-                                </th>
-                                <th class="text-center">Phone</th>
-                                <th class="text-center">Address</th>
-                                <th class="text-center">paymentMethod</th>
-                                <th class="text-center">Created At</th>
-                                <th class="text-center">Total (IQD)</th>
-                                <th class="text-center">View</th>
+                               
+                                <th class="text-center">يختار</th>
+                                <th class="text-center">رقم التليفون</th>
+                                <th class="text-center">عنوان</th>
+                                <th class="text-center">طريقة الدفع</th>
+                                <th class="text-center">تاريخ الشراء</th>
+                                <th class="text-center">السعر الإجمالي</th>
+                                <th class="text-center">الإجراء</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,13 +75,21 @@
                                     <td class="text-center font-semibold">{{ number_format($order['total']) }}</td>
 
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center">
-                                            <button wire:click="view('{{ $order['id'] }}')" class="action-btn"
-                                                data-bs-toggle="modal" href="#exampleModalToggle" role="button">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button wire:click="view('{{ $order['id'] }}')"
+                                                class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                                href="#exampleModalToggle" role="button">
                                                 View
+                                            </button>
+
+                                            <button wire:click="cancel('{{ $order['id'] }}')"
+                                                class="btn btn-outline-danger btn-sm">
+                                                Cancel
                                             </button>
                                         </div>
                                     </td>
+
+
 
 
                                 </tr>
@@ -97,26 +125,50 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <!-- Normal Products Table -->
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Product Code</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th>Total</th>
+                                        <th class="text-center">Product Code</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($modalProducts as $product)
                                         <tr>
                                             <td>{{ $product['productCode'] }}</td>
-                                            <td>{{ $product['quantity'] }}</td>
-                                            <td>{{ number_format($product['price']) }}</td>
-                                            <td>{{ number_format($product['total_price']) }}</td>
+                                            <td class="text-center">{{ $product['quantity'] }}</td>
+                                            <td class="text-center">{{ number_format($product['price']) }}</td>
+                                            <td class="text-center">{{ number_format($product['total_price']) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            <!-- Product Packages Table -->
+                            <table class="table table-bordered mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Package Code</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($modalPackages as $package)
+                                        <tr>
+                                            <td>{{ $package['packageCode'] }}</td>
+                                            <td class="text-center">{{ $package['quantity'] }}</td>
+                                            <td class="text-center">{{ number_format($package['price']) }}</td>
+                                            <td class="text-center">{{ number_format($package['total_price']) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
                         </div>
                     </div>
                 </div>
@@ -129,21 +181,15 @@
             @if (!empty($orders))
                 <div class="footer-actions">
                     <button class="action-btn accept-btn" wire:click="acceptSelected">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                            fill="currentColor">
                             <path fill-rule="evenodd"
                                 d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                 clip-rule="evenodd" />
                         </svg>
                         Accept Selected
                     </button>
-                    <button class="action-btn reject-btn" wire:click="rejectSelected">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Reject Selected
-                    </button>
+                   
                 </div>
             @endif
 
@@ -245,7 +291,6 @@
                 padding: 1.5rem 2rem;
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
             }
 
             .spinner {
@@ -314,10 +359,9 @@
             }
 
             .dashboard-title {
-                font-size: 1.5rem;
-                font-weight: 700;
+                font-size: 1.3rem;
                 color: white;
-                margin: 0;
+                margin: 0 5px 10px;
             }
 
             .loading-state {
@@ -363,13 +407,14 @@
             .orders-table th {
                 padding: 1rem 1.5rem;
                 text-align: left;
-                font-size: 0.75rem;
+                font-size: 1.2rem;
                 font-weight: 600;
                 color: var(--primary-dark);
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
                 background-color: var(--light);
                 border-bottom: 1px solid var(--gray-light);
+                font-family:'Times New Roman', Times, serif;
             }
 
             .orders-table td {

@@ -139,18 +139,21 @@ class Sell extends Component
             $this->address = $customer->address;
             $this->phoneSuggestions = [];
             $this->showSuggestions = false;
-        }
-        if ($customer->is_block) {
-            flash()->success('This customer is blocked!');
-        }
-        // if ($customer->date_sell && date('Y-m-d', strtotime($customer->date_sell)) == date('Y-m-d')) {
-        //     flash()->warning('This customer already has a sale today!');
-        // }
 
-        if ($customer->date_sell && date('Y-m-d', strtotime($customer->date_sell)) == date('Y-m-d')) {
-            $this->dispatch('customer-sold-today');
+            if ($customer->is_block) {
+                flash()->success('This customer is blocked!');
+                return;
+            }
+
+            // check if customer already sold today
+            if ($customer->date_sell && date('Y-m-d', strtotime($customer->date_sell)) == date('Y-m-d')) {
+                // pass the mobile number to JS
+                $this->dispatch('customerSoldToday', mobile: $customer->mobile);
+            }
         }
     }
+
+
 
 
 
@@ -161,7 +164,6 @@ class Sell extends Component
         $max = sell_invoice::max('num_invoice_sell');
         $this->numsellinvoice = $max ? $max + 1 : 1;
 
-        // Optionally save:
         sell_invoice::create([
             'num_invoice_sell' => $this->numsellinvoice,
             'date_sell' => $this->date_sell,
@@ -226,7 +228,7 @@ class Sell extends Component
             'generalpriceoffer',
             'selectedoffer',
             'ignoreMobileCheck',
-            
+
         );
         $this->date_sell = now()->format('Y-m-d\TH:i');
 
@@ -881,7 +883,6 @@ class Sell extends Component
 
     public function sell($idInvoice)
     {
-        // $totalprice = collect($this->selectedProducts)->sum('total');
         sellinfo::create([
             'taxi_price' => $this->pricetaxi,
             'total_Price_invoice' => $this->generalprice + (float)($this->discount ?? 0),
@@ -929,7 +930,6 @@ class Sell extends Component
             'products' => $productsData,
             'total' => array_sum(array_column($productsData, 'total_price')),
             'date' => now()->format('Y-m-d'),
-            // add any other info like customer name if you want
         ];
 
 

@@ -17,6 +17,8 @@ class Customer extends Model
         'profit_invoice_after_discount',
         'sell_invoice_id',
         'note',
+        'waypayment',
+        'buywith',
         'block',
     ];
 

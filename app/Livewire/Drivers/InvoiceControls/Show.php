@@ -70,9 +70,7 @@ public function updatedDateTo()
         $today = now()->format('Y-m-d');
         $this->date_from = $this->date_from ?? $today;
         $this->date_to = $this->date_to ?? $today;
-        $this->filteredByDate = false; // or true if you want to filter by default
-        // Show modal logic here, if you have one, e.g.:
-        // $this->showDateFilterModal = true;
+        $this->filteredByDate = false; 
     }
 
     public function numinvoice($id)
@@ -306,7 +304,7 @@ public function updatedDateTo()
     public function paymentmulti()
     {
         $this->updatedSelectedInvoices();
-        $this->paymentselected(); // تقوم بتحديث cash = true
+        $this->paymentselected(); 
     }
 
 

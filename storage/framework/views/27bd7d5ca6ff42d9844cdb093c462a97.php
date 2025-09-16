@@ -70,6 +70,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link <?php echo e(Route::is('getAPI.approved') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('getAPI.approved')); ?>">
+                            <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>
+                            <span class="nav-text">GET </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link <?php echo e(Route::is('selling.create') ? 'active' : ''); ?>"
                             href="<?php echo e(route('selling.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>

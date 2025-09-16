@@ -196,7 +196,7 @@ if (isset($__slots)) unset($__slots);
                             <th class="text-center align-middle">التوصيل</th>
                             <th class="text-center align-middle">الإجمالي</th>
                             <th class="text-center align-middle">التاريخ</th>
-                            <th class="text-center align-middle">profit</th>
+                            <th class="text-center align-middle">طريقة الدفع</th>
                             <th class="text-center align-middle pe-3">خيارات</th>
                         </tr>
                     </thead>
@@ -240,31 +240,31 @@ if (isset($__slots)) unset($__slots);
                                 </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex justify-content-center">
-                                        <?php echo e(number_format($invoice->customer?->profit_invoice ?? 0)); ?><br>
-                                        <?php echo e(number_format($invoice->customer?->profit_invoice_after_discount ?? 0)); ?>
+                                        <?php echo e($invoice->customer?->waypayment); ?>
 
-
+                                    </div>
                                 </td>
                                 <td class="text-center">
                                     <div class="dropstart">
-                                        <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false" aria-label="Invoice actions">
+                                        <button class="btn btn-outline-secondary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false"
+                                            aria-label="Invoice actions">
                                             <i class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <ul class="dropdown-menu shadow p-2"
                                             style="width: 270px; white-space: nowrap; margin-right: 10px;">
                                             <div class="d-flex flex-nowrap gap-3">
                                                 <li class="d-inline-block">
-                                                    <button type="button" class="btn btn-outline-primary mx-1" title="طباعة"
-                                                        onclick="printInvoice(<?php echo e($invoice->id); ?>)">
+                                                    <button type="button" class="btn btn-outline-primary mx-1"
+                                                        title="طباعة" onclick="printInvoice(<?php echo e($invoice->id); ?>)">
                                                         <i class="fas fa-print"></i>
                                                     </button>
                                                 </li>
 
                                                 <li class="d-inline-block">
                                                     <!-- Add Products -->
-                                                    <button class="btn btn btn-outline-success px-2" data-bs-toggle="modal"
-                                                        data-bs-target="#addinvoiceproduct"
+                                                    <button class="btn btn btn-outline-success px-2"
+                                                        data-bs-toggle="modal" data-bs-target="#addinvoiceproduct"
                                                         wire:click="numinvoice(<?php echo e($invoice->num_invoice_sell); ?>)"
                                                         title="إضافة منتجات">
                                                         <i class="fas fa-cart-plus me-1"></i>
@@ -273,15 +273,16 @@ if (isset($__slots)) unset($__slots);
                                                 <li class="d-inline-block">
                                                     <!-- Mark as Paid -->
                                                     <button class="btn btn-outline-danger px-2"
-                                                        wire:click="payment(<?php echo e($invoice->id); ?>)" title="إرجاع الدفع">
+                                                        wire:click="payment(<?php echo e($invoice->id); ?>)"
+                                                        title="إرجاع الدفع">
                                                         <i class="fas fa-money-bill-wave me-1"></i>
                                                     </button>
 
                                                 </li>
                                                 <li class="d-inline-block">
                                                     <!-- Edit Invoice -->
-                                                    <button class="btn btn btn-outline-warning px-2" data-bs-toggle="modal"
-                                                        data-bs-target="#EditInvoice"
+                                                    <button class="btn btn btn-outline-warning px-2"
+                                                        data-bs-toggle="modal" data-bs-target="#EditInvoice"
                                                         wire:click="numinvoice(<?php echo e($invoice->num_invoice_sell); ?>)"
                                                         title="تعديل الفاتورة">
                                                         <i class="fas fa-edit me-1"></i>
@@ -309,14 +310,14 @@ if (isset($__slots)) unset($__slots);
                                         </ul>
                                     </div>
                                 </td>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                <tr>
-                                    <td colspan="11" class="text-center py-5 text-muted">
-                                        <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
-                                        <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
-                                    </td>
-                                </tr>
-                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            <tr>
+                                <td colspan="11" class="text-center py-5 text-muted">
+                                    <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
+                                    <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
+                                </td>
+                            </tr>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </tbody>
                 </table>
             </div>
@@ -338,7 +339,8 @@ if (isset($__slots)) unset($__slots);
                                 class="form-control shadow-sm">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" wire:click="updateBulkDateSell" class="btn btn-outline-primary shadow-sm">
+                            <button type="button" wire:click="updateBulkDateSell"
+                                class="btn btn-outline-primary shadow-sm">
                                 <i class="fas fa-save me-2"></i>حفظ التغيير
                             </button>
                             <button type="button" class="btn btn-outline-secondary shadow-sm"
@@ -435,23 +437,23 @@ if (isset($__slots)) unset($__slots);
         $__scriptKey = '562533009-0';
         ob_start();
     ?>
-        <script>
-            $wire.on("confirmDelete", (event) => {
-                Swal.fire({
-                    title: "هل أنت متأكد؟",
-                    text: "لن تتمكن من التراجع!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "نعم، احذفه!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call("delete", event.id);
-                    }
+            <script>
+                $wire.on("confirmDelete", (event) => {
+                    Swal.fire({
+                        title: "هل أنت متأكد؟",
+                        text: "لن تتمكن من التراجع!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "نعم، احذفه!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $wire.call("delete", event.id);
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
             <?php
         $__output = ob_get_clean();
 
@@ -463,22 +465,22 @@ if (isset($__slots)) unset($__slots);
         $__scriptKey = '562533009-1';
         ob_start();
     ?>
-        <script>
-            $wire.on('confirm-payment', () => {
-                Swal.fire({
-                    title: "تأكيد الدفع",
-                    text: "هل تريد تأكيد دفع الفواتير المحددة؟",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "نعم، تأكيد",
-                    cancelButtonText: "إلغاء"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call('paymentmulti');
-                    }
+            <script>
+                $wire.on('confirm-payment', () => {
+                    Swal.fire({
+                        title: "تأكيد الدفع",
+                        text: "هل تريد تأكيد دفع الفواتير المحددة؟",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "نعم، تأكيد",
+                        cancelButtonText: "إلغاء"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $wire.call('paymentmulti');
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
             <?php
         $__output = ob_get_clean();
 
@@ -488,23 +490,23 @@ if (isset($__slots)) unset($__slots);
         $__scriptKey = '562533009-2';
         ob_start();
     ?>
-        <script>
-            $wire.on('confirmDeleteSelected', () => {
-                Swal.fire({
-                    title: "هل أنت متأكد؟",
-                    text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "نعم، احذفهم!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $wire.call('deleteSelected');
-                    }
+            <script>
+                $wire.on('confirmDeleteSelected', () => {
+                    Swal.fire({
+                        title: "هل أنت متأكد؟",
+                        text: "سيتم حذف جميع الفواتير المحددة ولا يمكن التراجع!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "نعم، احذفهم!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $wire.call('deleteSelected');
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
             <?php
         $__output = ob_get_clean();
 
@@ -514,4 +516,5 @@ if (isset($__slots)) unset($__slots);
 
 
 
-    </div><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/return-sell/show.blade.php ENDPATH**/ ?>
+    </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/return-sell/show.blade.php ENDPATH**/ ?>

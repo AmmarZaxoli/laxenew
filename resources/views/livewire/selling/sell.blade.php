@@ -813,10 +813,10 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex flex-column gap-3">
-                        <div class="form-check form-switch d-flex align-items-center">
+                        {{-- <div class="form-check form-switch d-flex align-items-center">
                             <input class="form-check-input me-2" type="checkbox" wire:model="printAfterSave">
                             <label class="form-check-label fw-bold">طباعة بعد الحفظ</label>
-                        </div>
+                        </div> --}}
 
                         <div class="d-flex gap-2">
                             <button type="submit"
@@ -894,6 +894,16 @@
                 if (result.isConfirmed) {
                     Livewire.dispatch('ignore-mobile-check');
                 }
+            });
+        });
+
+        window.addEventListener('customerSoldToday', (event) => {
+            Swal.fire({
+                icon: "warning",
+                title: "تنبيه",
+                text: `لقد تم البيع لهذا الرقم (${event.detail.mobile}) اليوم بالفعل!`,
+                confirmButtonText: "موافق",
+                confirmButtonColor: "#3085d6"
             });
         });
     </script>
