@@ -36,7 +36,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="typeproduct" class="form-label">النوع</label>
-                        <select class="form-select shadow-sm" wire:model="type_id" id="typeproduct">
+                        <select class="form-control" wire:model="type_id" id="typeproduct">
                             <option value="">اختر النوع</option>
                             @foreach ($types as $type)
                                 <option value="{{ $type->id }}">{{ $type->typename }}</option>

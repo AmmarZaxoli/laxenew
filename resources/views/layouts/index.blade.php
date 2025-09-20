@@ -17,6 +17,8 @@
     <!-- Google Fonts - Tajawal -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/styledashboard.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/styleaccounting.css') }}" />
 
     @livewireStyles
 </head>
@@ -58,28 +60,34 @@
                             href="{{ route('dashboards.create') }}">
                             <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
                             <span class="nav-text">لوحة التحكم</span>
-                            <span class="nav-badge">New</span>
+
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::is('getAPI.create') ? 'active' : '' }}"
-                            href="{{ route('getAPI.create') }}">
-                            <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>
-                            <span class="nav-text">GET API</span>
-                        </a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('getAPI.approved') ? 'active' : '' }}"
                             href="{{ route('getAPI.approved') }}">
-                            <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>
-                            <span class="nav-text">GET </span>
+                            <span class="nav-icon"><i class="bi bi-list-check"></i></span>
+                            <span class="nav-text">تسليم الطلبات</span>
                         </a>
                     </li>
+
+
+
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('selling.create') ? 'active' : '' }}"
                             href="{{ route('selling.create') }}">
                             <span class="nav-icon"><i class="bi bi-cart-plus"></i></span>
                             <span class="nav-text">بيع المنتجات</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('getAPI.create') ? 'active' : '' }}"
+                            href="{{ route('getAPI.create') }}">
+                            <span class="nav-icon"><i class="bi bi-phone"></i></span>
+                            <span class="nav-text">طلبات التطبيق</span>
                         </a>
                     </li>
                 </ul>
@@ -236,14 +244,14 @@
                                 <li class="nav-item">
                                     <a class="nav-link {{ Route::is('accounting.create') ? 'active' : '' }}"
                                         href="{{ route('accounting.create') }}">
-                                        
+
                                         <span class="nav-text">الحسابات</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ Route::is('accounting.createbuyproduct') ? 'active' : '' }}"
                                         href="{{ route('accounting.createbuyproduct') }}">
-                                        
+
                                         <span class="nav-text">createbuyproduct</span>
                                     </a>
                                 </li>

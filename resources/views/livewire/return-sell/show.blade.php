@@ -72,7 +72,7 @@
             <input type="date" id="dateRange" wire:model="date_to" class="form-control shadow-sm">
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3" style="margin-top: 25px">
             <button type="submit" class="btn btn-outline-primary  py-2 px-4 shadow-sm" wire:loading.attr="disabled"
                 style="margin-top: 41px" wire:target="filterByDate" wire:click="filterByDate">
                 <span wire:loading.remove wire:target="filterByDate">
@@ -275,7 +275,7 @@
                                 </td>
                             @empty
                             <tr>
-                                <td colspan="11" class="text-center py-5 text-muted">
+                                <td colspan="13" class="text-center py-5 text-muted">
                                     <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
                                     <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
                                 </td>
@@ -283,6 +283,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="mt-3">
+                    {{ $invoices->links() }}
+                </div>
             </div>
         </div>
 

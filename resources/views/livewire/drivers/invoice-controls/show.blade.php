@@ -73,38 +73,74 @@
 
 
 
-    <!-- Search and Filter Section -->
-    <div class="row mb-3 g-3 align-items-end">
-        <!-- Search by Invoice Number -->
-        <div class="col-md-3">
-            <label for="search" class="form-label">البحث برقم الفاتورة او الهاتف</label>
-            <div class="input-group shadow-sm">
-                <span class="input-group-text bg-light">
-                    <i class="fas fa-search"></i>
-                </span>
-                <input type="text" id="search" wire:model.live="search" autocomplete="off" class="form-control"
-                    placeholder="أدخل رقم الفاتورة أو الكود...">
+    <div class="row g-3" style="padding: 10px">
+        <!-- العمود الأول: البحث والتصفية -->
+        <div class="col-md-8">
+            <!-- Search and Filter Section -->
+            <div class="row mb-3 g-3 align-items-end">
+                <!-- Search by Invoice Number -->
+                <div class="col-md-6">
+                    <label for="search" class="form-label">البحث برقم الفاتورة او الهاتف</label>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-light">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="search" wire:model.live="search" autocomplete="off"
+                            class="form-control" placeholder="أدخل رقم الفاتورة أو الهاتف...">
+                    </div>
+                </div>
+
+                <!-- Filter by Driver -->
+                <div class="col-md-6">
+                    <label for="nameDriver" class="form-label">أسماء السائقين</label>
+                    <select id="nameDriver" wire:model.live="selected_driver" class="form-control">
+                        <option value="">اختر السائق</option>
+                        @foreach ($drivers as $driver)
+                            <option value="{{ $driver->id }}">
+                                {{ $driver->nameDriver }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Date Range Section -->
+                <div class="col-md-6">
+                    <label for="date_from" class="form-label">من تاريخ</label>
+                    <input type="date" id="date_from" wire:model="date_from" class="form-control shadow-sm">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="date_to" class="form-label">إلى تاريخ</label>
+                    <input type="date" id="date_to" wire:model="date_to" class="form-control shadow-sm">
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary py-2 px-4 shadow-sm w-100"
+                        wire:loading.attr="disabled" wire:target="filterByDate" wire:click="filterByDate">
+                        <span wire:loading.remove wire:target="filterByDate">
+                            <i class="fas fa-search me-2"></i> بحث
+                        </span>
+                        <span wire:loading wire:target="filterByDate">
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            جاري البحث...
+                        </span>
+                    </button>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm w-100"
+                        onclick="location.reload();">
+                        <i class="fas fa-sync-alt me-1"></i> تحديث
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Filter by Driver -->
-        <div class="col-md-3">
-            <label for="nameDriver" class="form-label">أسماء السائقين</label>
-            <select id="nameDriver" wire:model.live="selected_driver" class="form-select shadow-sm">
-                <option value="">اختر السائق</option>
-                @foreach ($drivers as $driver)
-                    <option value="{{ $driver->id }}">
-                        {{ $driver->nameDriver }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="col-md-3"></div>
-
-        <!-- Total Summary -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
+        <!-- العمود الثاني: ملخص الفواتير -->
+        <div class="col-md-4">
+            <!-- Total Summary -->
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body py-2 d-flex justify-content-between bg-light rounded">
                     <span>المجموع الفواتير:</span>
                     <span class="fw-bold fs-6 text-primary">
@@ -123,36 +159,22 @@
                         {{ number_format($invoices->sum(fn($i) => ($i->sell?->total_price_afterDiscount_invoice ?? 0) + ($i->sell?->taxi_price ?? 0))) }}
                     </span>
                 </div>
+
+
+                <div class="card-body py-2 d-flex justify-content-between">
+                    <span>المجموع الفواتير مع التوصيل:</span>
+                    <span class="fw-bold fs-6 text-success">
+                        {{ number_format($invoices->count() * 1000 + $invoices->sum(fn($i) => $i->sell?->total_price_afterDiscount_invoice ?? 0)) }}
+                    </span>
+                </div>
+
+                <div class="card-body py-2 d-flex justify-content-between bg-light rounded">
+                    <span>عدد الفواتير:</span>
+                    <span class="fw-bold fs-6 text-primary">
+                        {{ number_format($invoices->count()) }}
+                    </span>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Date Range Section -->
-    <div class="row mb-3 g-3 align-items-start">
-        <div class="col-md-3">
-            <label for="dateRange" class="form-label">من تاريخ</label>
-            <input type="date" id="dateRange" wire:model="date_from" class="form-control shadow-sm">
-        </div>
-
-        <div class="col-md-3">
-            <label for="dateRange" class="form-label">إلى تاريخ</label>
-            <input type="date" id="dateRange" wire:model="date_to" class="form-control shadow-sm">
-        </div>
-
-        <div class="col-md-3">
-            <button type="submit" class="btn btn-outline-primary  py-2 px-4 shadow-sm" wire:loading.attr="disabled"
-                style="margin-top: 41px" wire:target="filterByDate" wire:click="filterByDate">
-                <span wire:loading.remove wire:target="filterByDate">
-                    <i class="fas fa-search me-2"></i> بحث
-                </span>
-                <span wire:loading wire:target="filterByDate">
-                    <i class="fas fa-spinner fa-spin me-2"></i>
-                    جاري البحث...
-                </span>
-            </button>
-            <button type="button" class="btn btn-outline-secondary py-2 px-4 shadow-sm" style="margin-top: 41px"
-                onclick="location.reload();">
-                <i class="fas fa-sync-alt me-1"></i> تحديث </button>
         </div>
     </div>
 
@@ -382,7 +404,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="11" class="text-center py-5 text-muted">
+                            <td colspan="13" class="text-center py-5 text-muted">
                                 <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
                                 <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
                             </td>

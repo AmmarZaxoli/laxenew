@@ -14,7 +14,7 @@
 
                 <div class="col-md-3">
                     <label for="selected_type" class="form-label small text-muted mb-1">تصفية حسب النوع</label>
-                    <select class="form-select" wire:model.live="selected_type" id="selected_type">
+                    <select class="form-control" wire:model.live="selected_type" id="selected_type">
                         <option value="">جميع الأنواع</option>
                         @foreach ($types as $type)
                             <option value="{{ $type->id }}">{{ $type->typename }}</option>
@@ -24,7 +24,7 @@
 
                 <div class="col-md-3">
 
-                    <div class="btn-group w-100" role="group" style="height: 35px">
+                    <div class="btn-group w-100" role="group" style="height: 42px">
                         <button wire:click="filterActive('1')" type="button" class="btn btn-outline-success btn-sm">
                             <i class="fas fa-check-circle me-1"></i> نشط
                         </button>

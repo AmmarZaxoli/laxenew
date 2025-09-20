@@ -15,7 +15,7 @@
                 <!-- Type Select Column -->
                 <div class="col-md-4 col-lg-3">
                     <label class="form-label small text-muted mb-1">النوع</label>
-                    <select wire:model.live="selected_type" class="form-select">
+                    <select wire:model.live="selected_type" class="form-control">
                         <option value="">كل الانواع</option>
                         @foreach ($types as $type)
                             <option value="{{ $type->id }}">{{ $type->typename }}</option>

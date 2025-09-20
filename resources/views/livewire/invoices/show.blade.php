@@ -15,7 +15,7 @@
 
                     <div class="col-md-3">
                         <label for="selected_company" class="form-label small text-muted mb-1">تصفية حسب الشركة</label>
-                        <select class="form-select" wire:model.live="selected_company" id="selected_company">
+                        <select class="form-control" wire:model.live="selected_company" id="selected_company">
                             <option value="">جميع الشركات</option>
                             @foreach ($companys as $company)
                                 <option value="{{ $company->companyname }}">{{ $company->companyname }}</option>

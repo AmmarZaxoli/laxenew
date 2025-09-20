@@ -2,8 +2,8 @@
 
     <style>
         :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
+            --primary: #6366f1;
+            --secondary: #4f46e5;
             --success: #4cc9f0;
             --info: #4895ef;
             --warning: #f72585;
@@ -31,12 +31,14 @@
         }
 
         .card-header {
-            background-color: white;
+
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             padding: 16px 20px;
             font-weight: 700;
             color: var(--dark);
             border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+            color: var(--light);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
         }
 
         .form-control,

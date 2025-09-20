@@ -56,8 +56,8 @@
                                 <th class="text-center" style="width: 10%">الكمية</th>
                                 <th class="text-center" style="width: 15%">سعر الشراء</th>
                                 <th class="text-center" style="width: 20%">تاريخ الانتهاء</th>
-                                <th class="text-center" style="width: 20%">Edit</th>
-                                <th class="text-center" style="width: 20%">delete</th>
+                                <th class="text-center" style="width: 20%">تعديل</th>
+                                <th class="text-center" style="width: 20%">حذف</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,7 +76,7 @@
                                     <td class="text-center">
                                         <!-- Edit Button -->
                                         <button wire:click="editProduct({{ $product->buy_product_invoice_id }})"
-                                            class="btn btn-sm btn-primary">
+                                            class="btn btn-sm btn-outline-primary">
                                             تعديل
                                         </button>
 
@@ -177,11 +177,11 @@
 
 
             <div wire:ignore.self class="modal fade" id="editProductModal" tabindex="-1" aria-hidden="true"
-                dir="rtl">
-                <div class="modal-dialog">
+                 >
+                <div class="modal-dialog modal-xl">
                     <div class="modal-content border-0 shadow-lg">
                         <!-- Modal Header -->
-                        <div class="modal-header bg-light">
+                        <div class="modal-header  bg-light">
                             <h5 class="modal-title text-dark">
                                 <i class="fas fa-edit text-primary me-2"></i>
                                 تعديل المنتج
@@ -246,9 +246,7 @@
                                     <div class="col-12">
                                         <label class="form-label text-muted small mb-1">تاريخ الانتهاء</label>
                                         <div class="input-group">
-                                            <span class="input-group-text bg-transparent border-end-0">
-                                                <i class="fas fa-calendar-day text-muted"></i>
-                                            </span>
+                                            
                                             <input type="date" class="form-control border-start-0 ps-2"
                                                 wire:model="editDateex">
                                         </div>
@@ -257,7 +255,7 @@
 
                                 <!-- Submit Button -->
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary py-2">
+                                    <button type="submit" class="btn btn-outline-primary py-2">
                                         <i class="fas fa-save me-2"></i> حفظ التعديلات
                                     </button>
                                 </div>

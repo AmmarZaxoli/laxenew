@@ -2,161 +2,111 @@
     <div class="order-dashboard">
         <div class="dashboard-header d-flex ">
             <div class="row g-6 w-100">
-                <!-- Phone Number Search -->
-                <div class="col-md-4 mb-3">
-                    <label for="phoneNumber" class="dashboard-title">رقم الهاتف</label>
-                    <div class="input-group">
-                        <input type="text" id="phoneNumber" wire:model="phoneNumber" class="form-control"
-                               placeholder="ادخل رقم الهاتف">
-                        <button class="btn btn-outline-secondary" wire:click="searchOrders">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
 
-                <!-- From Date -->
-                <div class="col-md-3 col-sm-12">
-                    <label for="from_date" class="dashboard-title">من تاريخ</label>
-                    <input type="date" id="from_date" wire:model="from_date" class="form-control">
-                </div>
 
-                <!-- To Date -->
-                <div class="col-md-3 col-sm-12">
-                    <label for="to_date" class="dashboard-title">إلى تاريخ</label>
-                    <input type="date" id="to_date" wire:model="to_date" class="form-control">
-                </div>
-
-                <!-- Search Button -->
-                <div class="col-md-2 col-sm-12 d-flex align-items-end">
-                    <button class="btn btn-primary w-100" wire:click="searchOrders">
-                        بحث
+                <!-- Button -->
+                <div class="mb-3 d-flex gap-2">
+                    <button class="btn-delivered" wire:click="markDelivered">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-truck me-1" viewBox="0 0 16 16">
+                            <path
+                                d="M0 1a1 1 0 0 1 1-1h9.5a1 1 0 0 1 1 1V2h2.293a1 1 0 0 1 .707.293l1.707 1.707A1 1 0 0 1 16 4.707V8h-1.5A1.5 1.5 0 0 0 13 9.5v1A1.5 1.5 0 0 0 14.5 12h1v1a1 1 0 0 1-1 1H14a2 2 0 1 1-4 0H6a2 2 0 1 1-4 0H1a1 1 0 0 1-1-1V1zm1 1v9h2a2 2 0 1 1 4 0h4a2 2 0 1 1 4 0h.5v-2h-1.5A1.5 1.5 0 0 0 13 8.5v-1A1.5 1.5 0 0 0 14.5 6H16V4.707l-1.707-1.707A1 1 0 0 0 13.293 3H11v1a1 1 0 0 1-1 1H2zm2.5 6a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm7 0a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                        </svg>
+                        تغيير الحالة إلى Delivered
                     </button>
+
+                    <span class="align-self-center" style="color: white">
+                        {{ count($selectedOrders) }} صف/صفوف محددة
+                    </span>
                 </div>
             </div>
         </div>
 
         <!-- Loading State -->
-        @if($loading)
-        <div class="text-center py-4">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+        @if ($loading)
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">جاري تحميل الطلبات...</p>
             </div>
-            <p class="mt-2">جاري تحميل الطلبات...</p>
-        </div>
         @endif
 
         <!-- Orders Table -->
-        <div class="table-wrapper">
-            @if (!empty($orders))
-                <div class="p-3 bg-light border-bottom">
-                    <strong>عدد الطلبات: {{ $totalOrders }}</strong>
-                    @if(!empty($phoneNumber) || !empty($from_date) || !empty($to_date))
-                        <span class="text-muted"> (تم التصفية)</span>
-                        <button class="btn btn-sm btn-outline-secondary ms-2" wire:click="resetSearch">
-                            إعادة تعيين
-                        </button>
-                    @endif
-                </div>
-                
-                <table class="orders-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th class="text-center">رقم التليفون</th>
-                            <th class="text-center">عنوان</th>
-                            <th class="text-center">طريقة الدفع</th>
-                            <th class="text-center">تاريخ الشراء</th>
-                            <th class="text-center">السعر الإجمالي</th>
-                            <th class="text-center">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($orders as $order)
-                            <tr>
-                                <td class="text-center">{{ ($currentPage - 1) * $perPage + $loop->iteration }}</td>
-                                <td class="text-center">{{ $order['phoneNumber'] ?? 'N/A' }}</td>
-                                <td class="text-center">{{ $order['address']['location'] ?? 'N/A' }}</td>
-                                <td class="font-medium text-center">
-                                    @if($order['paymentMethod'] === 'BY_CASH')
-                                        نقداً
-                                    @elseif($order['paymentMethod'] === 'CARD')
-                                        بطاقة
-                                    @else
-                                        {{ $order['paymentMethod'] }}
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($order['createdAt'])->format('d M Y, H:i') }}
-                                </td>
-                                <td class="text-center font-semibold">{{ number_format($order['total']) }} د.ع</td>
-                                <td class="text-center">
-                                    <span class="status-tag completed">معتمد</span>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3>لا توجد طلبات معتمدة</h3>
-                    <p>لا توجد حالياً أي طلبات معتمدة للعرض.</p>
-                    @if(!empty($phoneNumber) || !empty($from_date) || !empty($to_date))
-                        <button class="btn btn-primary mt-3" wire:click="resetSearch">
-                            إعادة تعيين البحث
-                        </button>
-                    @endif
-                </div>
-            @endif
+        <table class="orders-table" wire:key="orders-table">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        <input type="checkbox" wire:model.live="selectAll">
+                    </th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">رقم التليفون</th>
+                    <th class="text-center">عنوان</th>
+                    <th class="text-center">طريقة الدفع</th>
+                    <th class="text-center">تاريخ الشراء</th>
+                    <th class="text-center">السعر الإجمالي</th>
+                    <th class="text-center">الحالة</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($orders as $index => $order)
+                    <tr wire:key="order-{{ $index }}">
+                        <td class="text-center">
+                            <input type="checkbox" wire:model.live="selectedOrders" value="{{ $order['id'] }}" style="cursor: pointer">
+                        </td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td class="text-center">{{ $order['phoneNumber'] ?? 'N/A' }}</td>
+                        <td class="text-center">{{ $order['address']['location'] ?? 'N/A' }}</td>
+                        <td class="font-medium text-center">
+                            @if ($order['paymentMethod'] === 'BY_CASH')
+                                نقداً
+                            @elseif($order['paymentMethod'] === 'CARD')
+                                بطاقة
+                            @else
+                                {{ $order['paymentMethod'] }}
+                            @endif
+                        </td>
+                        <td class="text-center">{{ \Carbon\Carbon::parse($order['createdAt'])->format('d M Y, H:i') }}
+                        </td>
+                        <td class="text-center font-semibold">{{ number_format($order['total']) }} د.ع</td>
+                        <td class="text-center">
+                            <span class="status-tag completed">معتمد</span>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center">لا توجد طلبات معتمدة</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+        <div class="pagination-wrapper">
+            <div class="pagination-controls justify-center">
+                <!-- Previous Button -->
+                <button wire:click="previousPage" @if ($currentPage == 1) disabled @endif>
+                    &laquo;
+                </button>
+
+                <!-- Numbered Pages -->
+                @for ($i = 1; $i <= $totalPages; $i++)
+                    <button wire:click="goToPage({{ $i }})"
+                        class="@if ($currentPage == $i) active @endif">
+                        {{ $i }}
+                    </button>
+                @endfor
+
+                <!-- Next Button -->
+                <button wire:click="nextPage" @if ($currentPage == $totalPages) disabled @endif>
+                    &raquo;
+                </button>
+            </div>
         </div>
 
-        <!-- Pagination -->
-        @if (!empty($orders) && $totalOrders > $perPage)
-            <div class="pagination-wrapper">
-                <div class="desktop-pagination">
-                    <div class="pagination-info">
-                        عرض <span>{{ ($currentPage - 1) * $perPage + 1 }}</span>
-                        إلى <span>{{ min($currentPage * $perPage, $totalOrders) }}</span>
-                        من <span>{{ $totalOrders }}</span> طلب
-                    </div>
 
-                    <nav class="pagination-controls">
-                        <button wire:click="previousPage" @if ($currentPage <= 1) disabled @endif
-                            class="pagination-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </button>
 
-                        @for ($i = 1; $i <= $this->totalPages; $i++)
-                            <button wire:click="gotoPage({{ $i }})"
-                                class="{{ $i == $currentPage ? 'active' : '' }}">
-                                {{ $i }}
-                            </button>
-                        @endfor
 
-                        <button wire:click="nextPage" @if ($currentPage >= $this->totalPages) disabled @endif
-                            class="pagination-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </nav>
-                </div>
-            </div>
-        @endif
+
+
     </div>
 
     <style>
@@ -172,6 +122,35 @@
             --light: #f8fafc;
             --gray: #94a3b8;
             --gray-light: #e2e8f0;
+        }
+
+        .btn-delivered {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            /* Blue gradient */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-delivered:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-delivered:active {
+            transform: translateY(1px);
+        }
+
+        .btn-delivered svg {
+            fill: white;
         }
 
         .order-dashboard {
@@ -348,23 +327,55 @@
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .dashboard-header .row {
                 flex-direction: column;
             }
-            
+
             .dashboard-header .col-md-4,
             .dashboard-header .col-md-3,
             .dashboard-header .col-md-2 {
                 width: 100%;
                 margin-bottom: 1rem;
             }
-            
-            .orders-table th, 
+
+            .orders-table th,
             .orders-table td {
                 padding: 0.5rem;
                 font-size: 0.8rem;
             }
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .pagination-controls button {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 6px;
+            background-color: white;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination-controls button.active {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: var(--light);
+        }
+
+        .pagination-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </div>

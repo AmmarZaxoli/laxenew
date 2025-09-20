@@ -15,7 +15,9 @@
             box-sizing: border-box;
         }
 
-        body {
+        body,
+        html {
+            height: 100%;
             background-color: white;
             color: #333;
         }
@@ -26,9 +28,16 @@
         }
 
         .main-report {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
             width: 100%;
             margin: 0;
             background: white;
+        }
+
+        .content {
+            flex: 1;
         }
 
         /* ===== Header ===== */
@@ -63,11 +72,6 @@
             border-collapse: collapse;
             margin: 0.5rem 0;
             font-size: 13px;
-            page-break-after: always;
-        }
-
-        .invoice-table:last-child {
-            page-break-after: auto;
         }
 
         .invoice-table thead {
@@ -91,7 +95,6 @@
 
         .invoice-table td {
             padding: 6px 4px;
-            text-align: center;
             border: 1px solid #e0e0e0;
             max-width: 200px;
             white-space: nowrap;
@@ -149,15 +152,13 @@
 
         /* ===== Footer ===== */
         .report-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
             text-align: center;
             font-size: 12px;
             color: #555;
             border-top: 1px solid #ccc;
-            padding: 3px 0;
+            padding: 6px 0;
+            margin-top: auto; /* push to bottom */
+            page-break-inside: avoid;
         }
 
         .report-footer .page-number:after {
@@ -184,74 +185,76 @@
 
 <body>
     <div class="main-report">
-
-        @foreach(array_chunk($data['driverInvoices'], 30) as $chunkIndex => $invoiceChunk)
-            <!-- رأس التقرير -->
-            <div class="report-header">
-                <h1>تقرير الفواتير</h1>
-                <div class="driver-info">
-                    <div>اسم السائق: <span>{{ $data['driver_name'] ?? '—' }}</span></div>
-                    <div>تاريخ التقرير: <span>{{ $data['date'] ?? 'غير محدد' }}</span></div>
+        <div class="content">
+            @foreach(array_chunk($data['driverInvoices'], 25) as $chunkIndex => $invoiceChunk)
+                <!-- رأس التقرير -->
+                <div class="report-header">
+                    <h1>تقرير الفواتير</h1>
+                    <div class="driver-info">
+                        <div>اسم السائق: <span>{{ $data['driver_name'] ?? '—' }}</span></div>
+                        <div>تاريخ التقرير: <span>{{ $data['date'] ?? 'غير محدد' }}</span></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- جدول الفواتير -->
-            <table class="invoice-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>الفاتورة</th>
-                        <th style="width: 220px;">العنوان</th>
-                        <th>الهاتف</th>
-                        <th>التوصيل</th>
-                        <th>الإجمالي</th>
-                        <th>المجموع</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($invoiceChunk as $index => $invoice)
+                <!-- جدول الفواتير -->
+                <table class="invoice-table" style="@if($loop->last) page-break-after:auto; @else page-break-after:always; @endif">
+                    <thead>
                         <tr>
-                            <td>{{ $index + 1 + ($chunkIndex * 30) }}</td>
-                            <td>{{ $invoice['invoice_number'] ?? '—' }}</td>
-                            <td class="address">{{ $invoice['address'] ?? '—' }}</td>
-                            <td class="phone">
-                                @php
-                                    $phones = explode(',', $invoice['mobile'] ?? '');
-                                    foreach ($phones as $phone) {
-                                        echo '<span class="phone-number">' . trim($phone) . '</span>';
-                                    }
-                                @endphp
-                            </td>
-                            <td>{{ number_format($invoice['taxi_price'] ?? 0) }}</td>
-                            <td>{{ number_format($invoice['total'] ?? 0) }}</td>
-                            <td>{{ number_format($invoice['grand_total'] ?? 0) }}</td>
+                            <th>#</th>
+                            <th style="width: 70px;">الفاتورة</th>
+                            <th style="width: 220px;">العنوان</th>
+                            <th>الهاتف</th>
+                            <th>التوصيل</th>
+                            <th>الإجمالي</th>
+                            <th>المجموع</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endforeach
+                    </thead>
+                    <tbody>
+                        @foreach($invoiceChunk as $index => $invoice)
+                            <tr>
+                                <td>{{ $index + 1 + ($chunkIndex * 25) }}</td>
+                                <td style="text-align: center;font-weight: 600;font-size: 16px;">
+                                    {{ $invoice['invoice_number'] ?? '—' }}
+                                </td>
+                                <td class="address">{{ $invoice['address'] ?? '—' }}</td>
+                                <td class="phone" style="text-align: center;font-weight: 600;font-size: 16px;">
+                                    @php
+                                        $phones = explode(',', $invoice['mobile'] ?? '');
+                                        foreach ($phones as $phone) {
+                                            echo '<span class="phone-number">' . trim($phone) . '</span>';
+                                        }
+                                    @endphp
+                                </td>
+                                <td style="text-align: center">{{ number_format($invoice['taxi_price'] ?? 0) }}</td>
+                                <td style="text-align: center">{{ number_format($invoice['total'] ?? 0) }}</td>
+                                <td style="font-weight: 600;font-size: 16px;text-align: center">
+                                    {{ number_format($invoice['grand_total'] ?? 0) }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endforeach
+        </div>
 
-       
-    </div>
-
-    <!-- Footer ثابت -->
-    <div class="report-footer">
-        <!-- ملخص الإجماليات -->
-        <div class="totals-section">
-            <div class="totals-grid">
-                <div>
-                    إجمالي الفواتير:
-                    <label class="summary-label">{{ number_format($data['total_invoice_total'] ?? 0) }}</label>
-                </div>
-                <div>
-                    إجمالي التوصيل:
-                    <label class="summary-label">{{ number_format($data['total_taxi_price'] ?? 0) }}</label>
-                </div>
-                <div>
-                    الإجمالي الكلي:
-                    <label class="summary-label">
-                        {{ number_format(($data['total_invoice_total'] ?? 0) + ($data['total_taxi_price'] ?? 0)) }}
-                    </label>
+        {{-- ✅ Footer only once, at the bottom of the last page --}}
+        <div class="report-footer">
+            <div class="totals-section">
+                <div class="totals-grid">
+                    <div>
+                        إجمالي الفواتير:
+                        <label class="summary-label">{{ number_format($data['total_invoice_total'] ?? 0) }}</label>
+                    </div>
+                    <div>
+                        إجمالي التوصيل:
+                        <label class="summary-label">{{ number_format($data['total_taxi_price'] ?? 0) }}</label>
+                    </div>
+                    <div>
+                        الإجمالي الكلي:
+                        <label class="summary-label">
+                            {{ number_format(($data['total_invoice_total'] ?? 0) + ($data['total_taxi_price'] ?? 0)) }}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>

@@ -17,7 +17,7 @@ class Show extends Component
     public $totalreligion = 0;
     public $totalafterdiscount = 0;
     public $totaldiscount = 0;
-    public $totalProfit = 0;
+
     public $totalProfitafterdiscount = 0;
     public $expense = 0;
     public function mount()
@@ -37,7 +37,7 @@ class Show extends Component
         })
             ->sum('total_Price_invoice');
 
-        $this->total = Sellinfo::where('cash', 1)
+        $this->total = Sellinfo::where('cash', 0)
             ->whereHas('invoice', function ($q) {
                 $q->whereDate('date_sell', '>=', $this->startdate)
                     ->whereDate('date_sell', '<=', $this->enddate);
@@ -63,7 +63,7 @@ class Show extends Component
             ->sum('total_price_afterDiscount_invoice');
 
 
-        $this->totaldiscount = Sellinfo::where('cash', 1)
+        $this->totaldiscount = Sellinfo::where('cash', 0)
             ->whereHas('invoice', function ($q) {
                 $q->whereDate('date_sell', '>=', $this->startdate)
                     ->whereDate('date_sell', '<=', $this->enddate);
@@ -71,14 +71,7 @@ class Show extends Component
             ->sum('discount');
 
 
-        $this->totalProfit = Customer::whereDate('date_sell', '>=', $this->startdate)
-            ->whereDate('date_sell', '<=', $this->enddate)
-            ->whereHas('sellInvoice', function ($q) {
-                $q->whereHas('sell', function ($q2) {
-                    $q2->where('cash', 1);
-                });
-            })
-            ->sum('profit_invoice');
+
 
 
         $this->totalProfitafterdiscount = Customer::whereDate('date_sell', '>=', $this->startdate)

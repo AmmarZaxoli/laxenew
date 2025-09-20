@@ -14,12 +14,18 @@ use App\Models\SellingProduct;
 use App\Models\Sub_Buy_Products_invoice;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\DB;
+use Livewire\WithPagination;
 
 class Show extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
     public $selectedInvoiceId;
 
-
+    public function updatingDateFrom()
+    {
+        $this->resetPage();
+    }
     public $search = '';
 
 
@@ -42,9 +48,9 @@ class Show extends Component
         ]);
     }
 
-  
 
-  
+
+
 
 
 
@@ -84,12 +90,12 @@ class Show extends Component
         // فارغ: سيؤدي فقط إلى إعادة تنفيذ render()
     }
 
-  public function mount()
-{
-    $today = now()->format('Y-m-d');
-    $this->date_from = $today;
-    $this->date_to = $today;
-}
+    public function mount()
+    {
+        $today = now()->format('Y-m-d');
+        $this->date_from = $today;
+        $this->date_to = $today;
+    }
 
 
     public function filterByDate()
@@ -113,8 +119,8 @@ class Show extends Component
                         );
                 });
             })
-            
-            
+
+
             ->when(
                 $this->filteredByDate && $this->date_from && $this->date_to,
                 fn($q) =>
@@ -142,7 +148,7 @@ class Show extends Component
                         );
                 });
             })
-           
+
             ->when(
                 $this->filteredByDate && $this->date_from && $this->date_to,
                 fn($q) =>
@@ -175,16 +181,14 @@ class Show extends Component
                             $q->where('mobile', 'like', '%' . $this->search . '%')
                         );
                 });
-            })
-           
-            ;
+            });
 
         if ($this->filteredByDate && $this->date_from && $this->date_to) {
             $query->whereDate('date_sell', '>=', $this->date_from)
                 ->whereDate('date_sell', '<=', $this->date_to);
         }
 
-        $invoices = $query->get();
+        $invoices = $query->orderByDesc('id')->paginate(60); 
 
         return view('livewire.return-sell.show', compact('invoices'));
     }

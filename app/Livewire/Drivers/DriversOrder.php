@@ -37,50 +37,50 @@ class DriversOrder extends Component
     }
 
     public function loadDrivers()
-    {
-        try {
-            // Determine date range
-            if (!$this->createdAt && !$this->updatedAt) {
-                $startDate = Carbon::today()->startOfDay();
-                $endDate = Carbon::today()->endOfDay();
-            } elseif ($this->createdAt && $this->updatedAt) {
-                $startDate = Carbon::parse($this->createdAt)->startOfDay();
-                $endDate = Carbon::parse($this->updatedAt)->endOfDay();
+{
+    try {
+        // Determine date range
+        if (!$this->createdAt && !$this->updatedAt) {
+            $startDate = Carbon::today()->startOfDay();
+            $endDate = Carbon::today()->endOfDay();
+        } elseif ($this->createdAt && $this->updatedAt) {
+            $startDate = Carbon::parse($this->createdAt)->startOfDay();
+            $endDate = Carbon::parse($this->updatedAt)->endOfDay();
 
-                if ($endDate->lt($startDate)) {
-                    $this->addError('dateFilter', 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية');
-                    return;
-                }
-            } else {
-                $date = $this->createdAt ?: $this->updatedAt;
-                $startDate = Carbon::parse($date)->startOfDay();
-                $endDate = Carbon::parse($date)->endOfDay();
+            if ($endDate->lt($startDate)) {
+                $this->addError('dateFilter', 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية');
+                return;
             }
-
-            // Query drivers with customer data filtered by date_sell
-            $this->drivers = Driver::query()
-                ->withCount(['customers as orders_count' => function ($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_sell', [$startDate, $endDate]);
-                }])
-                ->with(['customers' => function ($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_sell', [$startDate, $endDate])
-                      ->orderByDesc('date_sell')
-                      ->limit(1);
-                }])
-                ->whereHas('customers', function ($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_sell', [$startDate, $endDate]);
-                })
-                ->orderByDesc('orders_count')
-                ->get();
-
-            // ✅ Calculate total orders
-            $this->totalOrders = collect($this->drivers)->sum('orders_count');
-
-        } catch (\Exception $e) {
-            Log::error("Error loading drivers: " . $e->getMessage());
-            $this->addError('dateFilter', 'حدث خطأ أثناء تحميل البيانات');
+        } else {
+            $date = $this->createdAt ?: $this->updatedAt;
+            $startDate = Carbon::parse($date)->startOfDay();
+            $endDate = Carbon::parse($date)->endOfDay();
         }
+
+        // ✅ Get drivers excluding "نقد"
+        $this->drivers = Driver::query()
+            ->withCount(['customers as orders_count' => function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('date_sell', [$startDate, $endDate]);
+            }])
+            ->with(['customers' => function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('date_sell', [$startDate, $endDate])
+                  ->orderByDesc('date_sell')
+                  ->limit(1);
+            }])
+            ->whereHas('customers', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('date_sell', [$startDate, $endDate]);
+            })
+            ->where('nameDriver', '!=', 'نقد') 
+            ->orderByDesc('orders_count')
+            ->get();
+
+        $this->totalOrders = collect($this->drivers)->sum('orders_count');
+
+    } catch (\Exception $e) {
+        Log::error("Error loading drivers: " . $e->getMessage());
+        $this->addError('dateFilter', 'حدث خطأ أثناء تحميل البيانات');
     }
+}
 
     public function render()
     {

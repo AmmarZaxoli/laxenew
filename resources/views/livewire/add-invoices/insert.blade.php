@@ -51,8 +51,8 @@
                                 class="form-control text-center">
                         </div>
 
-                        <div class="col-md-3 col-6 align-items-end" style="margin-top: 57px">
-                            <button type="submit" class="btn btn-icon btn-outline-primary pulse-hover w-100"
+                        <div class="col-md-3 col-6 align-items-end" style="margin-top: 65px;">
+                            <button type="submit" class="btn btn-icon btn-outline-primary pulse-hover w-100" style="height:50px"
                                 wire:loading.attr="disabled" wire:target="storeinvoice" style="height: 40px;"
                                 @if ($this->invoicevisibale) disabled @endif>
                                 <span wire:loading.remove wire:target="storeinvoice">
@@ -139,8 +139,8 @@
                             </div>
 
                             <!-- Save Button -->
-                            <div class="col-md-3 col-6 d-flex align-items-end" style="margin-top: 58px">
-                                <button type="submit" class="btn btn-icon btn-outline-primary pulse-hover w-100"
+                            <div class="col-md-3 col-6 d-flex align-items-end" style="margin-top: 65px">
+                                <button type="submit" class="btn btn-icon btn-outline-primary pulse-hover w-100" style="height:50px"
                                     style="height: 40px;" wire:loading.attr="disabled" wire:target="addproduct"
                                     @if (!$invoicevisibale) disabled @endif>
                                     <span wire:loading.remove wire:target="addproduct">
@@ -168,7 +168,7 @@
                                     <th width="40" class="text-center">#</th>
                                     <th class="text-center">الاسم</th>
                                     <th class="text-center" width="40">الكود</th>
-                                    <th class="text-center" width="200">الباركود</th>
+                                    <th class="text-center" width="100">الباركود</th>
                                     <th class="text-center" width="120">الكمية</th>
                                     <th class="text-center" width="120">سعر الشراء</th>
                                     <th class="text-center" width="120">سعر البيع</th>
@@ -181,7 +181,7 @@
                                 @foreach ($products as $index => $product)
                                     <tr class="align-middle">
                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td class="fw-medium">{{ $product['name'] }}</td>
+                                        <td class="fw-medium " style="width: 350px">{{ $product['name'] }} </td>
                                         <td class="text-center">
                                             <span class="badge bg-success bg-opacity-10 text-success">
                                                 {{ $product['code'] }}
@@ -242,7 +242,7 @@
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">المدفوع</label>
                                     <label for="note" class="form-label fw-bold">ملاحظات</label>
-                                    <textarea name="note" class="form-control mb-3" wire:model="note" rows="3" style="height: 20px"></textarea>
+                                    <textarea name="note" class="form-control mb-3" wire:model="note" rows="3" style="height: 50px"></textarea>
 
                                 </div>
 
@@ -266,8 +266,8 @@
                                 </div> --}}
 
                                 @if (count($products) > 0)
-                                    <div class="col-md-3 col-6 d-flex align-items-end">
-                                        <button type="button" wire:click="store"
+                                    <div class="col-md-3 col-6 d-flex align-items-end" style="margin-top: 65px">
+                                        <button type="button" wire:click="store" style="height:50px"
                                             class="btn btn-icon btn-outline-success pulse-hover w-100"
                                             style="height: 40px;" wire:loading.attr="disabled" wire:target="store">
                                             <span wire:loading.remove wire:target="store">

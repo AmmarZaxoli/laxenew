@@ -2,7 +2,7 @@
     <!-- Button fixed at the top-center -->
     <button wire:click="toggleModal" class="btn position-fixed"
         style="
-            width: 160px;
+            width: 180px;
             top: 10px;
             left: 50%;
             transform: translateX(-50%);

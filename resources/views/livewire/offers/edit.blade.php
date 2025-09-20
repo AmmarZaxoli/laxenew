@@ -79,7 +79,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <select wire:model.live="selectedType" class="form-select">
+                                        <select wire:model.live="selectedType" class="form-control">
                                             <option value="">كل الانواع</option>
                                             @foreach ($types as $type)
                                                 <option value="{{ $type->id }}">{{ $type->typename }}</option>

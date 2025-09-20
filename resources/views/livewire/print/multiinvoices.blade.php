@@ -18,7 +18,7 @@
             <!-- Filter by Driver -->
             <div class="col-md-3">
                 <label for="nameDriver" class="form-label">أسماء السائقين</label>
-                <select id="nameDriver" wire:model.live="selected_driver" class="form-select shadow-sm">
+                <select id="nameDriver" wire:model.live="selected_driver" class="form-control">
                     <option value="">اختر السائق</option>
                     @foreach ($drivers as $driver)
                         <option value="{{ $driver->id }}">
@@ -88,8 +88,8 @@
 
         </div>
         <div class="col-md-5">
-            <div class="btn-group w-100" role="group" style="height: 35px">
-                <button wire:click="filterPrinted(null)" type="button" class="btn btn-outline-secondary btn-sm">
+            <div class="btn-group w-100" role="group" >
+                <button wire:click="filterPrinted(null)" type="button" class="btn btn-outline-secondary btn-sm" style="height: 45px">
                     <i class="fas fa-list me-1"></i> الكل
                 </button>
                 <button wire:click="filterPrinted(1)" type="button" class="btn btn-outline-success btn-sm">
