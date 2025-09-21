@@ -42,7 +42,7 @@ class Show extends Component
                 $q->whereDate('date_sell', '>=', $this->startdate)
                     ->whereDate('date_sell', '<=', $this->enddate);
             })
-            ->sum('total_Price_invoice');
+            ->sum('total_price_afterDiscount_invoice');
 
         $this->totalreligion = Sellinfo::where('cash', 0)
             ->whereHas('invoice', function ($q) {

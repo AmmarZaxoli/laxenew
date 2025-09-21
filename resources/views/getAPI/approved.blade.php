@@ -3,6 +3,6 @@
 @section('content')
     <div style="padding: 10px">
        
-        <livewire:get-api.approved/>
+        <livewire:get-API.approved/>
     </div>
 @endsection

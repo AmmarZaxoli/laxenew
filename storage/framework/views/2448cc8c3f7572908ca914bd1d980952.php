@@ -235,12 +235,9 @@
                             <i class="bi bi-currency-dollar"></i>
                         </div>
                         <h6 class="card-title">Today's Sales</h6>
-                        <h3 class="card-value">{{ number_format($totalpriceall) }} د.ع</h3>
+                        <h3 class="card-value"><?php echo e(number_format($totalpriceall)); ?> د.ع</h3>
 
-                        {{-- <p class="card-subtext">
-                            <span class="trend-up me-1"><i class="bi bi-arrow-up"></i> 12%</span>
-                            vs yesterday
-                        </p> --}}
+                        
                     </div>
                 </div>
             </div>
@@ -252,11 +249,8 @@
                             <i class="bi bi-calendar-week"></i>
                         </div>
                         <h6 class="card-title">This Week</h6>
-                        <h3 class="card-value">{{number_format($weekSales)}}</h3>
-                        {{-- <p class="card-subtext">
-                            <span class="trend-up me-1"><i class="bi bi-arrow-up"></i> 8%</span>
-                            vs last week
-                        </p> --}}
+                        <h3 class="card-value"><?php echo e(number_format($weekSales)); ?></h3>
+                        
                     </div>
                 </div>
             </div>
@@ -268,11 +262,8 @@
                             <i class="bi bi-truck"></i>
                         </div>
                         <h6 class="card-title">Deliveries</h6>
-                        <h3 class="card-value">{{number_format($countorder) }}</h3>
-                        {{-- <p class="card-subtext">
-                            <span class="trend-down me-1"><i class="bi bi-arrow-down"></i> 3%</span>
-                            vs yesterday
-                        </p> --}}
+                        <h3 class="card-value"><?php echo e(number_format($countorder)); ?></h3>
+                        
                     </div>
                 </div>
             </div>
@@ -283,11 +274,8 @@
                            <i class="bi bi-bag-check"></i>
                         </div>
                         <h6 class="card-title">Orders</h6>
-                        <h3 class="card-value">{{number_format($countordersale) }}</h3>
-                        {{-- <p class="card-subtext">
-                            <span class="trend-down me-1"><i class="bi bi-arrow-down"></i> 3%</span>
-                            vs yesterday
-                        </p> --}}
+                        <h3 class="card-value"><?php echo e(number_format($countordersale)); ?></h3>
+                        
                     </div>
                 </div>
             </div>
@@ -299,11 +287,8 @@
                             <i class="bi bi-credit-card"></i>
                         </div>
                         <h6 class="card-title">Total Debt</h6>
-                        <h3 class="card-value">{{number_format($totalprice)}}</h3>
-                        {{-- <p class="card-subtext">
-                            <span class="trend-up me-1"><i class="bi bi-arrow-up"></i> 5%</span>
-                            overdue
-                        </p> --}}
+                        <h3 class="card-value"><?php echo e(number_format($totalprice)); ?></h3>
+                        
                     </div>
                 </div>
             </div>
@@ -350,10 +335,10 @@
         new Chart(salesCtx, {
             type: 'line',
             data: {
-                labels: @json($salesLabels),
+                labels: <?php echo json_encode($salesLabels, 15, 512) ?>,
                 datasets: [{
                     label: 'Sales',
-                    data: @json($salesData),
+                    data: <?php echo json_encode($salesData, 15, 512) ?>,
                     fill: true,
                     tension: 0.3,
                     borderColor: '#6366f1',
@@ -380,9 +365,9 @@
         new Chart(paymentCtx, {
             type: 'doughnut',
             data: {
-                labels: @json($paymentLabels),
+                labels: <?php echo json_encode($paymentLabels, 15, 512) ?>,
                 datasets: [{
-                    data: @json($paymentData),
+                    data: <?php echo json_encode($paymentData, 15, 512) ?>,
                     backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#0ea5e9'],
                     borderWidth: 0,
                     hoverOffset: 10
@@ -411,3 +396,4 @@
 
 
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/dashboards/show.blade.php ENDPATH**/ ?>
