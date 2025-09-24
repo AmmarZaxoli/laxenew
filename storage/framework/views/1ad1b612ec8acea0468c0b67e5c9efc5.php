@@ -72,7 +72,7 @@
         }
 
         .stat-card .card-value {
-            font-size: 1.75rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 0.25rem;
@@ -169,11 +169,11 @@
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h1 class="h4 mb-0">Dashboard</h1>
-                    <p class="mb-0 opacity-75">Welcome back, Admin! Here's what's happening today.</p>
+                    <h1 class="h4 mb-0">لوحة القيادة</h1>
+                    <p class="mb-0">مرحباً بك مجدداً, <span style="font-weight: 600;color:#ffffff"><?php echo e(auth('account')->user()->name); ?></span> إليكم ما يحدث اليوم.</p>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                    <span class="badge bg-white text-primary me-2">Today: <span id="current-date">Loading...</span></span>
+                    <span class="badge bg-white text-primary me-2">اليوم: <span id="current-date">تحميل...</span></span>
                     <button class="btn btn-sm btn-outline-light">
                         <i class="bi bi-bell"></i>
                     </button>
@@ -190,37 +190,34 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="quick-actions">
-                    <a href="#" class="quick-action-btn">
+                    <a href="<?php echo e(route('selling.create')); ?>" class="quick-action-btn">
                         <i class="bi bi-cart-plus"></i>
-                        <span>New Sale</span>
+                        <span>بيع المنتجات</span>
                     </a>
-                    <a href="#" class="quick-action-btn">
-                        <i class="bi bi-people"></i>
-                        <span>Customers</span>
-                    </a>
-                    <a href="#" class="quick-action-btn">
+                    
+                    <a href="<?php echo e(route('products.create')); ?>" class="quick-action-btn">
                         <i class="bi bi-box-seam"></i>
-                        <span>Inventory</span>
+                        <span>المخزن</span>
                     </a>
-                    <a href="#" class="quick-action-btn">
+                    <a href="<?php echo e(route('returnsell.create')); ?>" class="quick-action-btn">
                         <i class="bi bi-receipt"></i>
-                        <span>Invoices</span>
+                        <span>إرجاع الفواتير</span>
                     </a>
-                    <a href="#" class="quick-action-btn">
+                    <a href="<?php echo e(route('offers.edit')); ?>" class="quick-action-btn">
                         <i class="bi bi-truck"></i>
-                        <span>Delivery</span>
+                        <span>تعديل العروض</span>
                     </a>
-                    <a href="#" class="quick-action-btn">
-                        <i class="bi bi-graph-up"></i>
-                        <span>Reports</span>
+                    <a href="<?php echo e(route('accounting.create')); ?>" class="quick-action-btn">
+                        <i class="bi bi-calculator"></i>
+                        <span>الحسابات</span>
                     </a>
-                    <a href="#" class="quick-action-btn">
+                    <a href="<?php echo e(route('expenses.create')); ?>" class="quick-action-btn">
                         <i class="bi bi-cash-coin"></i>
-                        <span>Expenses</span>
+                        <span>مصروفات</span>
                     </a>
-                    <a href="#" class="quick-action-btn">
+                    <a href="<?php echo e(route('accounts.create')); ?>" class="quick-action-btn">
                         <i class="bi bi-person-plus"></i>
-                        <span>New Staff</span>
+                        <span>المستخدمين</span>
                     </a>
                 </div>
             </div>
@@ -234,7 +231,7 @@
                         <div class="card-icon bg-primary bg-opacity-10 text-primary">
                             <i class="bi bi-currency-dollar"></i>
                         </div>
-                        <h6 class="card-title">Today's Sales</h6>
+                        <h6 class="card-title">مبيعات اليوم</h6>
                         <h3 class="card-value"><?php echo e(number_format($totalpriceall)); ?> د.ع</h3>
 
                         
@@ -242,14 +239,14 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+            <div class="col-md-2 col-sm-6 mb-3 mb-md-0">
                 <div class="card stat-card h-100">
                     <div class="card-body">
                         <div class="card-icon bg-success bg-opacity-10 text-success">
                             <i class="bi bi-calendar-week"></i>
                         </div>
-                        <h6 class="card-title">This Week</h6>
-                        <h3 class="card-value"><?php echo e(number_format($weekSales)); ?></h3>
+                        <h6 class="card-title">المبيعات هذا الأسبوع</h6>
+                        <h3 class="card-value"><?php echo e(number_format($weekSales)); ?> د.ع</h3>
                         
                     </div>
                 </div>
@@ -261,8 +258,8 @@
                         <div class="card-icon bg-warning bg-opacity-10 text-warning">
                             <i class="bi bi-truck"></i>
                         </div>
-                        <h6 class="card-title">Deliveries</h6>
-                        <h3 class="card-value"><?php echo e(number_format($countorder)); ?></h3>
+                        <h6 class="card-title">طلبات العملاء</h6>
+                        <h3 class="card-value"><?php echo e(number_format($countorder)); ?> </h3>
                         
                     </div>
                 </div>
@@ -273,21 +270,21 @@
                         <div class="card-icon bg-warning bg-opacity-10 text-warning">
                            <i class="bi bi-bag-check"></i>
                         </div>
-                        <h6 class="card-title">Orders</h6>
+                        <h6 class="card-title">جميع الطلبات اليوم</h6>
                         <h3 class="card-value"><?php echo e(number_format($countordersale)); ?></h3>
                         
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-2 col-sm-6">
                 <div class="card stat-card h-100">
                     <div class="card-body">
                         <div class="card-icon bg-secondary bg-opacity-10 text-secondary">
                             <i class="bi bi-credit-card"></i>
                         </div>
-                        <h6 class="card-title">Total Debt</h6>
-                        <h3 class="card-value"><?php echo e(number_format($totalprice)); ?></h3>
+                        <h6 class="card-title">إجمالي الديون</h6>
+                        <h3 class="card-value"><?php echo e(number_format($totalprice)); ?> د.ع</h3>
                         
                     </div>
                 </div>
@@ -299,7 +296,7 @@
             <div class="col-lg-8 mb-4 mb-lg-0">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="section-title">Sales — Last 7 Days</h5>
+                        <h5 class="section-title">المبيعات - آخر 7 أيام</h5>
                         <div class="chart-container">
                             <canvas id="sales7Chart"></canvas>
                         </div>
@@ -310,7 +307,7 @@
             <div class="col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="section-title">Payment Methods</h5>
+                        <h5 class="section-title">طرق الدفع</h5>
                         <div class="chart-container">
                             <canvas id="paymentMethodsChart"></canvas>
                         </div>
@@ -396,4 +393,4 @@
 
 
 </div>
-<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/dashboards/show.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views\livewire\dashboards\show.blade.php ENDPATH**/ ?>

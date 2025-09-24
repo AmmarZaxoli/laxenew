@@ -253,7 +253,7 @@
                                     <a class="nav-link <?php echo e(Route::is('accounting.createbuyproduct') ? 'active' : ''); ?>"
                                         href="<?php echo e(route('accounting.createbuyproduct')); ?>">
 
-                                        <span class="nav-text">createbuyproduct</span>
+                                        <span class="nav-text">جرد مخزن</span>
                                     </a>
                                 </li>
 

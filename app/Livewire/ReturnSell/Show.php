@@ -2,7 +2,7 @@
 
 namespace App\Livewire\ReturnSell;
 
-
+use App\Models\Driver;
 use App\Models\Sell_invoice;
 use App\Models\Sellinfo;
 use Livewire\Component;
@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Seling_product_info;
 use App\Models\SellingProduct;
 use App\Models\Sub_Buy_Products_invoice;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
@@ -39,7 +40,8 @@ class Show extends Component
 
     public $showBulkDateModal = false;
     public $bulkNewDateSell;
-
+    public $drivers = [];
+    public $selected_driver;
 
     public function numinvoice($id)
     {
@@ -92,6 +94,7 @@ class Show extends Component
 
     public function mount()
     {
+        $this->drivers = Driver::all();
         $today = now()->format('Y-m-d');
         $this->date_from = $today;
         $this->date_to = $today;
@@ -170,7 +173,7 @@ class Show extends Component
 
     public function render()
     {
-        $query = Sell_invoice::with(['customer', 'sell'])
+       $query = Sell_invoice::with(['customer', 'sell'])
             ->whereHas('sell', fn($q) => $q->where('cash', 1))
             ->when($this->search, function ($q) {
                 $q->where(function ($sub) {
@@ -181,27 +184,42 @@ class Show extends Component
                             $q->where('mobile', 'like', '%' . $this->search . '%')
                         );
                 });
-            });
+            })
+            ->when(
+                $this->selected_driver,
+                fn($q) =>
+                $q->whereHas(
+                    'customer.driver',
+                    fn($q2) =>
+                    $q2->where('driver_id', $this->selected_driver)
+                )
+            );
 
         if ($this->filteredByDate && $this->date_from && $this->date_to) {
             $query->whereDate('date_sell', '>=', $this->date_from)
                 ->whereDate('date_sell', '<=', $this->date_to);
         }
 
-        $invoices = $query->orderByDesc('id')->paginate(60); 
+        $invoices = $query->orderByDesc('id')->paginate(60);
 
         return view('livewire.return-sell.show', compact('invoices'));
+    
     }
     public function printSelected()
     {
         session()->flash('message', 'Print triggered for selected invoices!');
     }
 
-    public function print($id) {}
-    public function edit($id) {}
+
 
     public function payment($id)
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         $sell = Sellinfo::where('sell_invoice_id', $id)->first();
 
         if ($sell) {
@@ -212,6 +230,12 @@ class Show extends Component
 
     public function paymentmulti()
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         $this->updatedSelectedInvoices();
         $this->paymentselected(); // تقوم بتحديث cash = true
     }
@@ -253,6 +277,12 @@ class Show extends Component
 
     public function delete($id)
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         $this->confirmDelete($id);
     }
 
@@ -328,7 +358,12 @@ class Show extends Component
 
     public function deleteSelected()
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
 
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         DB::beginTransaction();
 
         try {

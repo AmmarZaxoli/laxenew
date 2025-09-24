@@ -13,7 +13,7 @@ class DriversOrder extends Component
     public $drivers = [];
     public $createdAt = null;
     public $updatedAt = null;
-    public $totalOrders = 0; // ✅ Total orders
+    public $totalOrders = 0; //  Total orders
 
     public function toggleModal()
     {
@@ -38,7 +38,7 @@ class DriversOrder extends Component
 
     public function loadDrivers()
 {
-    try {
+  
         // Determine date range
         if (!$this->createdAt && !$this->updatedAt) {
             $startDate = Carbon::today()->startOfDay();
@@ -57,29 +57,26 @@ class DriversOrder extends Component
             $endDate = Carbon::parse($date)->endOfDay();
         }
 
-        // ✅ Get drivers excluding "نقد"
-        $this->drivers = Driver::query()
-            ->withCount(['customers as orders_count' => function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('date_sell', [$startDate, $endDate]);
-            }])
-            ->with(['customers' => function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('date_sell', [$startDate, $endDate])
-                  ->orderByDesc('date_sell')
-                  ->limit(1);
-            }])
-            ->whereHas('customers', function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('date_sell', [$startDate, $endDate]);
-            })
-            ->where('nameDriver', '!=', 'نقد') 
-            ->orderByDesc('orders_count')
-            ->get();
+        //  Get drivers excluding "نقد"
+
+$this->drivers = Driver::query()
+    ->where('nameDriver', '!=', 'نقد')
+    ->withCount(['sellinfos as orders_count' => function ($q) use ($startDate, $endDate) {
+        $q->where('customers.date_sell', '>=', $startDate)
+          ->where('customers.date_sell', '<=', $endDate)
+          ->where('sells.cash', 0);
+    }])
+    ->having('orders_count', '>', 0)  
+    ->orderByDesc('orders_count')
+    ->get();
+
+
+
+    
 
         $this->totalOrders = collect($this->drivers)->sum('orders_count');
 
-    } catch (\Exception $e) {
-        Log::error("Error loading drivers: " . $e->getMessage());
-        $this->addError('dateFilter', 'حدث خطأ أثناء تحميل البيانات');
-    }
+   
 }
 
     public function render()

@@ -252,7 +252,7 @@
                                     <a class="nav-link {{ Route::is('accounting.createbuyproduct') ? 'active' : '' }}"
                                         href="{{ route('accounting.createbuyproduct') }}">
 
-                                        <span class="nav-text">createbuyproduct</span>
+                                        <span class="nav-text">جرد مخزن</span>
                                     </a>
                                 </li>
 

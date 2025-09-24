@@ -16,8 +16,7 @@ use App\Models\SellingProduct;
 use App\Models\Sub_Buy_Products_invoice;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class Show extends Component
 {
@@ -41,36 +40,36 @@ class Show extends Component
     public $showBulkDateModal = false;
     public $bulkNewDateSell;
     private function resetSelection()
-{
-    $this->selectedInvoices = [];
-    $this->selectAll = false;
-}
-public function updatedSearch()
-{
-    $this->resetSelection();
-}
+    {
+        $this->selectedInvoices = [];
+        $this->selectAll = false;
+    }
+    public function updatedSearch()
+    {
+        $this->resetSelection();
+    }
 
-public function updatedSelectedDriver()
-{
-    $this->resetSelection();
-}
+    public function updatedSelectedDriver()
+    {
+        $this->resetSelection();
+    }
 
-public function updatedDateFrom()
-{
-    $this->resetSelection();
-}
+    public function updatedDateFrom()
+    {
+        $this->resetSelection();
+    }
 
-public function updatedDateTo()
-{
-    $this->resetSelection();
-}
+    public function updatedDateTo()
+    {
+        $this->resetSelection();
+    }
 
     public function openDateFilterModal()
     {
         $today = now()->format('Y-m-d');
         $this->date_from = $this->date_from ?? $today;
         $this->date_to = $this->date_to ?? $today;
-        $this->filteredByDate = false; 
+        $this->filteredByDate = false;
     }
 
     public function numinvoice($id)
@@ -82,6 +81,7 @@ public function updatedDateTo()
 
     public function openDriverModal($invoiceId)
     {
+
         $this->selectedInvoiceId = $invoiceId;
         $this->selectedDriverId = ''; // reset
 
@@ -89,6 +89,12 @@ public function updatedDateTo()
 
     public function updateDriver()
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         $this->validate([
             'selectedDriverId' => 'required|exists:drivers,id',
         ]);
@@ -127,6 +133,12 @@ public function updatedDateTo()
     // تحديث تواريخ الفواتير المختارة دفعة واحدة
     public function updateBulkDateSell()
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         foreach ($this->selectedInvoices as $invoiceNumber) {
             $invoice = Sell_invoice::where('num_invoice_sell', $invoiceNumber)->first();
 
@@ -293,6 +305,12 @@ public function updatedDateTo()
 
     public function payment($id)
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         $sell = Sellinfo::where('sell_invoice_id', $id)->first();
 
         if ($sell) {
@@ -304,7 +322,7 @@ public function updatedDateTo()
     public function paymentmulti()
     {
         $this->updatedSelectedInvoices();
-        $this->paymentselected(); 
+        $this->paymentselected();
     }
 
 
@@ -312,6 +330,12 @@ public function updatedDateTo()
 
     public function paymentselected()
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         $selectedIds = array_map(
             fn($invoiceNum) => $this->invoiceNumberToIdMap[$invoiceNum] ?? null,
             $this->selectedInvoices
@@ -344,7 +368,12 @@ public function updatedDateTo()
 
     public function updateBulkDriver()
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
 
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         foreach ($this->selectedInvoices as $invoiceNumber) {
             $invoice = Sell_invoice::where('num_invoice_sell', $invoiceNumber)->first();
             if ($invoice && $invoice->customer) {
@@ -366,12 +395,21 @@ public function updatedDateTo()
 
     public function delete($id)
     {
+
         $this->confirmDelete($id);
     }
 
 
     public function confirmDelete($id)
     {
+
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
+
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
+
         DB::beginTransaction();
 
         try {
@@ -441,7 +479,12 @@ public function updatedDateTo()
 
     public function deleteSelected()
     {
+        $user = Auth::guard('account')->user();
+        if ($user->role !== 'admin') {
 
+            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            return;
+        }
         DB::beginTransaction();
 
         try {

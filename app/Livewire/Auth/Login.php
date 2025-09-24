@@ -36,13 +36,13 @@ class Login extends Component
         Auth::guard('account')->login($account);
 
         // Set STRICT session flags
-        session()->put('login_via_form', true); // ✅ this marks legit login
+        session()->put('login_via_form', true); //  this marks legit login
 
         // Redirect based on role
         if ($account->role === 'admin') {
             return redirect()->route('dashboard');
         }
-        return redirect()->route('definitions.create');
+        return redirect()->route('selling.create');
     }
 
     public function render()

@@ -9,7 +9,7 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split('accounting.show', []);
 
-$__html = app('livewire')->mount($__name, $__params, 'lw-3464358009-0', $__slots ?? [], get_defined_vars());
+$__html = app('livewire')->mount($__name, $__params, 'lw-3138539417-0', $__slots ?? [], get_defined_vars());
 
 echo $__html;
 
@@ -21,4 +21,4 @@ if (isset($__slots)) unset($__slots);
 ?>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/accounting/create.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views\accounting\create.blade.php ENDPATH**/ ?>

@@ -32,4 +32,10 @@ class Customer extends Model
     {
         return $this->belongsTo(Driver::class, 'driver_id');
     }
+
+    public function sellinfo()
+    {
+        // Assuming 'sell_invoice_id' is the foreign key in customers table pointing to sellinfo table
+        return $this->belongsTo(SellInfo::class, 'sell_invoice_id');
+    }
 }

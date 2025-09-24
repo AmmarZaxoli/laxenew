@@ -30,6 +30,19 @@ class Driver extends Model
                 // Local key on customers table pointing to sell_invoice
         );
     }
+// Driver.php
+public function sellinfos()
+{
+    // Driver -> Customer -> Sell_invoice -> Sellinfo
+    return $this->hasManyThrough(
+        \App\Models\Sellinfo::class,  // final model
+        \App\Models\Customer::class,  // intermediate
+        'driver_id',                   // foreign key on Customer
+        'sell_invoice_id',             // foreign key on Sellinfo pointing to Sell_invoice
+        'id',                          // local key on Driver
+        'sell_invoice_id'              // local key on Customer pointing to Sell_invoice
+    );
+}
 
     public function customers()
     {
