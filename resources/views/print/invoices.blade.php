@@ -432,7 +432,7 @@
                                     </svg>
                                 </div>
                                 <div class="social-item" style="font-size: 12px;color: #813434;font-weight: bold;
-                                                ">
+                                                        ">
                                     <span style="font-size: 12px;color: #813434;font-weight: bold;">www.laxeonline.com</span>
                                     <svg style="font-size:13px; color:#813434;margin-right:3px;"
                                         xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
@@ -452,7 +452,7 @@
                     <div class="customer-info" style="text-align: right;">
                         <div class="info-line">
                             <div class="info-label">السائق:</div>
-                            <div class="info-value">{{ $data['driver_name'] }}</div>
+                            <div class="info-value">{{ $invoice['driver_name'] }}</div>
                         </div>
                         <div class="info-line">
                             <div class="info-label">العنوان:</div>
@@ -524,6 +524,12 @@
                                     <span>الإجمالي النهائي :</span>
                                     <span>{{ number_format($invoice['total_price_afterDiscount_invoice']) }}</span>
                                 </div>
+                                {{-- @if(!empty($invoice['waypayment']) && $invoice['waypayment'] == 'FIB') --}}
+                                    <div class="totals-line">
+                                        <div class="totals-label">طريقة الدفع:</div>
+                                        <div class="totals-value">{{ $invoice['waypayment'] }}</div>
+                                    </div>
+                                {{-- @endif --}}
                             </div>
 
                             {{-- Note on the right --}}

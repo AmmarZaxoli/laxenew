@@ -12,9 +12,9 @@
                         <div class="input-group">
                             <select id="nameDriver" wire:model.live="selected_driver" class="form-control" style="width: 1150px">
                                 <option value="">اختر السائق</option>
-                                @foreach ($drivers as $driver)
-                                    <option value="{{ $driver->id }}">{{ $driver->nameDriver }}</option>
-                                @endforeach
+                                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($driver->id); ?>"><?php echo e($driver->nameDriver); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                             </select>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
 
             <!-- Orders Table -->
             <div class="table-wrapper">
-                @if (!empty($orders))
+                <!--[if BLOCK]><![endif]--><?php if(!empty($orders)): ?>
                     <table class="orders-table">
                         <thead>
                             <tr>
@@ -58,31 +58,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($orders as $order)
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td class="text-center"><?php echo e($loop->iteration); ?></td>
                                     <td class="text-center">
                                         <input type="checkbox" wire:model="selectedOrders"
-                                            wire:click="check('{{ $order['id'] }}')" value="{{ $order['id'] }}">
+                                            wire:click="check('<?php echo e($order['id']); ?>')" value="<?php echo e($order['id']); ?>">
 
                                     </td>
 
-                                    <td class="text-center">{{ $order['phoneNumber'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $order['address']['location'] ?? 'N/A' }}</td>
-                                    <td class="font-medium text-center">{{ $order['paymentMethod'] }}</td>
+                                    <td class="text-center"><?php echo e($order['phoneNumber'] ?? 'N/A'); ?></td>
+                                    <td class="text-center"><?php echo e($order['address']['location'] ?? 'N/A'); ?></td>
+                                    <td class="font-medium text-center"><?php echo e($order['paymentMethod']); ?></td>
                                     <td class="text-center">
-                                        {{ \Carbon\Carbon::parse($order['createdAt'])->format('d M Y, H:i') }}</td>
-                                    <td class="text-center font-semibold">{{ number_format($order['total']) }}</td>
+                                        <?php echo e(\Carbon\Carbon::parse($order['createdAt'])->format('d M Y, H:i')); ?></td>
+                                    <td class="text-center font-semibold"><?php echo e(number_format($order['total'])); ?></td>
 
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button wire:click="view('{{ $order['id'] }}')"
+                                            <button wire:click="view('<?php echo e($order['id']); ?>')"
                                                 class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                                                 href="#exampleModalToggle" role="button">
                                                 View
                                             </button>
 
-                                            <button wire:click="cancel('{{ $order['id'] }}')"
+                                            <button wire:click="cancel('<?php echo e($order['id']); ?>')"
                                                 class="btn btn-outline-danger btn-sm">
                                                 Cancel
                                             </button>
@@ -93,11 +93,11 @@
 
 
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
 
                         </tbody>
                     </table>
-                @else
+                <?php else: ?>
                     <div class="empty-state">
                         <div class="empty-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -109,7 +109,7 @@
                         </div>
                         <p>لا توجد حاليًا أي طلبات معلقة لعرضها.</p>
                     </div>
-                @endif
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
             </div>
 
 
@@ -135,14 +135,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($modalProducts as $product)
+                                    <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $modalProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td>{{ $product['productCode'] }}</td>
-                                            <td class="text-center">{{ $product['quantity'] }}</td>
-                                            <td class="text-center">{{ number_format($product['price']) }}</td>
-                                            <td class="text-center">{{ number_format($product['total_price']) }}</td>
+                                            <td><?php echo e($product['productCode']); ?></td>
+                                            <td class="text-center"><?php echo e($product['quantity']); ?></td>
+                                            <td class="text-center"><?php echo e(number_format($product['price'])); ?></td>
+                                            <td class="text-center"><?php echo e(number_format($product['total_price'])); ?></td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                                 </tbody>
                             </table>
 
@@ -157,14 +157,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($modalPackages as $package)
+                                    <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $modalPackages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $package): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td>{{ $package['packageCode'] }}</td>
-                                            <td class="text-center">{{ $package['quantity'] }}</td>
-                                            <td class="text-center">{{ number_format($package['price']) }}</td>
-                                            <td class="text-center">{{ number_format($package['total_price']) }}</td>
+                                            <td><?php echo e($package['packageCode']); ?></td>
+                                            <td class="text-center"><?php echo e($package['quantity']); ?></td>
+                                            <td class="text-center"><?php echo e(number_format($package['price'])); ?></td>
+                                            <td class="text-center"><?php echo e(number_format($package['total_price'])); ?></td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                                 </tbody>
                             </table>
 
@@ -177,7 +177,7 @@
 
 
             <!-- Footer Actions -->
-            @if (!empty($orders))
+            <!--[if BLOCK]><![endif]--><?php if(!empty($orders)): ?>
                 <div class="footer-actions">
                     <button class="action-btn accept-btn" wire:click="acceptSelected">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
@@ -190,19 +190,19 @@
                     </button>
                    
                 </div>
-            @endif
+            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
             <!-- Pagination -->
-            @if (!empty($orders) && $totalOrders > $perPage)
+            <?php if(!empty($orders) && $totalOrders > $perPage): ?>
                 <div class="pagination-wrapper">
                     <div class="mobile-pagination">
-                        <button wire:click="previousPage" @if ($currentPage <= 1) disabled @endif
+                        <button wire:click="previousPage" <?php if($currentPage <= 1): ?> disabled <?php endif; ?>
                             wire:loading.attr="disabled" wire:target="previousPage, nextPage, gotoPage">
                             <span wire:loading.remove wire:target="previousPage">Previous</span>
                             <span wire:loading wire:target="previousPage" class="spinner"></span>
                         </button>
 
-                        <button wire:click="nextPage" @if ($currentPage >= $totalPages) disabled @endif
+                        <button wire:click="nextPage" <?php if($currentPage >= $totalPages): ?> disabled <?php endif; ?>
                             wire:loading.attr="disabled" wire:target="previousPage, nextPage, gotoPage">
                             <span wire:loading.remove wire:target="nextPage">Next</span>
                             <span wire:loading wire:target="nextPage" class="spinner"></span>
@@ -211,13 +211,13 @@
 
                     <div class="desktop-pagination">
                         <div class="pagination-info">
-                            Showing <span>{{ ($currentPage - 1) * $perPage + 1 }}</span>
-                            to <span>{{ min($currentPage * $perPage, $totalOrders) }}</span>
-                            of <span>{{ $totalOrders }}</span> orders
+                            Showing <span><?php echo e(($currentPage - 1) * $perPage + 1); ?></span>
+                            to <span><?php echo e(min($currentPage * $perPage, $totalOrders)); ?></span>
+                            of <span><?php echo e($totalOrders); ?></span> orders
                         </div>
 
                         <nav class="pagination-controls">
-                            <button wire:click="previousPage" @if ($currentPage <= 1) disabled @endif
+                            <button wire:click="previousPage" <?php if($currentPage <= 1): ?> disabled <?php endif; ?>
                                 class="pagination-arrow" wire:loading.attr="disabled"
                                 wire:target="previousPage, nextPage, gotoPage">
                                 <span wire:loading.remove wire:target="previousPage">
@@ -230,18 +230,18 @@
                                 <span wire:loading wire:target="previousPage" class="spinner"></span>
                             </button>
 
-                            @foreach (range(1, $totalPages) as $i)
-                                <button wire:click="gotoPage({{ $i }})"
-                                    class="{{ $i == $currentPage ? 'active' : '' }}" wire:loading.attr="disabled"
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = range(1, $totalPages); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <button wire:click="gotoPage(<?php echo e($i); ?>)"
+                                    class="<?php echo e($i == $currentPage ? 'active' : ''); ?>" wire:loading.attr="disabled"
                                     wire:target="previousPage, nextPage, gotoPage">
                                     <span wire:loading.remove
-                                        wire:target="gotoPage({{ $i }})">{{ $i }}</span>
-                                    <span wire:loading wire:target="gotoPage({{ $i }})"
+                                        wire:target="gotoPage(<?php echo e($i); ?>)"><?php echo e($i); ?></span>
+                                    <span wire:loading wire:target="gotoPage(<?php echo e($i); ?>)"
                                         class="spinner"></span>
                                 </button>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
 
-                            <button wire:click="nextPage" @if ($currentPage >= $totalPages) disabled @endif
+                            <button wire:click="nextPage" <?php if($currentPage >= $totalPages): ?> disabled <?php endif; ?>
                                 class="pagination-arrow" wire:loading.attr="disabled"
                                 wire:target="previousPage, nextPage, gotoPage">
                                 <span wire:loading.remove wire:target="nextPage">
@@ -256,10 +256,11 @@
                         </nav>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
         </div>
 
       
     </div>
 </div>
+<?php /**PATH C:\Users\user\Desktop\laxe8-10 (8)\resources\views/livewire/getAPI/show.blade.php ENDPATH**/ ?>

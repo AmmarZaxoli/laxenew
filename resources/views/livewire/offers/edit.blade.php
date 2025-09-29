@@ -90,17 +90,17 @@
                             </div>
 
                             <!-- Available Products -->
-                            <div class="col-md-7">
+                            <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>#</th>
+                                                <th class="text-center">#</th>
                                                 <th>الاسم</th>
-                                                <th>النوع</th>
-                                                <th>الكود</th>
-                                                <th>الرصيد</th>
-                                                <th>إجراء</th>
+                                                <th class="text-center">النوع</th>
+                                                <th class="text-center">الكود</th>
+                                                <th class="text-center">الرصيد</th>
+                                                <th class="text-center">إجراء</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -108,18 +108,20 @@
                                                 @forelse($filteredProducts as $product)
                                                     @if ($product->quantity !== null && $product->quantity !== 0 && $product->definition->is_active == '1')
                                                         <tr>
-                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td class="text-center">{{ $loop->iteration }}</td>
                                                             <td>{{ $product->definition->name ?? 'N/A' }}</td>
-                                                            <td>{{ $product->definition->type->typename ?? 'N/A' }}
+                                                            <td class="text-center">
+                                                                {{ $product->definition->type->typename ?? 'N/A' }}
                                                             </td>
-                                                            <td>{{ $product->definition->code ?? 'N/A' }}</td>
-                                                            <td>
+                                                            <td class="text-center">
+                                                                {{ $product->definition->code ?? 'N/A' }}</td>
+                                                            <td class="text-center">
                                                                 <span
                                                                     class="badge bg-{{ $product->quantity > 0 ? 'success' : 'danger' }}">
                                                                     {{ $product->quantity }}
                                                                 </span>
                                                             </td>
-                                                            <td>
+                                                            <td class="text-center">
                                                                 @php
                                                                     $isSelected = collect($selectedProducts)->contains(
                                                                         'id',
@@ -147,51 +149,60 @@
                                             @endif
                                         </tbody>
                                     </table>
-                                    @if ($search || $selectedType)
+                                    {{-- @if ($search || $selectedType)
                                         {{ $filteredProducts->links('pagination::bootstrap-5') }}
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </div>
 
                             <!-- Selected Products -->
-                            <div class="col-md-5">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>الاسم</th>
-                                                <th>الكمية</th>
-                                                <th>سعر الشراء</th>
-                                                <th>إجراء</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($selectedProducts as $index => $product)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $product['name'] }}</td>
-                                                    <td>
-                                                        <input type="number"
-                                                            wire:model="selectedProducts.{{ $index }}.quantity"
-                                                            wire:change="validateQuantity({{ $index }}, $event.target.value)"
-                                                            min="1" max="{{ $product['stock'] }}"
-                                                            class="form-control form-control-sm">
-                                                    </td>
-                                                    <td class="text-center">
-                                                        {{ number_format($totalBuy[$product['id']] ?? 0) }}</td>
 
-                                                    <td>
-                                                        <button class="btn btn-sm btn-danger"
-                                                            wire:click="removeProduct({{ $index }})">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th>الاسم</th>
+                                            <th class="text-center">كود</th>
+                                            <th class="text-center">المخزون</th>
+                                            <th class="text-center">الكمية</th>
+                                            <th class="text-center">سعر الشراء</th>
+                                            <th class="text-center">إجراء</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($selectedProducts as $index => $product)
+                                            <tr>
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $product['name'] }}</td>
+                                                <td class="text-center">
+                                                    {{ $product['code'] }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $product['stock'] }}
+                                                </td>
+                                                <td>
+                                                    <input type="number"
+                                                        wire:model="selectedProducts.{{ $index }}.quantity"
+                                                        wire:change="validateQuantity({{ $index }}, $event.target.value)"
+                                                        min="1" max="{{ $product['stock'] }}"
+                                                        class="form-control form-control-sm text-center">
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ number_format($totalBuy[$product['id']] ?? 0) }}</td>
+
+                                                <td class="text-center">
+                                                    <button class="btn btn-sm btn-danger"
+                                                        wire:click="removeProduct({{ $index }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

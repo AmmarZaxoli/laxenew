@@ -219,7 +219,7 @@ class Show extends Component
         if ($order) {
             $products = [];
             $packages = [];
-
+dd($order['items']);
             foreach ($order['items'] as $item) {
 
                 // Normal product (no package)
