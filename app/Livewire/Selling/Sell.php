@@ -76,6 +76,21 @@ class Sell extends Component
     protected $casts = [
         'cashornot' => 'boolean',
     ];
+
+    public $sortField = 'id';
+    public $sortDirection = 'asc';
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortDirection = 'asc';
+        }
+
+        $this->sortField = $field;
+    }
+
     public $offers = [];
     public $search_offer = '';
     public function offersshow()
@@ -1111,9 +1126,9 @@ class Sell extends Component
 
     public function render()
     {
-        $products = collect(); // Empty by default
+        $products = collect(); // فارغ افتراضياً
 
-        // Only run query if there's a search or selected type
+        // فقط إذا في بحث أو نوع محدد
         if (!empty($this->search_code_name) || !empty($this->selected_type)) {
             $products = Product::with(['definition', 'definition.type'])
                 ->whereHas('definition', function ($query) {
@@ -1130,9 +1145,19 @@ class Sell extends Component
                         $query->where('type_id', $this->selected_type);
                     }
                 })
-                ->paginate(10);
+                ->when($this->sortField, function ($query) {
+                    // لو العمود المطلوب من جدول definitions
+                    if (in_array($this->sortField, ['name', 'barcode', 'code'])) {
+                        $query->join('definitions', 'products.definition_id', '=', 'definitions.id')
+                            ->orderBy("definitions.{$this->sortField}", $this->sortDirection)
+                            ->select('products.*'); // عشان نتجنب تكرار الأعمدة
+                    } else {
+                        // أعمدة من جدول products
+                        $query->orderBy("products.{$this->sortField}", $this->sortDirection);
+                    }
+                })
+                ->paginate(20);
         }
-
 
         return view('livewire.selling.sell', [
             'products' => $products,

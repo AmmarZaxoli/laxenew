@@ -45,7 +45,7 @@
                     <i class="bi bi-cart-check"></i>
                 </div>
                 <h6>إجمالي جميع المبيعات</h6>
-                <h3>{{ number_format($totalpriceall) }}</h3>
+                <h3><?php echo e(number_format($totalpriceall)); ?></h3>
             </div>
             <!-- Statistics Cards -->
             <div class="stats-grid" style="margin-top: 15px">
@@ -56,7 +56,7 @@
                         <i class="bi bi-cart-check"></i>
                     </div>
                     <h6>إجمالي المبيعات دين</h6>
-                    <h3>{{ number_format($total ) }}</h3>
+                    <h3><?php echo e(number_format($total )); ?></h3>
                 </div>
 
 
@@ -68,7 +68,7 @@
                         <i class="bi bi-receipt-cutoff"></i>
                     </div>
                     <h6>المبيعات مستلمة</h6>
-                    <h3>{{ number_format($totalafterdiscount) }}</h3>
+                    <h3><?php echo e(number_format($totalafterdiscount)); ?></h3>
                 </div>
 
                 
@@ -79,7 +79,7 @@
                         <i class="bi bi-wallet2"></i>
                     </div>
                     <h6>إجمالي المصروفات</h6>
-                    <h3>{{ number_format($expense) }}</h3>
+                    <h3><?php echo e(number_format($expense)); ?></h3>
                 </div>
 
            
@@ -90,7 +90,7 @@
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
                     <h6>صافي الربح</h6>
-                    <h3>{{ number_format($totalProfitafterdiscount - $expense) }}</h3>
+                    <h3><?php echo e(number_format($totalProfitafterdiscount - $expense)); ?></h3>
                 </div>
 
 
@@ -100,7 +100,7 @@
                         <i class="bi bi-percent"></i>
                     </div>
                     <h6>سندوق</h6>
-                    <h3>{{ number_format($totalafterdiscount - $expense) }}</h3>
+                    <h3><?php echo e(number_format($totalafterdiscount - $expense)); ?></h3>
                 </div>
 
                 <div class="stat-card profit">
@@ -108,7 +108,7 @@
                       <i class="bi bi-truck"></i>
                     </div>
                     <h6>عدد التوصيلات</h6>
-                    <h3>{{ $count }}</h3>
+                    <h3><?php echo e($count); ?></h3>
                 </div>
 
             </div>
@@ -117,3 +117,4 @@
         </div>
     </div>
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/accounting/show.blade.php ENDPATH**/ ?>

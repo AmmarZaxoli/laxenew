@@ -20,6 +20,7 @@ class Show extends Component
 
     public $totalProfitafterdiscount = 0;
     public $expense = 0;
+    public $count = 0;
     public function mount()
     {
         $this->startdate = now()->format('Y-m-d');
@@ -87,6 +88,16 @@ class Show extends Component
         $this->expense = Expense::whereDate('created_at', '>=', $this->startdate)
             ->whereDate('created_at', '<=', $this->enddate)
             ->sum('price');
+
+        //
+        $this->count = Customer::whereDate('date_sell', '>=', $this->startdate)
+            ->whereDate('date_sell', '<=', $this->enddate)
+            ->whereHas('sellInvoice', function ($q) {
+                $q->whereHas('sell', function ($q2) {
+                    $q2->where('cash', 0);
+                });
+            })
+            ->count();
     }
     public function render()
     {

@@ -81,7 +81,7 @@ class PrintController extends Controller
                 'show_footer' => $pageIndex === $pageCount - 1,
             ];
         }
-dd($preparedInvoices);
+
         $data = [
             'driver_name' => $invoice->customer->driver->nameDriver ?? '',
             'invoices'    => $preparedInvoices

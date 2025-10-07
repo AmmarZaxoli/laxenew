@@ -338,12 +338,12 @@
                             <div class="col-md-3 mb-3">
                                 <label for="nextInvoice" class="form-label">رقم الفاتورة</label>
                                 <input type="text" name="numList" id="nextInvoice" class="form-control"
-                                    value="{{ $numsellinvoice }}" readonly required>
+                                    value="<?php echo e($numsellinvoice); ?>" readonly required>
                             </div>
 
                             <!-- New Invoice Button -->
                             <div class="col-md-3 mb-3  align-items-end" style="margin-top: 56px">
-                                @if ($showNewButton)
+                                <!--[if BLOCK]><![endif]--><?php if($showNewButton): ?>
                                     <button id="getNextInvoiceBtn"
                                         class="btn btn-outline-primary d-flex align-items-center"
                                         wire:click="makesellInvoice" wire:loading.attr="disabled" type="button"
@@ -355,7 +355,7 @@
 
                                         <i class="fas fa-plus-circle me-1"></i> فاتورة جديدة
                                     </button>
-                                @endif
+                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                             </div>
 
                             <!-- Date and Time -->
@@ -376,19 +376,19 @@
                                         autocomplete="off" placeholder="اكتب رقم الهاتف">
                                 </div>
 
-                                @if (!empty($phoneSuggestions) && $showSuggestions)
+                                <!--[if BLOCK]><![endif]--><?php if(!empty($phoneSuggestions) && $showSuggestions): ?>
                                     <div class="suggestion-list position-absolute w-100 mt-1">
-                                        @foreach ($phoneSuggestions as $suggestion)
+                                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $phoneSuggestions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $suggestion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <div class="suggestion-item bg-white"
-                                                wire:click="selectPhone('{{ $suggestion->mobile }}')">
+                                                wire:click="selectPhone('<?php echo e($suggestion->mobile); ?>')">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="fw-medium">{{ $suggestion->mobile }}</span>
-                                                    <small class="text-muted">{{ $suggestion->address }}</small>
+                                                    <span class="fw-medium"><?php echo e($suggestion->mobile); ?></span>
+                                                    <small class="text-muted"><?php echo e($suggestion->address); ?></small>
                                                 </div>
                                             </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                                     </div>
-                                @endif
+                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                             </div>
 
                             <!-- Address -->
@@ -408,9 +408,9 @@
                                     <span class="input-group-text"><i class="fas fa-taxi"></i></span>
                                     <select id="nameDriver" wire:model.live="selected_driver" class="form-select">
                                         <option value="">اختر السائق</option>
-                                        @foreach ($drivers as $driver)
-                                            <option value="{{ $driver->id }}">{{ $driver->nameDriver }}</option>
-                                        @endforeach
+                                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($driver->id); ?>"><?php echo e($driver->nameDriver); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                                     </select>
                                 </div>
                             </div>
@@ -467,9 +467,9 @@
                                     <select id="type-select" name="type_id" class="form-select"
                                         wire:model.live="selected_type">
                                         <option value="">اختر الأنواع</option>
-                                        @foreach ($types as $type)
-                                            <option value="{{ $type->id }}">{{ $type->typename }}</option>
-                                        @endforeach
+                                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($type->id); ?>"><?php echo e($type->typename); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                                     </select>
                                 </div>
                             </div>
@@ -520,7 +520,7 @@
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">المنتجات المتاحة</h5>
-                        <span class="badge bg-info">{{ $products->count() }}</span>
+                        <span class="badge bg-info"><?php echo e($products->count()); ?></span>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -529,16 +529,18 @@
                                     <tr>
                                         <th wire:click="sortBy('name')" style="cursor: pointer;">
                                             اسم المنتج
-                                            @if ($sortField === 'name')
-                                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
-                                            @endif
+                                            <!--[if BLOCK]><![endif]--><?php if($sortField === 'name'): ?>
+                                                <?php echo $sortDirection === 'asc' ? '↑' : '↓'; ?>
+
+                                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                         </th>
                                         <th class="text-center"> الباركود </th>
                                         <th class="text-center" wire:click="sortBy('code')" style="cursor: pointer;">
                                             الكود
-                                            @if ($sortField === 'code')
-                                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
-                                            @endif
+                                            <!--[if BLOCK]><![endif]--><?php if($sortField === 'code'): ?>
+                                                <?php echo $sortDirection === 'asc' ? '↑' : '↓'; ?>
+
+                                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                         </th>
                                         <th class="text-center">المخزون</th>
                                         <th class="text-center">السعر </th>
@@ -548,41 +550,42 @@
                                 </thead>
 
                                 <tbody>
-                                    @forelse ($products as $product)
-                                        <tr class="product-row" wire:click="addProduct({{ $product->id }})">
-                                            <td>{{ $product->definition->name }}</td>
-                                            <td class="text-center">{{ $product->definition->barcode }}</td>
-                                            <td class="text-center">{{ $product->definition->code }}</td>
+                                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <tr class="product-row" wire:click="addProduct(<?php echo e($product->id); ?>)">
+                                            <td><?php echo e($product->definition->name); ?></td>
+                                            <td class="text-center"><?php echo e($product->definition->barcode); ?></td>
+                                            <td class="text-center"><?php echo e($product->definition->code); ?></td>
                                             <td class="text-center">
                                                 <span
-                                                    class="badge bg-{{ $product->quantity > 0 ? 'success' : 'danger' }}">
-                                                    {{ $product->quantity }}
+                                                    class="badge bg-<?php echo e($product->quantity > 0 ? 'success' : 'danger'); ?>">
+                                                    <?php echo e($product->quantity); ?>
+
                                                 </span>
                                             </td>
-                                            <td class="text-center">{{ number_format($product->price_sell) }}</td>
+                                            <td class="text-center"><?php echo e(number_format($product->price_sell)); ?></td>
                                             <td class="text-center">
-                                                @if ($product->definition->image && file_exists(public_path('storage/' . $product->definition->image)))
-                                                    <img src="{{ asset('storage/' . $product->definition->image) }}"
+                                                <!--[if BLOCK]><![endif]--><?php if($product->definition->image && file_exists(public_path('storage/' . $product->definition->image))): ?>
+                                                    <img src="<?php echo e(asset('storage/' . $product->definition->image)); ?>"
                                                         class="product-image" data-bs-toggle="modal"
-                                                        data-bs-target="#imageModal{{ $product->definition->id }}"
+                                                        data-bs-target="#imageModal<?php echo e($product->definition->id); ?>"
                                                         alt="صورة المنتج">
-                                                @else
+                                                <?php else: ?>
                                                     <span class="text-muted small">لا يوجد</span>
-                                                @endif
+                                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                             </td>
                                             <td class="text-center">
                                                 <button class="btn btn-sm btn-outline-primary"
-                                                    wire:click.stop="addProduct({{ $product->id }})">
+                                                    wire:click.stop="addProduct(<?php echo e($product->id); ?>)">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </td>
                                         </tr>
-                                    @empty
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="7" class="text-center text-muted py-4">لا توجد منتجات
                                                 متاحة</td>
                                         </tr>
-                                    @endforelse
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </tbody>
                             </table>
                         </div>
@@ -596,7 +599,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">العروض</h5>
                         <div class="d-flex align-items-center">
-                            <span class="badge bg-warning me-2">{{ $offers ? count($offers) : 0 }}</span>
+                            <span class="badge bg-warning me-2"><?php echo e($offers ? count($offers) : 0); ?></span>
                             <div class="input-group input-group-sm" style="width: 200px;">
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 <input type="text" wire:model.live='search_offer' autocomplete="off"
@@ -616,26 +619,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (!empty($offers))
-                                        @forelse ($offers as $offer)
-                                            <tr class="offer-row" wire:click="addOffer({{ $offer['id'] }})">
-                                                <td>{{ $offer['nameoffer'] }}</td>
-                                                <td class="text-center">{{ $offer['code'] }}</td>
-                                                <td class="text-center">{{ number_format($offer['price']) }}</td>
+                                    <!--[if BLOCK]><![endif]--><?php if(!empty($offers)): ?>
+                                        <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $offers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $offer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                            <tr class="offer-row" wire:click="addOffer(<?php echo e($offer['id']); ?>)">
+                                                <td><?php echo e($offer['nameoffer']); ?></td>
+                                                <td class="text-center"><?php echo e($offer['code']); ?></td>
+                                                <td class="text-center"><?php echo e(number_format($offer['price'])); ?></td>
                                                 <td class="text-center">
                                                     <button class="btn btn-sm btn-outline-primary"
-                                                        wire:click.stop="addOffer({{ $offer['id'] }})">
+                                                        wire:click.stop="addOffer(<?php echo e($offer['id']); ?>)">
                                                         <i class="fas fa-plus"></i>
                                                     </button>
                                                 </td>
                                             </tr>
-                                        @empty
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                             <tr>
                                                 <td colspan="4" class="text-center text-muted py-4">لا توجد
                                                     عروض متاحة</td>
                                             </tr>
-                                        @endforelse
-                                    @endif
+                                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </tbody>
                             </table>
                         </div>
@@ -650,7 +653,7 @@
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">المنتجات المحددة</h5>
-                        <span class="badge bg-primary">{{ count($selectedProducts) }}</span>
+                        <span class="badge bg-primary"><?php echo e(count($selectedProducts)); ?></span>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -666,33 +669,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($selectedProducts as $product)
+                                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $selectedProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <tr>
-                                            <td>{{ $product['name'] }}</td>
-                                            <td class="text-center">{{ $product['code'] }}</td>
+                                            <td><?php echo e($product['name']); ?></td>
+                                            <td class="text-center"><?php echo e($product['code']); ?></td>
                                             <td class="text-center">
                                                 <input type="number"
-                                                    wire:change="updateQuantity({{ $product['id'] }}, $event.target.value)"
-                                                    value="{{ $product['quantity'] }}" min="1"
-                                                    max="{{ $dd }}"
+                                                    wire:change="updateQuantity(<?php echo e($product['id']); ?>, $event.target.value)"
+                                                    value="<?php echo e($product['quantity']); ?>" min="1"
+                                                    max="<?php echo e($dd); ?>"
                                                     class="form-control form-control-sm text-center mx-auto"
                                                     style="width: 70px;">
                                             </td>
-                                            <td class="text-center">{{ number_format($product['price']) }}</td>
-                                            <td class="text-center">{{ number_format($product['total']) }}</td>
+                                            <td class="text-center"><?php echo e(number_format($product['price'])); ?></td>
+                                            <td class="text-center"><?php echo e(number_format($product['total'])); ?></td>
                                             <td class="text-center">
-                                                <button wire:click="removeProduct({{ $product['id'] }})"
+                                                <button wire:click="removeProduct(<?php echo e($product['id']); ?>)"
                                                     class="btn btn-sm btn-outline-danger">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </td>
                                         </tr>
-                                    @empty
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="6" class="text-center text-muted py-4">لم يتم اختيار
                                                 منتجات بعد</td>
                                         </tr>
-                                    @endforelse
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </tbody>
                             </table>
                         </div>
@@ -705,7 +708,7 @@
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">العروض المحددة</h5>
-                        <span class="badge bg-success">{{ count($selectedoffer) }}</span>
+                        <span class="badge bg-success"><?php echo e(count($selectedoffer)); ?></span>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -721,64 +724,64 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($selectedoffer as $offer)
+                                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $selectedoffer; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $offer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <tr>
-                                            <td>{{ $offer['nameoffer'] }}</td>
-                                            <td class="text-center">{{ $offer['code'] }}</td>
+                                            <td><?php echo e($offer['nameoffer']); ?></td>
+                                            <td class="text-center"><?php echo e($offer['code']); ?></td>
                                             <td class="text-center">
                                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                                     <button wire:loading.attr="disabled"
-                                                        wire:target="decrementOffer({{ $offer['id'] }})"
-                                                        wire:click="decrementOffer({{ $offer['id'] }})"
+                                                        wire:target="decrementOffer(<?php echo e($offer['id']); ?>)"
+                                                        wire:click="decrementOffer(<?php echo e($offer['id']); ?>)"
                                                         class="btn btn-sm btn-outline-secondary"
-                                                        @disabled($offer['quantity'] <= 0)>
+                                                        <?php if($offer['quantity'] <= 0): echo 'disabled'; endif; ?>>
                                                         <span wire:loading.remove
-                                                            wire:target="decrementOffer({{ $offer['id'] }})">-</span>
+                                                            wire:target="decrementOffer(<?php echo e($offer['id']); ?>)">-</span>
                                                         <span wire:loading
-                                                            wire:target="decrementOffer({{ $offer['id'] }})">
+                                                            wire:target="decrementOffer(<?php echo e($offer['id']); ?>)">
                                                             <i class="fas fa-spinner fa-spin fa-xs"></i>
                                                         </span>
                                                     </button>
 
-                                                    <span class="mx-2 fw-bold">{{ $offer['quantity'] }}</span>
+                                                    <span class="mx-2 fw-bold"><?php echo e($offer['quantity']); ?></span>
 
                                                     <button wire:loading.attr="disabled"
-                                                        wire:target="incrementOffer({{ $offer['id'] }})"
-                                                        wire:click="incrementOffer({{ $offer['id'] }})"
+                                                        wire:target="incrementOffer(<?php echo e($offer['id']); ?>)"
+                                                        wire:click="incrementOffer(<?php echo e($offer['id']); ?>)"
                                                         class="btn btn-sm btn-outline-secondary">
                                                         <span wire:loading.remove
-                                                            wire:target="incrementOffer({{ $offer['id'] }})">+</span>
+                                                            wire:target="incrementOffer(<?php echo e($offer['id']); ?>)">+</span>
                                                         <span wire:loading
-                                                            wire:target="incrementOffer({{ $offer['id'] }})">
+                                                            wire:target="incrementOffer(<?php echo e($offer['id']); ?>)">
                                                             <i class="fas fa-spinner fa-spin fa-xs"></i>
                                                         </span>
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td class="text-center">{{ number_format($offer['price']) }}</td>
+                                            <td class="text-center"><?php echo e(number_format($offer['price'])); ?></td>
                                             <td class="text-center">
-                                                {{ number_format($offer['quantity'] * $offer['price']) }}</td>
+                                                <?php echo e(number_format($offer['quantity'] * $offer['price'])); ?></td>
                                             <td class="text-center">
                                                 <button wire:loading.attr="disabled"
-                                                    wire:target="removeOffer({{ $offer['id'] }})"
-                                                    wire:click="removeOffer({{ $offer['id'] }})"
+                                                    wire:target="removeOffer(<?php echo e($offer['id']); ?>)"
+                                                    wire:click="removeOffer(<?php echo e($offer['id']); ?>)"
                                                     class="btn btn-sm btn-outline-danger">
                                                     <span wire:loading.remove
-                                                        wire:target="removeOffer({{ $offer['id'] }})">
+                                                        wire:target="removeOffer(<?php echo e($offer['id']); ?>)">
                                                         <i class="fas fa-trash"></i>
                                                     </span>
-                                                    <span wire:loading wire:target="removeOffer({{ $offer['id'] }})">
+                                                    <span wire:loading wire:target="removeOffer(<?php echo e($offer['id']); ?>)">
                                                         <i class="fas fa-spinner fa-spin fa-xs"></i>
                                                     </span>
                                                 </button>
                                             </td>
                                         </tr>
-                                    @empty
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="6" class="text-center text-muted py-4">لم يتم اختيار
                                                 عروض بعد</td>
                                         </tr>
-                                    @endforelse
+                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </tbody>
                             </table>
                         </div>
@@ -795,7 +798,7 @@
                     <div class="summary-card" style="width: 500px">
                         <div class="mb-3 d-flex justify-content-between align-items-center">
                             <span class="text-muted">الإجمالي الفرعي:</span>
-                            <span class="fw-bold fs-5">{{ number_format($this->totalPrice) }} د.ع</span>
+                            <span class="fw-bold fs-5"><?php echo e(number_format($this->totalPrice)); ?> د.ع</span>
                         </div>
 
                         <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -810,24 +813,21 @@
                         <div class="pt-3 mt-3 border-top d-flex justify-content-between align-items-center">
                             <span class="fw-semibold">الإجمالي النهائي:</span>
                             <span class="fw-bold text-success fs-4">
-                                {{ number_format($generalprice) }} د.ع
+                                <?php echo e(number_format($generalprice)); ?> د.ع
                             </span>
                         </div>
                     </div>
 
                     <!-- Free Delivery Message -->
-                    @if ($delivery_type == 1)
+                    <!--[if BLOCK]><![endif]--><?php if($delivery_type == 1): ?>
                         <div class="d-flex align-items-center justify-content-center text-success fw-bold fs-5 px-4">
                             <i class="fas fa-truck me-2"></i> توصيل مجاني
                         </div>
-                    @endif
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                     <!-- Action Buttons -->
                     <div class="d-flex flex-column gap-3">
-                        {{-- <div class="form-check form-switch d-flex align-items-center">
-                            <input class="form-check-input me-2" type="checkbox" wire:model="printAfterSave">
-                            <label class="form-check-label fw-bold">طباعة بعد الحفظ</label>
-                        </div> --}}
+                        
 
                         <div class="d-flex gap-2">
                             <button type="submit"
@@ -887,7 +887,7 @@
                 const suggestionList = document.querySelector('.suggestion-list');
 
                 if (suggestionList && !suggestionList.contains(event.target) && event.target !== input) {
-                    @this.set('showSuggestions', false);
+                    window.Livewire.find('<?php echo e($_instance->getId()); ?>').set('showSuggestions', false);
                 }
             });
         });
@@ -921,3 +921,4 @@
 
 
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/selling/sell.blade.php ENDPATH**/ ?>
