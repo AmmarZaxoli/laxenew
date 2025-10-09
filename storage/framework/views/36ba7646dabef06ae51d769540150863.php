@@ -17,23 +17,21 @@
         @media print {
             @page {
                 size: A6 portrait;
-                margin: 0mm;
+                margin: 0;
             }
-            
 
+            html,
             body {
                 margin: 0 !important;
                 padding: 0 !important;
                 background: white;
-                font-family: 'Cairo', Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
             }
 
             .invoice-container {
-                width: 100%;
-                min-height: 144mm;
-                max-height: 144mm;
                 page-break-inside: avoid;
-                break-inside: avoid;
             }
 
             .page-break {
@@ -41,363 +39,350 @@
             }
         }
 
-        /* Screen styles */
         body {
             font-family: 'Cairo', Arial, sans-serif;
             color: #000;
             background: white;
             margin: 0;
-            padding: 10px;
+            padding: 0;
         }
 
         .invoices-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            background: #f5f5f5;
+            box-sizing: border-box;
         }
 
         .invoice-container {
             width: 101mm;
-            min-height: 144mm;
+            height: 144mm;
             background: white;
             position: relative;
-            /* border: 1px solid #813434; */
             box-sizing: border-box;
-            padding: 3mm;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Remove or fix problematic absolute positioning */
-        .floral-decoration,
+        .floral-decoration {
+            position: absolute;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .floral-top-right {
+            top: 0;
+            right: 0;
+            width: 30mm;
+            transform: rotate(180deg);
+        }
+
+        .floral-bottom-left {
+            bottom: 0;
+            left: 0;
+            width: 30mm;
+        }
+
         .star-decoration {
-            display: none;
-            /* Hide decorative elements for print */
+            position: absolute;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .star-top-left {
+            top: 5mm;
+            left: 5mm;
+            width: 15mm;
+        }
+
+        .star-bottom-right {
+            bottom: 5mm;
+            right: 5mm;
+            width: 15mm;
+            transform: rotate(15deg);
         }
 
         .invoice-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 3mm;
+            align-items: center;
+            padding: 0mm;
             position: relative;
+            z-index: 1;
         }
 
         .invoice-header::after {
             content: '';
             position: absolute;
-            bottom: -2mm;
+            top: 31mm;
             left: 0;
             width: 100%;
             border-bottom: 1px dashed #813434;
         }
 
         .logo-container {
-            flex: 1;
+            flex: none;
             text-align: center;
-            order: 2;
+            margin-bottom: 5px;
+            order: 1;
         }
 
         .logo-container img {
-            max-width: 50mm;
-            max-height: 25mm;
+            max-width: 57mm;
+            max-height: 32mm;
             height: auto;
+            display: block;
+            margin-bottom: 30px;
+            margin: 0 auto;
         }
 
         .qr-container {
             order: 1;
-            flex: 0 0 auto;
-        }
-
-        .qr-container img {
-            width: 22mm;
-            height: 22mm;
+            text-align: left;
         }
 
         .icons-container {
             order: 3;
-            flex: 1;
             text-align: right;
+            transform: translateX(10px);
         }
 
         .social-media {
             display: flex;
             flex-direction: column;
-            gap: 7px;
-            font-size: 10px;
+            gap: 5px;
+            align-items: flex-end;
         }
 
         .social-item {
             display: flex;
             align-items: center;
             justify-content: flex-end;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
 
-        .social-item i,
-        .social-item svg {
-            margin-left: 2px;
+        .social-item i {
+            margin-right: 0;
+            min-width: 15px;
             color: #813434;
         }
 
-        /* Customer Info & Barcode Layout - FIXED FOR ARABIC */
-        .customer-barcode-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 3mm 0;
-            gap: 3mm;
-            direction: rtl;
+        .social-icon {
+            font-size: 14px;
+            color: #813434;
+            margin-right: 2mm;
         }
 
         .customer-info {
-            flex: 1;
-            text-align: right;
-            direction: rtl;
-        }
-
-        .barcode-container {
-            flex: 0 0 auto;
-            text-align: center;
-            direction: ltr;
+            padding: 0mm 3mm;
+            position: relative;
+            z-index: 1;
         }
 
         .info-line {
-            font-size: 12px;
+            font-size: 13px;
             color: #813434;
             margin-bottom: 1mm;
             display: flex;
-            justify-content: flex-end;
             align-items: center;
-            gap: 2mm;
-            direction: rtl;
-            width: 100%;
+            gap: 1mm;
         }
 
         .info-label {
             font-weight: bold;
             color: #813434;
-            min-width: 40px;
-            text-align: right;
+            min-width: auto;
+            margin-left: 1mm;
         }
 
         .info-value {
+            flex: 1;
             color: #000000;
             font-weight: bold;
             text-align: right;
-            flex: 1;
         }
 
-        /* Product Table - FIXED COLUMN WIDTHS */
         .product-table {
-            width: 100%;
+            width: 94%;
+            margin-right: 10px;
+            margin-left: 20px;
             table-layout: fixed;
-            border-collapse: collapse;
-            font-size: 9px;
-            margin: 2mm 0;
-            direction: rtl;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 10px;
+            margin-top: 2mm;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(90, 18, 18, 0.442);
         }
 
         .product-table th {
+            font-size: 10px;
             background-color: #813434;
             color: #813434;
-            padding: 1mm;
+            padding: 1mm 1mm;
             text-align: center;
             border: 1px solid #813434;
             font-weight: bold;
-            font-size: 9px;
         }
 
         .product-table td {
-            padding: 1mm;
+            padding: 1.5mm 1mm;
             text-align: center;
             border: 1px solid #813434;
-            word-wrap: break-word;
-            vertical-align: top;
         }
 
         .product-table tr:nth-child(even) {
             background-color: rgba(129, 52, 52, 0.05);
         }
 
-        /* OPTIMIZED COLUMN WIDTHS */
-        .product-table th:nth-child(1),
-        .product-table td:nth-child(1) {
-            width: 8mm; /* # */
+        .product-table tr:hover {
+            background-color: rgba(129, 52, 52, 0.1);
         }
 
-        .product-table th:nth-child(2),
-        .product-table td:nth-child(2) {
-            width: 30mm; /* Product Name - WIDER */
-            text-align: right;
-            padding-right: 2mm;
-        }
-
-        .product-table th:nth-child(3),
-        .product-table td:nth-child(3) {
-            width: 12mm; /* Code */
-        }
-
-        .product-table th:nth-child(4),
-        .product-table td:nth-child(4) {
-            width: 8mm; /* Qty */
-        }
-
-        .product-table th:nth-child(5),
-        .product-table td:nth-child(5) {
-            width: 10mm; /* Price */
-        }
-
-        .product-table th:nth-child(6),
-        .product-table td:nth-child(6) {
-            width: 12mm; /* Total */
-        }
-
-        .product-name {
-            text-align: right !important;
-            max-width: 28mm;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            direction: rtl;
-            unicode-bidi: plaintext;
-            font-size: 8px;
-            line-height: 1.2;
-        }
-
-        /* Total Section - FIXED */
-        .total-section {
-            margin-top: 3mm;
-            padding-top: 2mm;
-            border-top: 1px dashed #813434;
-        }
-
-        .totals-flex-container {
+        .invoice-footer {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            justify-content: center;
+            align-items: center;
             gap: 5mm;
+            padding: 3mm;
+            margin-top: 2mm;
+            position: relative;
+            z-index: 1;
         }
 
-        /* .totals-left {
-            flex: 1;
-        } */
+        .app-logo {
+            height: 8mm;
+            filter: hue-rotate(0deg) saturate(1) brightness(0.8);
+        }
 
-        .note-right {
-            flex: 1;
+        .total-section {
+            font-size: 11px;
+            padding: 1mm 3mm;
             text-align: right;
+            position: relative;
+            z-index: 1;
         }
 
         .total-line {
             display: flex;
-            justify-content: space-between;
+            gap: 5px;
             margin-bottom: 1mm;
-            font-size: 11px;
-            direction: rtl;
-        }
-
-        .total-line span:first-child {
-            min-width: 80px;
-            text-align: right;
-        }
-
-        .total-line span:last-child {
-            text-align: left;
-            min-width: 50px;
-            font-weight: bold;
         }
 
         .grand-total {
             font-weight: bold;
             color: #813434;
-            border-top: 1px solid #813434;
+            border-top: 1px dashed #813434;
             padding-top: 1mm;
-            margin-top: 1mm;
+            margin-top: 0.5mm;
         }
 
-        .note {
-            font-size: 10px;
-            color: #813434;
-            line-height: 1.3;
-        }
-
-        /* Footer */
         .invoice-footer {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 3mm;
-            padding: 2mm;
-            margin-top: auto;
-            position: relative;
+            gap: 4mm;
+            padding: 2mm 10mm;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1;
+        }
+
+        .app-logo {
+            height: 8mm;
+            object-fit: contain;
         }
 
         .store-container {
             border: 1px solid #813434;
-            border-radius: 4px;
-            padding: 1mm 2mm;
+            border-radius: 6px;
+            padding: 3px 8px;
             display: flex;
-            align-items: center;
-            gap: 2px;
-            font-size: 10px;
+            align-items: left;
+            gap: 4px;
+            font-size: 12px;
             color: #813434;
             font-weight: bold;
         }
 
-        /* Utility classes */
-        .mt-top-page {
-            margin-top: 0mm;
+        .total-section .note {
+            font-size: 12px;
+            color: #813434;
+            line-height: 1.2;
+            word-break: break-word;
         }
 
         .phone-number {
-            letter-spacing: 0.5px;
-            font-size: 11px !important;
+            font-size: 13px !important;
+            font-weight: bold;
+            color: #813434;
+            letter-spacing: 1.5px;
         }
 
-        /* Compact styling for better fit */
-        .compact-mode .product-table {
-            font-size: 8px;
+        .product-table td.product-name {
+            max-width: 40mm;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            direction: ltr;
+            text-align: left;
         }
 
-        .compact-mode .product-table td {
-            padding: 0.5mm;
+        /* FIXED: Proper spacing for subsequent pages */
+        .invoice-container.next-page .customer-info,
+        .invoice-container.next-page .barcode-container {
+            padding-top: 12mm;
         }
 
-        .compact-mode .total-line {
-            font-size: 10px;
-            margin-bottom: 0.5mm;
+        .mt-top-page .customer-info,
+        .mt-top-page .barcode-container {
+            padding-top: 12mm;
         }
     </style>
 </head>
 
 <body>
     <div class="invoices-wrapper">
-        @foreach ($data['invoices'] as $invoice)
-            <div class="invoice-container compact-mode @if(!$invoice['show_header']) mt-top-page @endif">
+        <?php $__currentLoopData = $data['invoices']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <!-- FIXED: Remove duplicate div and fix class logic -->
+            <div class="invoice-container <?php if(!$invoice['show_header']): ?> next-page mt-top-page <?php endif; ?>">
 
-                @if($invoice['show_header'])
+                <!-- Star Decorations -->
+                <svg class="star-decoration star-top-left" viewBox="0 0 100 100">
+                    <path fill="#813434" d="M50,0 L61,35 L98,35 L68,57 L79,92 L50,70 L21,92 L32,57 L2,35 L39,35 Z" />
+                </svg>
+
+                <svg class="star-decoration star-bottom-right" viewBox="0 0 100 100">
+                    <path fill="#813434" d="M50,0 L61,35 L98,35 L68,57 L79,92 L50,70 L21,92 L32,57 L2,35 L39,35 Z" />
+                </svg>
+
+                <?php if($invoice['show_header']): ?>
                     <!-- Header Section -->
                     <div class="invoice-header">
                         <!-- QR Code (left) -->
                         <div class="qr-container" style="margin-right: 0px;margin-top: 3px;">
-                            <img src="{{ url('images/newqr.png') }}" alt="QR Code" style="width: 26mm; height: 26mm;">
+                            <img src="<?php echo e(url('images/newqr.png')); ?>" alt="QR Code" style="width: 26mm; height: 26mm;">
                         </div>
 
                         <!-- Logo (center) -->
                         <div class="logo-container">
-                            @php
+                            <?php
                                 $logoPath = public_path('images/laxelogo.png');
                                 $logoData = null;
                                 if (file_exists($logoPath)) {
                                     $logoData = base64_encode(file_get_contents($logoPath));
                                 }
-                            @endphp
+                            ?>
 
-                            @if($logoData)
-                                <img src="data:image/png;base64,{{ $logoData }}" alt="Logo">
-                            @else
+                            <?php if($logoData): ?>
+                                <img src="data:image/png;base64,<?php echo e($logoData); ?>" alt="Logo">
+                            <?php else: ?>
                                 <p style="color: red; font-size: 12px;">⚠ Logo not found</p>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
                         <!-- Icons / Social Media (right) -->
@@ -440,7 +425,7 @@
                                     </svg>
                                 </div>
                                 <div class="social-item" style="font-size: 12px;color: #813434;font-weight: bold;
-                                                                                                ">
+                                                                ">
                                     <span style="font-size: 12px;color: #813434;font-weight: bold;">www.laxeonline.com</span>
                                     <svg style="font-size:13px; color:#813434;margin-right:3px;"
                                         xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
@@ -452,32 +437,38 @@
                             </div>
                         </div>
                     </div>
-                @endif
-
+                <?php endif; ?>
 
                 <!-- Customer Info & Barcode -->
-                <div class="customer-barcode-wrapper">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
                     <!-- Customer Info (right) -->
-                    <div class="customer-info">
+                    <div class="customer-info" style="text-align: right;">
                         <div class="info-line">
                             <div class="info-label">السائق:</div>
-                            <div class="info-value">{{ $invoice['driver_name'] }}</div>
+                            <!-- FIXED: Use invoice driver_name instead of data driver_name -->
+                            <div class="info-value"><?php echo e($invoice['driver_name'] ?: ($data['driver_name'] ?? '—')); ?></div>
                         </div>
                         <div class="info-line">
                             <div class="info-label">العنوان:</div>
-                            <div class="info-value">{{ $invoice['address'] ?? '—' }}</div>
+                            <div class="info-value"><?php echo e($invoice['address'] ?? '—'); ?></div>
                         </div>
                         <div class="info-line">
                             <div class="info-label">الهاتف:</div>
-                            <div class="info-value phone-number">{{ $invoice['mobile'] }}</div>
+                            <div style="letter-spacing: 1.5px;" class="info-value"><?php echo e($invoice['mobile']); ?></div>
                         </div>
                     </div>
 
                     <!-- Barcode (left) -->
-                    <div class="barcode-container">
-                        <span style="font-size: 11px; color: #813434;">{{ $invoice['date_sell'] }}</span>
-                        <img src="data:image/png;base64,{{ $invoice['barcodePNG'] }}" alt="Invoice Barcode" style="height: 20px; display: block; margin: 1px auto;">
-                        <div style="font-size: 12px; font-weight: bold; margin-top: 1px; color: #813434;">{{ $invoice['invoice_number'] ?? '—' }}</div>
+                    <div class="barcode-container" style="text-align: center; margin-left: 14px;margin-top: 1px">
+                        <span style="font-size: 13px;;color: #813434;" class="info-value"><?php echo e($invoice['date_sell']); ?></span>
+
+                        <img src="data:image/png;base64,<?php echo e($invoice['barcodePNG']); ?>" alt="Invoice Barcode"
+                            style="height: 23px; display: block; margin: 0 auto;">
+
+                        <div style="font-size: 14px; font-weight: bold; margin-top: 1px;color: #813434;">
+                            <?php echo e($invoice['invoice_number'] ?? '—'); ?>
+
+                        </div>
                     </div>
                 </div>
 
@@ -485,86 +476,96 @@
                 <table class="product-table">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>اسم المنتج</th>
-                            <th>الكود</th>
-                            <th>الكمية</th>
-                            <th>السعر</th>
-                            <th>الإجمالي</th>
+                            <th style="width: 6mm">#</th>
+                            <th>اسم </th>
+                            <th style="width: 13mm">الكود</th>
+                            <th style="width: 8mm">الكمية</th>
+                            <th style="width: 11mm">السعر</th>
+                            <th style="width: 13mm">الإجمالي</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($invoice['products'] as $i => $product)
+                        <?php $__currentLoopData = $invoice['products']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>{{ $i + 1 }}</td>
-                                <td class="product-name">{{ $product['name'] }}</td>
-                                <td>{{ $product['code'] }}</td>
-                                <td>{{ $product['qty'] }}</td>
-                                <td>{{ number_format($product['price']) }}</td>
-                                <td>{{ number_format($product['total']) }}</td>
+                                <td><?php echo e($i + 1); ?></td>
+                                <td class="product-name" style="text-align: center;"><?php echo e($product['name']); ?></td>
+                                <td><?php echo e($product['code']); ?></td>
+                                <td><?php echo e($product['qty']); ?></td>
+                                <td><?php echo e(number_format($product['price'])); ?> </td>
+                                <td><?php echo e(number_format($product['total'])); ?> </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
 
-                @if ($invoice['show_footer'])
+                <?php if($invoice['show_footer']): ?>
                     <div class="total-section">
-                        <div class="totals-flex-container">
-                            <div class="totals-left">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 5mm;">
+                            
+                            <div style="text-align: left;">
                                 <div class="total-line">
-                                    <span>المجموع:</span>
-                                    <span>{{ number_format($invoice['total']) }}</span>
+                                    <span>المجموع :</span>
+                                    <span><?php echo e(number_format($invoice['total'])); ?></span>
                                 </div>
                                 <div class="total-line">
-                                    <span>التوصيل:</span>
-                                    <span>{{ number_format($invoice['taxi_price']) }}</span>
+                                    <span>التوصيل :</span>
+                                    <span><?php echo e(number_format($invoice['taxi_price'])); ?></span>
                                 </div>
                                 <div class="total-line">
-                                    <span>الخصم:</span>
-                                    <span>{{ number_format($invoice['discount']) }}</span>
+                                    <span>الخصم :</span>
+                                    <span><?php echo e(number_format($invoice['discount'])); ?></span>
                                 </div>
                                 <div class="total-line grand-total">
-                                    <span>الإجمالي النهائي:</span>
-                                    <span>{{ number_format($invoice['total_price_afterDiscount_invoice']) }}</span>
+                                    <span>الإجمالي النهائي :</span>
+                                    <span><?php echo e(number_format($invoice['total_price_afterDiscount_invoice'])); ?></span>
                                 </div>
-                                @if(!empty($invoice['waypayment']) && $invoice['waypayment'] == 'FIB')
-                                    <div class="total-line">
-                                        <span>طريقة الدفع:</span>
-                                        <span>{{ $invoice['waypayment'] }}</span>
+                                <?php if(!empty($invoice['waypayment']) && $invoice['waypayment'] == 'FIB'): ?>
+                                    <div class="total-line grand-total">
+                                        <span >طريقة الدفع:</span>
+                                        <span><?php echo e($invoice['waypayment']); ?></span>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
 
-                            @if(!empty($invoice['note']))
-                                <div class="note-right">
-                                    <span class="note">{{ $invoice['note'] }}</span>
-                                </div>
-                            @endif
+                            
+                            <?php if(!empty($invoice['note'])): ?>
+                                <span class="note"
+                                    style="font-size: 12px; color: #000000; max-width: 50%; display: block; text-align: right;">
+                                    <?php echo e($invoice['note']); ?>
+
+                                </span>
+                            <?php endif; ?>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                <!-- Footer -->
+                <!-- Footer with Store Buttons -->
                 <div class="invoice-footer">
                     <div class="store-container">
-                        <span>App Store</span>
-                        <svg xmlns="http://www.w3.org2000/svg" width="15" height="15" fill="currentColor" class="bi bi-apple" viewBox="0 0 16 16">
-                            <path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282"/>
+                        <span>App Store </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor"
+                            class="bi bi-apple" viewBox="0 0 16 16">
+                            <path
+                                d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282" />
                         </svg>
                     </div>
                     <div class="store-container">
-                        <span>Google Play</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-google-play" viewBox="0 0 16 16">
-                            <path d="M14.222 9.374c1.037-.61 1.037-2.137 0-2.748L11.528 5.04 8.32 8l3.207 2.96zm-3.595 2.116L7.583 8.68 1.03 14.73c.201 1.029 1.36 1.61 2.303 1.055zM1 13.396V2.603L6.846 8zM1.03 1.27l6.553 6.05 3.044-2.81L3.333.215C2.39-.341 1.231.24 1.03 1.27"/>
+                        <span>Google Play </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor"
+                            class="bi bi-google-play" viewBox="0 0 16 16">
+                            <path
+                                d="M14.222 9.374c1.037-.61 1.037-2.137 0-2.748L11.528 5.04 8.32 8l3.207 2.96zm-3.595 2.116L7.583 8.68 1.03 14.73c.201 1.029 1.36 1.61 2.303 1.055zM1 13.396V2.603L6.846 8zM1.03 1.27l6.553 6.05 3.044-2.81L3.333.215C2.39-.341 1.231.24 1.03 1.27" />
                         </svg>
                     </div>
                 </div>
+
             </div>
 
-            @if (!$loop->last)
+            <?php if(!$loop->last): ?>
                 <div class="page-break"></div>
-            @endif
-        @endforeach
+            <?php endif; ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </body>
-</html>
+
+</html><?php /**PATH C:\Users\user\Desktop\laxe8-10 (9)\resources\views/print/multiprint.blade.php ENDPATH**/ ?>
