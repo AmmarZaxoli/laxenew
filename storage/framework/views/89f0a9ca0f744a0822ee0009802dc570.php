@@ -13,7 +13,8 @@
 
 
     <style>
-        
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
         @media print {
             @page {
                 size: A6 portrait;
@@ -431,7 +432,7 @@
                                     </svg>
                                 </div>
                                 <div class="social-item" style="font-size: 12px;color: #813434;font-weight: bold;
-                                                        ">
+                                                ">
                                     <span style="font-size: 12px;color: #813434;font-weight: bold;">www.laxeonline.com</span>
                                     <svg style="font-size:13px; color:#813434;margin-right:3px;"
                                         xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
@@ -524,12 +525,6 @@
                                     <span>الإجمالي النهائي :</span>
                                     <span><?php echo e(number_format($invoice['total_price_afterDiscount_invoice'])); ?></span>
                                 </div>
-                                <?php if(!empty($invoice['waypayment']) && $invoice['waypayment'] == 'FIB'): ?>
-                                    <div class="total-line grand-total">
-                                        <div>طريقة الدفع:</div>
-                                        <div ><?php echo e($invoice['waypayment']); ?></div>
-                                    </div>
-                                <?php endif; ?>
                             </div>
 
                             
@@ -578,4 +573,4 @@
     </div>
 </body>
 
-</html><?php /**PATH C:\Users\user\Desktop\laxe8-10 (9)\resources\views/print/invoices.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\user\Desktop\laxe8-10 (8)\resources\views/print/invoices.blade.php ENDPATH**/ ?>
