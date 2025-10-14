@@ -11,9 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-
     <style>
-        
+
         @media print {
             @page {
                 size: A6 portrait;
@@ -25,7 +24,6 @@
                 margin: 0 !important;
                 padding: 0 !important;
                 background: white;
-                
                 display: flex;
                 justify-content: center;
                 align-items: flex-start;
@@ -58,7 +56,6 @@
             height: 144mm;
             background: white;
             position: relative;
-            /* border: 1px solid #813434; */
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -114,14 +111,12 @@
             content: '';
             position: absolute;
             top: 31mm;
-            /* move this closer to the top */
             left: 0;
             width: 100%;
             border-bottom: 1px dashed #813434;
         }
 
         .logo-container {
-
             flex: none;
             text-align: center;
             margin-bottom: 5px;
@@ -146,7 +141,6 @@
             order: 3;
             text-align: right;
             transform: translateX(10px);
-
         }
 
         .social-media {
@@ -277,13 +271,11 @@
         }
 
         .grand-total {
-
             font-weight: bold;
             color: #813434;
             border-top: 1px dashed #813434;
             padding-top: 1mm;
             margin-top: 0.5mm;
-
         }
 
         .invoice-footer {
@@ -328,7 +320,6 @@
             font-weight: bold;
             color: #813434;
             letter-spacing: 1.5px;
-            /* adds space between digits */
         }
 
         .product-table td.product-name {
@@ -340,23 +331,24 @@
             text-align: left;
         }
 
-        /* Apply padding only for second page and beyond */
-        .invoice-container:not(:first-child) .customer-info {
+        /* FIXED: Proper spacing for subsequent pages */
+        .invoice-container.next-page .customer-info,
+        .invoice-container.next-page .barcode-container {
             padding-top: 12mm;
-            /* space from top if not first page */
         }
 
-        .invoice-container:not(:first-child) .barcode-container {
+        .mt-top-page .customer-info,
+        .mt-top-page .barcode-container {
             padding-top: 12mm;
-            /* space from top if not first page */
         }
     </style>
 </head>
 
 <body>
     <div class="invoices-wrapper">
-        @foreach ($data['invoices'] as $invoice)
-            <div class="invoice-container @if(!$invoice['show_header']) mt-top-page @endif">
+        <?php $__currentLoopData = $data['invoices']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <!-- FIXED: Remove duplicate div and fix class logic -->
+            <div class="invoice-container <?php if(!$invoice['show_header']): ?> next-page mt-top-page <?php endif; ?>">
 
                 <!-- Star Decorations -->
                 <svg class="star-decoration star-top-left" viewBox="0 0 100 100">
@@ -367,29 +359,29 @@
                     <path fill="#813434" d="M50,0 L61,35 L98,35 L68,57 L79,92 L50,70 L21,92 L32,57 L2,35 L39,35 Z" />
                 </svg>
 
-                @if($invoice['show_header'])
+                <?php if($invoice['show_header']): ?>
                     <!-- Header Section -->
                     <div class="invoice-header">
                         <!-- QR Code (left) -->
                         <div class="qr-container" style="margin-right: 0px;margin-top: 3px;">
-                            <img src="{{ url('images/newqr.png') }}" alt="QR Code" style="width: 26mm; height: 26mm;">
+                            <img src="<?php echo e(url('images/newqr.png')); ?>" alt="QR Code" style="width: 26mm; height: 26mm;">
                         </div>
 
                         <!-- Logo (center) -->
                         <div class="logo-container">
-                            @php
+                            <?php
                                 $logoPath = public_path('images/laxelogo.png');
                                 $logoData = null;
                                 if (file_exists($logoPath)) {
                                     $logoData = base64_encode(file_get_contents($logoPath));
                                 }
-                            @endphp
+                            ?>
 
-                            @if($logoData)
-                                <img src="data:image/png;base64,{{ $logoData }}" alt="Logo">
-                            @else
+                            <?php if($logoData): ?>
+                                <img src="data:image/png;base64,<?php echo e($logoData); ?>" alt="Logo">
+                            <?php else: ?>
                                 <p style="color: red; font-size: 12px;">⚠ Logo not found</p>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
                         <!-- Icons / Social Media (right) -->
@@ -432,7 +424,7 @@
                                     </svg>
                                 </div>
                                 <div class="social-item" style="font-size: 12px;color: #813434;font-weight: bold;
-                                                        ">
+                                                                ">
                                     <span style="font-size: 12px;color: #813434;font-weight: bold;">www.laxeonline.com</span>
                                     <svg style="font-size:13px; color:#813434;margin-right:3px;"
                                         xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
@@ -444,35 +436,37 @@
                             </div>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
                 <!-- Customer Info & Barcode -->
-                <div style="display: flex; justify-content: space-between; align-items: center; ">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
                     <!-- Customer Info (right) -->
                     <div class="customer-info" style="text-align: right;">
                         <div class="info-line">
                             <div class="info-label">السائق:</div>
-                            <div class="info-value">{{ $invoice['driver_name'] }}</div>
+                            <!-- FIXED: Use invoice driver_name instead of data driver_name -->
+                            <div class="info-value"><?php echo e($invoice['driver_name'] ?: ($data['driver_name'] ?? '—')); ?></div>
                         </div>
                         <div class="info-line">
                             <div class="info-label">العنوان:</div>
-                            <div class="info-value">{{ $invoice['address'] ?? '—' }}</div>
+                            <div class="info-value"><?php echo e($invoice['address'] ?? '—'); ?></div>
                         </div>
                         <div class="info-line">
                             <div class="info-label">الهاتف:</div>
-                            <div style="letter-spacing: 1.5px;" class="info-value">{{ $invoice['mobile'] }}</div>
+                            <div style="letter-spacing: 1.5px;" class="info-value"><?php echo e($invoice['mobile']); ?></div>
                         </div>
                     </div>
 
                     <!-- Barcode (left) -->
                     <div class="barcode-container" style="text-align: center; margin-left: 14px;margin-top: 1px">
-                        <span style="font-size: 13px;;color: #813434;" class="info-value">{{ $invoice['date_sell'] }}</span>
+                        <span style="font-size: 13px;;color: #813434;" class="info-value"><?php echo e($invoice['date_sell']); ?></span>
 
-                        <img src="data:image/png;base64,{{ $invoice['barcodePNG'] }}" alt="Invoice Barcode"
+                        <img src="data:image/png;base64,<?php echo e($invoice['barcodePNG']); ?>" alt="Invoice Barcode"
                             style="height: 23px; display: block; margin: 0 auto;">
 
                         <div style="font-size: 14px; font-weight: bold; margin-top: 1px;color: #813434;">
-                            {{ $invoice['invoice_number'] ?? '—' }}
+                            <?php echo e($invoice['invoice_number'] ?? '—'); ?>
+
                         </div>
                     </div>
                 </div>
@@ -490,61 +484,59 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($invoice['products'] as $i => $product)
+                        <?php $__currentLoopData = $invoice['products']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>{{ $i + 1 }}</td>
-                                <td class="product-name" style="text-align: center;">{{ $product['name'] }}</td>
-                                <td>{{ $product['code'] }}</td>
-                                <td>{{ $product['qty'] }}</td>
-                                <td>{{ number_format($product['price']) }} </td>
-                                <td>{{ number_format($product['total']) }} </td>
+                                <td><?php echo e($i + 1); ?></td>
+                                <td class="product-name" style="text-align: center;"><?php echo e($product['name']); ?></td>
+                                <td><?php echo e($product['code']); ?></td>
+                                <td><?php echo e($product['qty']); ?></td>
+                                <td><?php echo e(number_format($product['price'])); ?> </td>
+                                <td><?php echo e(number_format($product['total'])); ?> </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
 
-                @if ($invoice['show_footer'])
+                <?php if($invoice['show_footer']): ?>
                     <div class="total-section">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 5mm;">
-                            {{-- Totals on the left --}}
+                            
                             <div style="text-align: left;">
                                 <div class="total-line">
                                     <span>المجموع :</span>
-                                    <span>{{ number_format($invoice['total']) }}</span>
+                                    <span><?php echo e(number_format($invoice['total'])); ?></span>
                                 </div>
                                 <div class="total-line">
                                     <span>التوصيل :</span>
-                                    <span>{{ number_format($invoice['taxi_price']) }}</span>
+                                    <span><?php echo e(number_format($invoice['taxi_price'])); ?></span>
                                 </div>
                                 <div class="total-line">
                                     <span>الخصم :</span>
-                                    <span>{{ number_format($invoice['discount']) }}</span>
+                                    <span><?php echo e(number_format($invoice['discount'])); ?></span>
                                 </div>
                                 <div class="total-line grand-total">
                                     <span>الإجمالي النهائي :</span>
-                                    <span>{{ number_format($invoice['total_price_afterDiscount_invoice']) }}</span>
+                                    <span><?php echo e(number_format($invoice['total_price_afterDiscount_invoice'])); ?></span>
                                 </div>
-                                @if(!empty($invoice['waypayment']) && $invoice['waypayment'] == 'FIB')
+                                <?php if(!empty($invoice['waypayment']) && $invoice['waypayment'] == 'FIB'): ?>
                                     <div class="total-line grand-total">
                                         <div>طريقة الدفع:</div>
-                                        <div >{{ $invoice['waypayment'] }}</div>
+                                        <div ><?php echo e($invoice['waypayment']); ?></div>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
 
-                            {{-- Note on the right --}}
-                            @if(!empty($invoice['note']))
+                            
+                            <?php if(!empty($invoice['note'])): ?>
                                 <span class="note"
                                     style="font-size: 12px; color: #000000; max-width: 50%; display: block; text-align: right;">
-                                    {{ $invoice['note'] }}
+                                    <?php echo e($invoice['note']); ?>
+
                                 </span>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
-
-
-
-                @endif
+                <?php endif; ?>
 
                 <!-- Footer with Store Buttons -->
                 <div class="invoice-footer">
@@ -552,8 +544,6 @@
                         <span>App Store </span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor"
                             class="bi bi-apple" viewBox="0 0 16 16">
-                            <path
-                                d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282" />
                             <path
                                 d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282" />
                         </svg>
@@ -570,11 +560,11 @@
 
             </div>
 
-            @if (!$loop->last)
+            <?php if(!$loop->last): ?>
                 <div class="page-break"></div>
-            @endif
-        @endforeach
+            <?php endif; ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </body>
 
-</html>
+</html><?php /**PATH C:\Users\user\Desktop\laxe8-10 (9)\resources\views/print/multiprint.blade.php ENDPATH**/ ?>

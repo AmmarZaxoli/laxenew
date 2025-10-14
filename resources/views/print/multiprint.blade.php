@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
         @media print {
             @page {
@@ -520,8 +519,8 @@
                                 </div>
                                 @if(!empty($invoice['waypayment']) && $invoice['waypayment'] == 'FIB')
                                     <div class="total-line grand-total">
-                                        <span >طريقة الدفع:</span>
-                                        <span>{{ $invoice['waypayment'] }}</span>
+                                        <div>طريقة الدفع:</div>
+                                        <div >{{ $invoice['waypayment'] }}</div>
                                     </div>
                                 @endif
                             </div>
