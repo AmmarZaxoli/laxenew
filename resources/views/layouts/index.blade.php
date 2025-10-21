@@ -153,6 +153,12 @@
                                         <span class="nav-text">تعريف المنتجات</span>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('changetypeitem.create') ? 'active' : '' }}"
+                                        href="{{ route('changetypeitem.create') }}">
+                                        <span class="nav-text">تغيير نوع العنصر</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -253,6 +259,14 @@
                                         href="{{ route('accounting.createbuyproduct') }}">
 
                                         <span class="nav-text">جرد مخزن</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('userpayment.create') ? 'active' : '' }}"
+                                        href="{{ route('userpayment.create') }}">
+
+                                        <span class="nav-text">دفع المستخدم</span>
                                     </a>
                                 </li>
 

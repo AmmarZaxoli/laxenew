@@ -5,6 +5,7 @@ namespace App\Livewire\Accounting;
 use App\Models\Sellinfo;
 use App\Models\Customer;
 use App\Models\Expense;
+use App\Models\userpayment;
 use Livewire\Component;
 
 class Show extends Component
@@ -21,6 +22,7 @@ class Show extends Component
     public $totalProfitafterdiscount = 0;
     public $expense = 0;
     public $count = 0;
+    public $paymenuser = 0;
     public function mount()
     {
         $this->startdate = now()->format('Y-m-d');
@@ -90,14 +92,19 @@ class Show extends Component
             ->sum('price');
 
         //
-        $this->count = Customer::whereDate('date_sell', '>=', $this->startdate)
-            ->whereDate('date_sell', '<=', $this->enddate)
-            ->whereHas('sellInvoice', function ($q) {
-                $q->whereHas('sell', function ($q2) {
-                    $q2->where('cash', 0);
-                });
-            })
-            ->count();
+        // $this->count = Customer::whereDate('date_sell', '>=', $this->startdate)
+        //     ->whereDate('date_sell', '<=', $this->enddate)
+        //     ->whereHas('sellInvoice', function ($q) {
+        //         $q->whereHas('sell', function ($q2) {
+        //             $q2->where('cash', 0);
+        //         });
+        //     })
+        //     ->count();
+        $this->paymenuser = userpayment::whereDate('date', '>=', $this->startdate)
+            ->whereDate('date', '<=', $this->enddate)
+            
+            ->sum('payment');
+            
     }
     public function render()
     {

@@ -48,6 +48,8 @@ Route::middleware(['auth:account'])->group(function () {
         // Resource views
         Route::view('/drivers', 'drivers.create')->name('driver.create');
         Route::view('/definitions', 'definitions.create')->name('definitions.create');
+        Route::view('/changetypeitem', 'changetypeitem.create')->name('changetypeitem.create');
+        Route::view('/userpayment', 'userpayment.create')->name('userpayment.create');
         Route::view('/types', 'types.create')->name('types.create');
         Route::view('/products', 'products.create')->name('products.create');
         Route::view('/expenses', 'expenses.create')->name('expenses.create');

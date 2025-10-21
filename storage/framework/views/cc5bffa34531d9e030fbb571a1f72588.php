@@ -263,14 +263,6 @@
                                     </a>
                                 </li>
 
-                                <li class="nav-item">
-                                    <a class="nav-link <?php echo e(Route::is('userpayment.create') ? 'active' : ''); ?>"
-                                        href="<?php echo e(route('userpayment.create')); ?>">
-
-                                        <span class="nav-text">دفع المستخدم</span>
-                                    </a>
-                                </li>
-
                                 
 
                             </ul>
@@ -388,7 +380,7 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split('drivers.drivers-order');
 
-$__html = app('livewire')->mount($__name, $__params, 'lw-2540986041-0', $__slots ?? [], get_defined_vars());
+$__html = app('livewire')->mount($__name, $__params, 'lw-2661649288-0', $__slots ?? [], get_defined_vars());
 
 echo $__html;
 
@@ -502,4 +494,4 @@ if (isset($__slots)) unset($__slots);
 </body>
 
 </html>
-<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/layouts/index.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views\layouts\index.blade.php ENDPATH**/ ?>

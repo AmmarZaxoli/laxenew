@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class userpayment extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'nameuser',
+        'payment',
+        'date',
+        'admin',
+    ];
+}
