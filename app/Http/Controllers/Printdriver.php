@@ -18,11 +18,15 @@ public function printInvoices(Request $request)
         abort(404, 'No invoices specified.');
     }
 
-    $invoices = Sell_invoice::with(['customer.driver', 'sell'])
-        ->whereIn('num_invoice_sell', $invoiceIds)
-        ->whereHas('customer')
-        ->whereHas('sell')
-        ->get();
+  $invoices = Sell_invoice::with(['customer.driver', 'sell'])
+    ->whereIn('num_invoice_sell', $invoiceIds)
+    ->whereHas('customer')
+    ->whereHas('sell')
+    ->get()
+    ->sortBy(function ($invoice) {
+        return mb_strtolower($invoice->customer->address ?? '', 'UTF-8');
+    })
+    ->values();
 
     if ($invoices->isEmpty()) {
         abort(404, 'No invoices found.');

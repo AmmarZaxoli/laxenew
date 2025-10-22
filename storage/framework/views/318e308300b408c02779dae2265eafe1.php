@@ -320,8 +320,8 @@
 
 
 
-    <div class="container-fluid py-4 body">
-        <div class="row mb-4">
+    <div class="container-fluid body">
+        <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -394,11 +394,17 @@
                             <!-- Address -->
                             <div class="col-md-6 mb-3">
                                 <label for="address" class="form-label">العنوان</label>
+                                <span class="form-label" style="margin-right: 80%; color:#ef4444; font-size:18px">
+                                    <?php echo e($date ? \Carbon\Carbon::parse($date)->format('Y-m-d') : ''); ?>
+
+                                </span>
+
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                                     <input type="text" wire:model="address" class="form-control"
                                         placeholder="يتم ملؤه تلقائياً إن وجد">
                                 </div>
+
                             </div>
 
                             <!-- Driver Selection -->
@@ -514,14 +520,31 @@
             </div>
         </div>
 
-        <div class="row mb-4">
+        <div class="row">
             <!-- Available Products -->
             <div class="col-lg-6 mb-4">
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">المنتجات المتاحة</h5>
                         <span class="badge bg-info"><?php echo e($products->count()); ?></span>
+                        <div class="d-flex align-items-center">
+                            <select class="form-control text-center" wire:model.live="count" id="count"
+                                style="width: 60px;padding:5px;font-size:15px;margin-left:10px;">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <div class="input-group input-group-sm" style="width: 200px;">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" wire:model.live="search_code_name" autocomplete="off"
+                                    class="form-control" placeholder="ابحث بالاسم أو الكود">
+                            </div>
+                        </div>
                     </div>
+
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
@@ -534,7 +557,7 @@
 
                                             <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                         </th>
-                                        <th class="text-center"> الباركود </th>
+                                        
                                         <th class="text-center" wire:click="sortBy('code')" style="cursor: pointer;">
                                             الكود
                                             <!--[if BLOCK]><![endif]--><?php if($sortField === 'code'): ?>
@@ -553,7 +576,7 @@
                                     <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <tr class="product-row" wire:click="addProduct(<?php echo e($product->id); ?>)">
                                             <td><?php echo e($product->definition->name); ?></td>
-                                            <td class="text-center"><?php echo e($product->definition->barcode); ?></td>
+                                            
                                             <td class="text-center"><?php echo e($product->definition->code); ?></td>
                                             <td class="text-center">
                                                 <span

@@ -28,6 +28,7 @@ class Sell extends Component
     #[Session('sellInvoice')]
     public $sellInvoice;
     public $types = '';
+    public $ff = '';
 
     #[Session('selected_driver')]
     public $selected_driver;
@@ -43,6 +44,7 @@ class Sell extends Component
     public $numsellinvoice = 0;
     #[Session('showNewButton')]
     public $showNewButton = true;
+    public $count = 20;
 
     #[Session('selectedProducts')]
     public $selectedProducts = [];
@@ -64,6 +66,7 @@ class Sell extends Component
     public $date_sell = "";
     #[Session(key: 'note')]
     public $note = "";
+    public $date;
 
     #[Session(key: 'cashornot')]
     public $cashornot = false;
@@ -142,6 +145,10 @@ class Sell extends Component
             ->first();
 
         $this->address = $match ? $match->address : '';
+        if(empty($this->mobile)){
+            
+            $this->date=null;
+        }
     }
 
 
@@ -152,6 +159,7 @@ class Sell extends Component
         if ($customer) {
             $this->mobile = $customer->mobile;
             $this->address = $customer->address;
+            $this->date = $customer->date_sell;
             $this->phoneSuggestions = [];
             $this->showSuggestions = false;
 
@@ -165,6 +173,11 @@ class Sell extends Component
                 // pass the mobile number to JS
                 $this->dispatch('customerSoldToday', mobile: $customer->mobile);
             }
+        }
+
+         if(empty($this->mobile)){
+            
+            $this->date=null;
         }
     }
 
@@ -1067,6 +1080,7 @@ class Sell extends Component
         $this->types = Type::all();
         $this->drivers = driver::all();
         $this->date_sell = now()->format('Y-m-d\TH:i');
+       
     }
 
     public function updatedDiscount($value)
@@ -1156,7 +1170,7 @@ class Sell extends Component
                         $query->orderBy("products.{$this->sortField}", $this->sortDirection);
                     }
                 })
-                ->paginate(20);
+                ->paginate($this->count);
         }
 
         return view('livewire.selling.sell', [
