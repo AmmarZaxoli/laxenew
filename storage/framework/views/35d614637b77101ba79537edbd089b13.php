@@ -154,6 +154,30 @@ if (isset($__slots)) unset($__slots);
 
 
             </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="alert alert-primary text-center">
+                        إجمالي الكمية المتوفرة<br>
+                        <strong><?php echo e($totalAvailableQty); ?></strong>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="alert alert-warning text-center">
+                        إجمالي قيمة الشراء<br>
+                        <strong><?php echo e(number_format($totalBuyPrice, 0)); ?></strong>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="alert alert-success text-center">
+                        إجمالي قيمة البيع<br>
+                        <strong><?php echo e(number_format($totalSellPrice, 0)); ?></strong>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

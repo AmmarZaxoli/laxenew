@@ -24,6 +24,13 @@ class Sub_Buy_Products_invoice extends Model
         'num_invoice_id',
         'buy_product_invoice_id',
     ];
+
+    public function getAvailableAttribute()
+    {
+        return $this->quantity - $this->q_sold;
+    }
+
+
     public function type()
     {
         return $this->belongsTo(Type::class, 'type_id');

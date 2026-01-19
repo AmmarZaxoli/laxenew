@@ -172,16 +172,7 @@
                     <h1 class="h4 mb-0">لوحة القيادة</h1>
                     <p class="mb-0">مرحباً بك مجدداً, <span style="font-weight: 600;color:#ffffff"><?php echo e(auth('account')->user()->name); ?></span> إليكم ما يحدث اليوم.</p>
                 </div>
-                <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                    <span class="badge bg-white text-primary me-2">اليوم: <span id="current-date">تحميل...</span></span>
-                    <button class="btn btn-sm btn-outline-light">
-                        <i class="bi bi-bell"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-light ms-2">
-                        <i class="bi bi-gear"></i>
-                    </button>
-                </div>
-            </div>
+              
         </div>
     </header>
 
@@ -320,12 +311,7 @@
 
     <!-- JS for Charts -->
     <script>
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+      
 
         // Sales Chart — Last 7 Days
         const salesCtx = document.getElementById('sales7Chart').getContext('2d');

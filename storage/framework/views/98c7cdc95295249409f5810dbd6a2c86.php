@@ -1,5 +1,5 @@
 <div>
-  
+
 
     <div class="card body formtype">
         <div class="container-fluid py-4">
@@ -56,11 +56,11 @@
                         <i class="bi bi-cart-check"></i>
                     </div>
                     <h6>إجمالي المبيعات دين</h6>
-                    <h3><?php echo e(number_format($total )); ?></h3>
+                    <h3><?php echo e(number_format($total)); ?></h3>
                 </div>
 
 
-            
+
 
                 <!-- Sales After Discount -->
                 <div class="stat-card sales">
@@ -71,7 +71,7 @@
                     <h3><?php echo e(number_format($totalafterdiscount)); ?></h3>
                 </div>
 
-                
+
 
                 <!-- Total Expenses -->
                 <div class="stat-card expenses">
@@ -82,7 +82,14 @@
                     <h3><?php echo e(number_format($expense)); ?></h3>
                 </div>
 
-           
+                
+                <div class="stat-card expenses">
+                    <div class="stat-icon">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <h6>عدد التوصيلات</h6>
+                    <h3><?php echo e(number_Format($paymenuser)); ?></h3>
+                </div>
 
                 <!-- Net Profit -->
                 <div class="stat-card net-profit">
@@ -90,20 +97,21 @@
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
                     <h6>صافي الربح</h6>
-                    <h3><?php echo e(number_format($totalProfitafterdiscount - $expense)); ?></h3>
+                    <h3><?php echo e(number_format($totalProfitafterdiscount - $expense - $paymenuser)); ?></h3>
                 </div>
 
 
-                    <!-- Total Discount -->
+                <!-- Total Discount -->
                 <div class="stat-card discount">
                     <div class="stat-icon">
                         <i class="bi bi-percent"></i>
                     </div>
                     <h6>سندوق</h6>
-                    <h3><?php echo e(number_format($totalafterdiscount - $expense)); ?></h3>
+                    <h3><?php echo e(number_format($totalafterdiscount - $expense - $paymenuser)); ?></h3>
                 </div>
 
                 
+
 
             </div>
 

@@ -57,6 +57,14 @@
                 <div class="nav-group-title">الرئيسية</div>
                 <ul class="nav flex-column">
                     <li class="nav-item">
+                        <a class="nav-link <?php echo e(Route::is('accountdrivers.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('accountdrivers.create')); ?>">
+                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
+                            <span class="nav-text">حسابات سائقون</span>
+
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link <?php echo e(Route::is('dashboards.create') ? 'active' : ''); ?>"
                             href="<?php echo e(route('dashboards.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
@@ -263,6 +271,14 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link <?php echo e(Route::is('userpayment.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('userpayment.create')); ?>">
+
+                                        <span class="nav-text">دفع المستخدم</span>
+                                    </a>
+                                </li>
+
                                 
 
                             </ul>
@@ -371,6 +387,7 @@
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?php echo e(asset('assets/js/script.js')); ?>"></script>
 

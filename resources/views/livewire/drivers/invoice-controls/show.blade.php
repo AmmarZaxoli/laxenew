@@ -1,4 +1,6 @@
 <div x-data="{ counter: 0 }">
+    
+
     <!-- Modal Edit invoice -->
     <div wire:ignore.self class="modal fade" data-bs-backdrop="static" id="EditInvoice" tabindex="-1"
         aria-labelledby="EditInvoice" aria-hidden="true">
@@ -190,14 +192,7 @@
 
                     <div
                         class="order-1 order-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-3 w-100 w-md-auto">
-                        <!-- Delete Button -->
-                        <button class="btn btn-outline-danger" wire:click="$dispatch('confirmDeleteSelected')"
-                            @disabled(count($selectedInvoices) === 0)>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="fas fa-trash-alt me-2"></i>
-                                <span>حذف المحدد</span>
-                            </div>
-                        </button>
+
 
 
 
@@ -228,6 +223,17 @@
                                 <span>تغيير السائق للمحدد</span>
                             </div>
                         </button>
+
+                        <!-- Delete Button -->
+                        <button class="btn btn-outline-danger" wire:click="$dispatch('confirmDeleteSelected')"
+                            @disabled(count($selectedInvoices) === 0)>
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-trash-alt me-2"></i>
+                                <span>حذف المحدد</span>
+                            </div>
+                        </button>
+
+
                         <button wire:click="printdriver" wire:loading.attr="disabled" class="btn btn-outline-primary"
                             @disabled(empty($selected_driver))>
                             <span wire:loading.remove wire:target="printdriver">

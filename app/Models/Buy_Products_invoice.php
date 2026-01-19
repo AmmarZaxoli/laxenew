@@ -26,6 +26,8 @@ class Buy_Products_invoice extends Model
         'q_sold',
         'num_invoice_id',
     ];
+
+
     public function type()
     {
         return $this->belongsTo(Type::class, 'type_id');

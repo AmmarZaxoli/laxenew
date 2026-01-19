@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Products;
 
+
 use Livewire\Component;
 use App\Models\Type;
 use App\Models\Product;
+use App\Models\Sub_Buy_Products_invoice;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
 
@@ -48,8 +50,33 @@ class Show extends Component
         $this->active_filter = null;
         $this->resetPage();
     }
+
+
+    public $totalAvailableQty = 0;
+    public $totalBuyPrice = 0;
+    public $totalSellPrice = 0;
+    private function calculateSums()
+    {
+        $items = Sub_Buy_Products_invoice::with('type')
+            ->whereRaw('(quantity - q_sold) > 0')
+            ->get();
+
+
+        $this->totalAvailableQty = $items->sum(fn($item) => $item->available);
+
+        $this->totalBuyPrice = $items->sum(
+            fn($item) =>
+            $item->available * $item->buy_price
+        );
+
+        $this->totalSellPrice = $items->sum(
+            fn($item) =>
+            $item->available * $item->sell_price
+        );
+    }
     public function render()
     {
+        $this->calculateSums();
         $products = Product::with(['definition', 'definition.type'])
             ->whereHas('definition', function ($query) {
                 if ($this->search) {

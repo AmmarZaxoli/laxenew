@@ -40,7 +40,7 @@
 
 
 
-     <div class="row g-3" style="padding: 10px">
+    <div class="row g-3" style="padding: 10px">
         <!-- العمود الأول: البحث والتصفية -->
         <div class="col-md-8">
             <!-- Search and Filter Section -->
@@ -157,14 +157,7 @@
 
                     <div
                         class="order-1 order-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-3 w-100 w-md-auto">
-                        <!-- Delete Button -->
-                        <button class="btn btn-outline-danger" wire:click="$dispatch('confirmDeleteSelected')"
-                            @disabled(count($selectedInvoices) === 0)>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="fas fa-trash-alt me-2"></i>
-                                <span>حذف المحدد</span>
-                            </div>
-                        </button>
+
 
 
 
@@ -177,7 +170,15 @@
                             </div>
                         </button>
 
-
+                        <!-- Delete Button -->
+                        <button class="btn btn-outline-danger" wire:click="$dispatch('confirmDeleteSelected')"
+                            @disabled(count($selectedInvoices) === 0)>
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-trash-alt me-2"></i>
+                                <span>حذف المحدد</span>
+                            </div>
+                        </button>
+                        
                         <!-- Edit Date Button -->
                         <button class="btn btn-outline-primary" wire:click="openBulkDateModal"
                             @disabled(count($selectedInvoices) === 0)>
