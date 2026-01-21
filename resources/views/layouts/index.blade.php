@@ -55,19 +55,21 @@
             <div class="nav-group">
                 <div class="nav-group-title">الرئيسية</div>
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::is('accountdrivers.create') ? 'active' : '' }}"
-                            href="{{ route('accountdrivers.create') }}">
-                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
-                            <span class="nav-text">حسابات سائقون</span>
-
-                        </a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('dashboards.create') ? 'active' : '' }}"
                             href="{{ route('dashboards.create') }}">
                             <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
                             <span class="nav-text">لوحة التحكم</span>
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('accountdrivers.create') ? 'active' : '' }}"
+                            href="{{ route('accountdrivers.create') }}">
+                            <span class="nav-icon"><i class="bi bi-cash-coin"></i></span>
+                            <span class="nav-text">حسابات سائقون</span>
 
                         </a>
                     </li>

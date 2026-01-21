@@ -24,21 +24,20 @@ class BarcodeScanner extends Component
         if ($value) {
             // Get invoices for the selected driver
             $this->driverInvoices = Sell_invoice::with(['customer', 'sell'])
-                ->whereHas('customer', function($q) use ($value) {
+                ->whereHas('customer', function ($q) use ($value) {
                     $q->where('driver_id', $value);
                 })
                 ->whereHas('sell', fn($q) => $q->where('cash', 0))
                 ->get()
-                ->map(function($invoice) {
+                ->map(function ($invoice) {
                     return [
                         'num_invoice_sell' => $invoice->num_invoice_sell,
-                        'customer_name' => $invoice->customer->name ?? 'N/A',
-                        'date' => $invoice->created_at->format('Y-m-d'),
-                        'amount' => $invoice->sell->total ?? 0,
+                        'mobile' => $invoice->customer->mobile ?? 'N/A',
+                        'total_price_afterDiscount_invoice' => $invoice->sell->total_price_afterDiscount_invoice ?? 0,
                     ];
                 })
                 ->toArray();
-            
+
             // Reset scanned invoices for new driver
             $this->scannedInvoices = [];
             $this->barcodes = [];
@@ -47,7 +46,14 @@ class BarcodeScanner extends Component
             $this->scannedInvoices = [];
         }
     }
+    public $barcodeInput;
+    public function addBarcodeFromInput()
+    {
+        $this->addBarcode($this->barcodeInput);
 
+        // Clear input after scanning
+        $this->barcodeInput = '';
+    }
     public function addBarcode(string $code): void
     {
         if (!$this->selectedDriverId) {
@@ -80,14 +86,14 @@ class BarcodeScanner extends Component
             // Add to scanned invoices
             $this->scannedInvoices[] = [
                 'num_invoice_sell' => $invoice->num_invoice_sell,
-                'customer_name' => $invoice->customer->name ?? 'N/A',
+                'mobile' => $invoice->customer->mobile ?? 'N/A',
                 'date' => $invoice->created_at->format('Y-m-d'),
-                'amount' => $invoice->sell->total ?? 0,
+                'total_price_afterDiscount_invoice' => $invoice->sell->total_price_afterDiscount_invoice ?? 0,
             ];
-            
+
             // Add to barcode list
             $this->barcodes[] = $code;
-            
+
             flash()->success('Invoice added successfully');
         } else {
             flash()->error('Invoice belongs to another driver');
@@ -98,13 +104,14 @@ class BarcodeScanner extends Component
     {
         if (isset($this->barcodes[$index])) {
             $removedCode = $this->barcodes[$index];
-            
+
             // Remove from barcodes array
             unset($this->barcodes[$index]);
             $this->barcodes = array_values($this->barcodes);
-            
+
             // Remove from scanned invoices
-            $this->scannedInvoices = array_filter($this->scannedInvoices, 
+            $this->scannedInvoices = array_filter(
+                $this->scannedInvoices,
                 fn($inv) => $inv['num_invoice_sell'] !== $removedCode
             );
         }
