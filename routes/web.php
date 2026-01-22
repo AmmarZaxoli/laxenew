@@ -67,7 +67,7 @@ Route::middleware(['auth:account'])->group(function () {
         Route::view('/accounting/createbuy', 'accounting.createbuyproduct')->name('accounting.createbuyproduct');
         Route::view('/drivers/invoices_control', 'drivers.invoices_control.create')->name('invoice_control.create');
         Route::view('/returnsell', 'returnsell.create')->name('returnsell.create');
-        Route::view('/accountdrivers', 'accountdrivers.create')->name('accountdrivers.create');
+        
         // Backup
         Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
         Route::post('/backup', [BackupController::class, 'backup'])->name('backup');
@@ -76,7 +76,7 @@ Route::middleware(['auth:account'])->group(function () {
 
     //  Normal users
     Route::view('/selling', 'selling.create')->name('selling.create');
-
+Route::view('/accountdrivers', 'accountdrivers.create')->name('accountdrivers.create');
 
     //  Printing
     Route::get('/print/invoice/{id}', [PrintController::class, 'printSingle'])->name('print.single');
