@@ -6,7 +6,7 @@
                 <h4 class="text-dark mb-2">
                     <i class="bi bi-qr-code-scan text-primary me-2"></i> مسح الفواتير
                 </h4>
-               
+
             </div>
 
             <div class="row g-3">
@@ -16,7 +16,7 @@
                     <div class="card mb-3">
                         <div class="card-body">
                             <h6 class="card-title mb-3">
-                                <i class="bi bi-person-badge me-2 text-primary"></i>اختيار السائق 
+                                <i class="bi bi-person-badge me-2 text-primary"></i>اختيار السائق
                             </h6>
 
                             <div class="mb-3">
@@ -36,7 +36,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="searchInput" class="form-label">الباركود</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                    <input type="text" id="searchInput" class="form-control"
+                                        placeholder="أدخل باركود المنتج" wire:model.defer="barcodeInput"
+                                        wire:keydown.enter.prevent="addBarcodeFromInput" autocomplete="off">
 
+                                </div>
+                            </div>
                             <!-- Scanner Button -->
                             <button type="button" class="btn btn-primary w-100 mb-3" onclick="startScanner()"
                                 <?php echo e($selectedDriverId ? '' : 'disabled'); ?>>
@@ -96,7 +105,7 @@
                             <div class="card">
                                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0">
-                                        <i class="bi bi-file-earmark-text me-2"></i>الفواتير المتاحة 
+                                        <i class="bi bi-file-earmark-text me-2"></i>الفواتير المتاحة
                                     </h6>
                                     <span class="badge bg-secondary"><?php echo e(count($driverInvoices)); ?></span>
                                 </div>
@@ -133,7 +142,7 @@
                                                         <td class="text-end fw-bold">
                                                             <?php echo e(number_format($invoice['total_price_afterDiscount_invoice'])); ?>
 
-                                                            
+
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -176,7 +185,7 @@
                                         <table class="table table-sm table-hover mb-0">
                                             <thead class="bg-white">
                                                 <tr>
-                                                   <th class="border-0">الفواتير #</th>
+                                                    <th class="border-0">الفواتير #</th>
                                                     <th class="border-0">رقم الهاتف</th>
                                                     <th class="border-0 text-end">مبلغ</th>
                                                 </tr>
@@ -201,13 +210,13 @@
                                                         <td class="text-end fw-bold text-success">
                                                             <?php echo e(number_format($invoice['total_price_afterDiscount_invoice'])); ?>
 
-                                                            
+
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                                     <tr>
                                                         <td colspan="3" class="text-center py-4 text-muted">
-                                                            
+
                                                             امسح الفواتير ضوئيًا لتظهر هنا
                                                         </td>
                                                     </tr>
@@ -228,35 +237,35 @@
                         </div>
                     </div>
 
-                  
-                </div>
-                  <!-- Progress Bar -->
-                    <!--[if BLOCK]><![endif]--><?php if($selectedDriverId && count($driverInvoices) > 0): ?>
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="mb-0">
-                                        <i class="bi bi-speedometer2 me-2"></i>تقدم عملية التجميع
-                                    </h6>
-                                    <span class="fw-bold">
-                                        <?php echo e(round((count($scannedInvoices) / count($driverInvoices)) * 100)); ?>%
-                                    </span>
-                                </div>
-                                <div class="progress" style="height: 8px;">
-                                    <div class="progress-bar bg-success" role="progressbar"
-                                        style="width: <?php echo e((count($scannedInvoices) / max(count($driverInvoices), 1)) * 100); ?>%">
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between mt-2 small text-muted">
-                                    <span>قيد الانتظار: <?php echo e(count($driverInvoices) - count($scannedInvoices)); ?></span>
-                                    <span>المبلغ الإجمالي:
-                                        <?php echo e(number_format(array_sum(array_column($scannedInvoices, 'total_price_afterDiscount_invoice')))); ?>
 
-                                        </span>
+                </div>
+                <!-- Progress Bar -->
+                <!--[if BLOCK]><![endif]--><?php if($selectedDriverId && count($driverInvoices) > 0): ?>
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-speedometer2 me-2"></i>تقدم عملية التجميع
+                                </h6>
+                                <span class="fw-bold">
+                                    <?php echo e(round((count($scannedInvoices) / count($driverInvoices)) * 100)); ?>%
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                    style="width: <?php echo e((count($scannedInvoices) / max(count($driverInvoices), 1)) * 100); ?>%">
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-between mt-2 small text-muted">
+                                <span>قيد الانتظار: <?php echo e(count($driverInvoices) - count($scannedInvoices)); ?></span>
+                                <span>المبلغ الإجمالي:
+                                    <?php echo e(number_format(array_sum(array_column($scannedInvoices, 'total_price_afterDiscount_invoice')))); ?>
+
+                                </span>
+                            </div>
                         </div>
-                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                    </div>
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
             </div>
 
             <!-- Action Buttons -->
@@ -265,7 +274,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body text-center">
-                                
+
                                 <button class="btn btn-outline-secondary" wire:click="$set('scannedInvoices', [])">
                                     <i class="bi bi-arrow-clockwise me-2"></i>إعادة ضبط المسح
                                 </button>
@@ -285,7 +294,7 @@
         let audioCtx = null;
         let lastCode = null;
         let lastScanTime = 0;
-        const COOLDOWN = 1500;
+        const COOLDOWN = 2500;
 
         function playBeep() {
             if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
