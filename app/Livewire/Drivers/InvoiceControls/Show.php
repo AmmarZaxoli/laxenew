@@ -17,6 +17,8 @@ use App\Models\Sub_Buy_Products_invoice;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\DeleteInvoice;
+use App\Models\DeleteItemInvoice;
 
 class Show extends Component
 {
@@ -412,6 +414,34 @@ class Show extends Component
 
         DB::beginTransaction();
 
+        $invoice = Sell_invoice::with('customer')->findOrFail($id);
+
+
+
+        // $user = Auth::guard('account')->user();
+
+        $deletedInvoice = DeleteInvoice::create([
+            'num_invoice_sell' => $invoice->num_invoice_sell,
+            'totalprice'      => $invoice->totalprice ?? $invoice->total_price ?? 0,
+            'customermobile'  => optional($invoice->customer)->mobile,
+            'address'         => optional($invoice->customer)->address,
+            'user'            => Auth::guard('account')->user()->name ?? 'System',
+        ]);
+
+        // Get selling products
+        $sellingProducts = SellingProduct::where('sell_invoice_id', $invoice->id)->get();
+
+        // Create deleted items using the relationship
+        foreach ($sellingProducts as $item) {
+            DeleteItemInvoice::create([
+                'sell_invoice_id' => $deletedInvoice->id,
+                'product_id' => $item->product_id,
+                'quantity'   => $item->quantity,
+                'price'      => $item->price,
+            ]);
+        }
+
+
         try {
             // 1. Handle selling products
             $sellingProducts = SellingProduct::where('sell_invoice_id', $id)->get();
@@ -487,6 +517,8 @@ class Show extends Component
         }
         DB::beginTransaction();
 
+
+
         try {
             foreach ($this->selectedInvoices as $invoiceId) {
                 // نفس منطق حذف الفاتورة المفردة
@@ -506,6 +538,31 @@ class Show extends Component
 
     private function deleteInvoiceById($id)
     {
+
+
+        $invoice = Sell_invoice::with('customer')->findOrFail($id);
+
+
+        // $user = Auth::guard('account')->user();
+
+        $deletedInvoice = DeleteInvoice::create([
+            'num_invoice_sell' => $invoice->num_invoice_sell,
+            'totalprice'      => $invoice->total_price ?? 0,
+            'customermobile'  => optional($invoice->customer)->mobile,
+            'address'         => optional($invoice->customer)->address,
+            'user'            => Auth::guard('account')->user()->name ?? 'admin',
+        ]);
+
+
+        $sellingProducts = SellingProduct::where('sell_invoice_id', $invoice->id)->get();
+
+        foreach ($sellingProducts as $item) {
+            $deletedInvoice->items()->create([
+                'product_id' => $item->product_id,
+                'quantity'   => $item->quantity,
+                'price'      => $item->price,
+            ]);
+        }
 
 
         // 1. Handle selling products

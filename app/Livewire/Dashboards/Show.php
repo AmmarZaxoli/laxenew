@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboards;
 
+use App\Models\DeleteInvoice;
 use App\Models\Sellinfo;
 use Livewire\Component;
 use Carbon\Carbon;
@@ -13,6 +14,7 @@ class Show extends Component
     public $weekSales = 0;
     public $countorder = 0;
     public $countordersale = 0;
+    public $totaldelete = 0;
     public $totalprice = 0;
 
     public $salesLabels = [];
@@ -44,6 +46,11 @@ class Show extends Component
         $this->totalprice = Sellinfo::where('cash', 0)
             ->whereHas('invoice')
             ->sum('total_price_afterDiscount_invoice');
+
+
+        // Today Delete - COUNT
+        $this->totaldelete = DeleteInvoice::whereDate('created_at', Carbon::today())
+            ->count();
     }
 
     public function loadSales7Days()
@@ -54,9 +61,9 @@ class Show extends Component
         $sales = Sellinfo::whereHas('invoice', function ($q) use ($startDate, $endDate) {
             $q->whereBetween('date_sell', [$startDate, $endDate]);
         })->with('invoice')->get()
-        ->groupBy(function ($item) {
-            return Carbon::parse($item->invoice->date_sell)->format('Y-m-d');
-        });
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->invoice->date_sell)->format('Y-m-d');
+            });
 
         $this->salesLabels = [];
         $this->salesData = [];

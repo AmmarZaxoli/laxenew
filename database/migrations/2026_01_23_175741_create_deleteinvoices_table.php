@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sell_invoices', function (Blueprint $table) {
+        Schema::create('delete_invoices', function (Blueprint $table) {
             $table->id();
             $table->integer('num_invoice_sell')->unique();
-            $table->decimal('total_price', 10)->default(0);
-            $table->boolean('selling')->default(false);
-            $table->dateTime('date_sell');
-
+            $table->decimal('totalprice', 12, 2)->default(0);
+            $table->string('customermobile')->nullable();
+            $table->string('address')->nullable();
+            $table->string('user')->nullable();
             $table->timestamps();
         });
     }
@@ -27,7 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sell_invoices');
-        
+        Schema::dropIfExists('deleteinvoices');
     }
 };

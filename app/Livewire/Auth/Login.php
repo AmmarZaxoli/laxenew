@@ -5,6 +5,7 @@ namespace App\Livewire\Auth;
 use Livewire\Component;
 use App\Models\Account;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class Login extends Component
 {
@@ -18,6 +19,7 @@ class Login extends Component
         if (!Account::exists()) {
             session()->flash('error', 'No accounts exist. Contact the administrator.');
         }
+        
     }
     public function login()
     {
@@ -35,6 +37,7 @@ class Login extends Component
 
         Auth::guard('account')->login($account);
 
+
         // Set STRICT session flags
         session()->put('login_via_form', true); //  this marks legit login
 
@@ -43,6 +46,7 @@ class Login extends Component
             return redirect()->route('dashboard');
         }
         return redirect()->route('selling.create');
+
     }
 
     public function render()

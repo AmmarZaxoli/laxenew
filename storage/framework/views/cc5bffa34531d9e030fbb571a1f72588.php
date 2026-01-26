@@ -56,19 +56,22 @@
             <div class="nav-group">
                 <div class="nav-group-title">الرئيسية</div>
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo e(Route::is('accountdrivers.create') ? 'active' : ''); ?>"
-                            href="<?php echo e(route('accountdrivers.create')); ?>">
-                            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
-                            <span class="nav-text">حسابات سائقون</span>
 
-                        </a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link <?php echo e(Route::is('dashboards.create') ? 'active' : ''); ?>"
                             href="<?php echo e(route('dashboards.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
                             <span class="nav-text">لوحة التحكم</span>
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo e(Route::is('accountdrivers.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('accountdrivers.create')); ?>">
+                            <span class="nav-icon"><i class="bi bi-qr-code-scan"></i>
+                            </span>
+                            <span class="nav-text">مسح ضوئي للفواتير</span>
 
                         </a>
                     </li>
@@ -92,13 +95,34 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item d-flex align-items-center">
                         <a class="nav-link <?php echo e(Route::is('getAPI.create') ? 'active' : ''); ?>"
                             href="<?php echo e(route('getAPI.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-phone"></i></span>
                             <span class="nav-text">طلبات التطبيق</span>
                         </a>
                     </li>
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="nav-link <?php echo e(Route::is('deletedinvoice.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('deletedinvoice.create')); ?>">
+                            <span class="nav-icon"><i class="bi bi-phone"></i></span>
+                            <span class="nav-text">طلبات التطبيق</span>
+                        </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </ul>
             </div>
 
@@ -383,6 +407,7 @@
     <!-- Main Content -->
     <main class="main-content">
         <?php echo $__env->yieldContent('content'); ?>
+
     </main>
 
     <!-- Bootstrap JS Bundle with Popper -->

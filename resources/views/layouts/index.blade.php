@@ -55,7 +55,7 @@
             <div class="nav-group">
                 <div class="nav-group-title">الرئيسية</div>
                 <ul class="nav flex-column">
-                    
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('dashboards.create') ? 'active' : '' }}"
                             href="{{ route('dashboards.create') }}">
@@ -68,8 +68,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('accountdrivers.create') ? 'active' : '' }}"
                             href="{{ route('accountdrivers.create') }}">
-                            <span class="nav-icon"><i class="bi bi-cash-coin"></i></span>
-                            <span class="nav-text">حسابات سائقون</span>
+                            <span class="nav-icon"><i class="bi bi-qr-code-scan"></i>
+                            </span>
+                            <span class="nav-text">مسح ضوئي للفواتير</span>
 
                         </a>
                     </li>
@@ -100,6 +101,27 @@
                             <span class="nav-text">طلبات التطبيق</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('deletedinvoice.create') ? 'active' : '' }}"
+                            href="{{ route('deletedinvoice.create') }}">
+                            <span class="nav-icon"><i class="bi bi-trash"></i></span>
+                            <span class="nav-text">حذف الفواتير</span>
+                        </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </ul>
             </div>
 
@@ -404,6 +426,7 @@
     <!-- Main Content -->
     <main class="main-content">
         @yield('content')
+
     </main>
 
     <!-- Bootstrap JS Bundle with Popper -->

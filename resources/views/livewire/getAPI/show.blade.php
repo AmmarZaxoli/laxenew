@@ -10,7 +10,8 @@
                     <div class="col-md-4 mb-3">
                         <label for="nameDriver" class="dashboard-title">اسم السائق</label>
                         <div class="input-group">
-                            <select id="nameDriver" wire:model.live="selected_driver" class="form-control" style="width: 1150px">
+                            <select id="nameDriver" wire:model.live="selected_driver" class="form-control"
+                                style="width: 1150px">
                                 <option value="">اختر السائق</option>
                                 @foreach ($drivers as $driver)
                                     <option value="{{ $driver->id }}">{{ $driver->nameDriver }}</option>
@@ -47,7 +48,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
-                               
+
                                 <th class="text-center">يختار</th>
                                 <th class="text-center">رقم التليفون</th>
                                 <th class="text-center">عنوان</th>
@@ -82,10 +83,17 @@
                                                 View
                                             </button>
 
-                                            <button wire:click="cancel('{{ $order['id'] }}')"
-                                                class="btn btn-outline-danger btn-sm">
-                                                Cancel
+                                            <button wire:click="cancel({{ $order['id'] }})"
+                                                class="btn btn-outline-danger btn-sm" wire:loading.attr="disabled"
+                                                wire:target="cancel({{ $order['id'] }})">
+                                                <span wire:loading wire:target="cancel({{ $order['id'] }})"
+                                                    class="spinner-border spinner-border-sm"></span>
+                                                <span wire:loading.remove
+                                                    wire:target="cancel({{ $order['id'] }})">Cancel</span>
                                             </button>
+
+
+
                                         </div>
                                     </td>
 
@@ -188,7 +196,7 @@
                         </svg>
                         Accept Selected
                     </button>
-                   
+
                 </div>
             @endif
 
@@ -260,6 +268,6 @@
 
         </div>
 
-      
+
     </div>
 </div>

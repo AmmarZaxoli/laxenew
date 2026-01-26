@@ -57,13 +57,13 @@ class BarcodeScanner extends Component
     public function addBarcode(string $code): void
     {
         if (!$this->selectedDriverId) {
-            flash()->error('Please select a driver first');
+            flash()->error('يرجى اختيار سائق أولاً');
             return;
         }
 
         // Prevent duplicate scans
         if (in_array($code, $this->barcodes)) {
-            flash()->warning('Invoice already scanned');
+            flash()->warning('تم مسح الفاتورة ضوئيًا بالفعل');
             return;
         }
 
@@ -73,7 +73,7 @@ class BarcodeScanner extends Component
             ->first();
 
         if (!$invoice) {
-            flash()->error('Invoice not found');
+            flash()->error('لم يتم العثور على الفاتورة');
             return;
         }
 
@@ -94,9 +94,9 @@ class BarcodeScanner extends Component
             // Add to barcode list
             $this->barcodes[] = $code;
 
-            flash()->success('Invoice added successfully');
+            flash()->success('تمت إضافة الفاتورة بنجاح');
         } else {
-            flash()->error('Invoice belongs to another driver');
+            flash()->error('الفاتورة تخص سائقًا آخر');
         }
     }
 

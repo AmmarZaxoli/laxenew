@@ -10,7 +10,8 @@
                     <div class="col-md-4 mb-3">
                         <label for="nameDriver" class="dashboard-title">اسم السائق</label>
                         <div class="input-group">
-                            <select id="nameDriver" wire:model.live="selected_driver" class="form-control" style="width: 1150px">
+                            <select id="nameDriver" wire:model.live="selected_driver" class="form-control"
+                                style="width: 1150px">
                                 <option value="">اختر السائق</option>
                                 <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($driver->id); ?>"><?php echo e($driver->nameDriver); ?></option>
@@ -47,7 +48,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
-                               
+
                                 <th class="text-center">يختار</th>
                                 <th class="text-center">رقم التليفون</th>
                                 <th class="text-center">عنوان</th>
@@ -82,10 +83,17 @@
                                                 View
                                             </button>
 
-                                            <button wire:click="cancel('<?php echo e($order['id']); ?>')"
-                                                class="btn btn-outline-danger btn-sm">
-                                                Cancel
+                                            <button wire:click="cancel(<?php echo e($order['id']); ?>)"
+                                                class="btn btn-outline-danger btn-sm" wire:loading.attr="disabled"
+                                                wire:target="cancel(<?php echo e($order['id']); ?>)">
+                                                <span wire:loading wire:target="cancel(<?php echo e($order['id']); ?>)"
+                                                    class="spinner-border spinner-border-sm"></span>
+                                                <span wire:loading.remove
+                                                    wire:target="cancel(<?php echo e($order['id']); ?>)">Cancel</span>
                                             </button>
+
+
+
                                         </div>
                                     </td>
 
@@ -188,7 +196,7 @@
                         </svg>
                         Accept Selected
                     </button>
-                   
+
                 </div>
             <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
@@ -260,7 +268,7 @@
 
         </div>
 
-      
+
     </div>
 </div>
 <?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/getAPI/show.blade.php ENDPATH**/ ?>

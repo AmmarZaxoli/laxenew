@@ -19,9 +19,14 @@ use App\Models\Product;
 use App\Models\Sub_Buy_Products_invoice;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-
+use App\Livewire\PendingOrdersBadge;
 class Show extends Component
 {
+    protected $listeners = [
+        'refreshPendingOrders' => 'fetchCount',
+    ];
+    
+
     use WithPagination;
 
     public $email = 'ammarzaxoli95@gmail.com';
@@ -121,6 +126,8 @@ class Show extends Component
 
     public function cancel($orderId)
     {
+        
+
         if (!$this->token) {
             $this->responseMessage = 'No token available. Please try reloading the page.';
             return;
@@ -143,6 +150,9 @@ class Show extends Component
                 ->toArray();
 
             flash()->success("Order #{$orderId} has been cancelled.");
+
+            $this->dispatch('updatePendingOrdersCount',-1);
+           
         } else {
             $status = $response->status();
             $message = $response->json('error') ?? $response->json('message') ?? $response->body();
@@ -174,6 +184,8 @@ class Show extends Component
                 ->toArray();
 
             flash()->success("Order #{$orderId} has been approved.");
+
+           
         } else {
             $status = $response->status();
             $message = $response->json('error') ?? $response->json('message') ?? $response->body();
@@ -601,6 +613,7 @@ class Show extends Component
         );
 
         $this->discount = 0;
+         $this->dispatch('updatePendingOrdersCount',-1);
     }
 
     public function updateQuantity($productId, $newQty)
@@ -810,7 +823,7 @@ class Show extends Component
             'is_block' => false,
         ]);
 
-        $this->confirmAccept($order['id']); 
+        $this->confirmAccept($order['id']);
 
         $this->sell($idinvoice, $order);
         $this->sellingproduct($idinvoice);
