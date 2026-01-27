@@ -96,12 +96,29 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link <?php echo e(Route::is('getAPI.create') ? 'active' : ''); ?>"
-                            href="<?php echo e(route('getAPI.create')); ?>">
-                            <span class="nav-icon"><i class="bi bi-phone"></i></span>
-                            <span class="nav-text">طلبات التطبيق</span>
-                        </a>
-                    </li>
+    <a class="nav-link <?php echo e(Route::is('getAPI.create') ? 'active' : ''); ?>"
+       href="<?php echo e(route('getAPI.create')); ?>">
+        <span class="nav-icon"><i class="bi bi-phone"></i></span>
+        <span class="nav-text">طلبات التطبيق</span>
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('notfications.pending-orders-badge');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-2540986041-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+    </a>
+</li>
                     <li class="nav-item">
                         <a class="nav-link <?php echo e(Route::is('deletedinvoice.create') ? 'active' : ''); ?>"
                             href="<?php echo e(route('deletedinvoice.create')); ?>">
@@ -422,7 +439,7 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split('drivers.drivers-order');
 
-$__html = app('livewire')->mount($__name, $__params, 'lw-2540986041-0', $__slots ?? [], get_defined_vars());
+$__html = app('livewire')->mount($__name, $__params, 'lw-2540986041-1', $__slots ?? [], get_defined_vars());
 
 echo $__html;
 

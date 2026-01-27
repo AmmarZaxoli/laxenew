@@ -19,7 +19,6 @@ class Login extends Component
         if (!Account::exists()) {
             session()->flash('error', 'No accounts exist. Contact the administrator.');
         }
-        
     }
     public function login()
     {
@@ -36,19 +35,30 @@ class Login extends Component
         }
 
         Auth::guard('account')->login($account);
+        session()->put('login_via_form', true);
 
+        // --- ل ڤێرێ داخوازا API بکە بۆ وەرگرتنا Token ---
+        try {
+            $response = Http::post('https://laxe-backend-production.up.railway.app/api/v1/auth/signin', [
+                'email' => 'ammarzaxoli95@gmail.com', // ئیمێلێ API
+                'password' => '12345678',             // پۆستوۆردێ API
+            ]);
 
-        // Set STRICT session flags
-        session()->put('login_via_form', true); //  this marks legit login
+            if ($response->successful()) {
+                // Token د ناڤ Session دا پاشکەفت بکە
+                session()->put('api_token', $response->json('token'));
+            }
+        } catch (\Exception $e) {
+            // ئەگەر ئاریشەیەک هەبیت د ئینتەرنێتێ دا
+            
+        }
+        // ----------------------------------------------
 
-        // Redirect based on role
         if ($account->role === 'admin') {
             return redirect()->route('dashboard');
         }
         return redirect()->route('selling.create');
-
     }
-
     public function render()
     {
         $accounts = Account::all();

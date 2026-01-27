@@ -95,12 +95,14 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('getAPI.create') ? 'active' : '' }}"
-                            href="{{ route('getAPI.create') }}">
-                            <span class="nav-icon"><i class="bi bi-phone"></i></span>
-                            <span class="nav-text">طلبات التطبيق</span>
-                        </a>
-                    </li>
+    <a class="nav-link {{ Route::is('getAPI.create') ? 'active' : '' }}"
+       href="{{ route('getAPI.create') }}">
+        <span class="nav-icon"><i class="bi bi-phone"></i></span>
+        <span class="nav-text">طلبات التطبيق</span>
+        
+        @livewire('notfications.pending-orders-badge')
+    </a>
+</li>
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('deletedinvoice.create') ? 'active' : '' }}"
                             href="{{ route('deletedinvoice.create') }}">
