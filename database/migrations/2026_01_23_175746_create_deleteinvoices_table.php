@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('delete_invoices', function (Blueprint $table) {
             $table->id();
-            $table->integer('num_invoice_sell')->unique();
             $table->decimal('totalprice', 12, 2)->default(0);
+            $table->decimal('discount', 12, 2)->default(0);
             $table->string('customermobile')->nullable();
             $table->string('address')->nullable();
             $table->string('user')->nullable();

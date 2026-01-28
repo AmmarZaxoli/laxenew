@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DeleteItemInvoice extends Model
 {
     protected $fillable = [
-        'sell_invoice_id',
+        'id_delete_invoices',
         'product_id',
         'quantity',
         'price',
@@ -16,7 +16,7 @@ class DeleteItemInvoice extends Model
 
     public function invoice(): BelongsTo
     {
-        return $this->belongsTo(DeleteInvoice::class, 'sell_invoice_id');
+        return $this->belongsTo(DeleteInvoice::class, 'id');
     }
 
     // OPTIONAL (only if you have products table)
@@ -24,4 +24,6 @@ class DeleteItemInvoice extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
+
+    
 }

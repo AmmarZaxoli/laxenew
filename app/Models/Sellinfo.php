@@ -22,7 +22,7 @@ class Sellinfo extends Model
 
     // Each Sell belongs to a SellInvoice
     public function invoice()
-{
-    return $this->belongsTo(Sell_invoice::class, 'sell_invoice_id');
-}
+    {
+        return $this->belongsTo(Sell_invoice::class, 'sell_invoice_id');
+    }
 }

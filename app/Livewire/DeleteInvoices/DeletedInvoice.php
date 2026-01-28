@@ -52,7 +52,7 @@ class DeletedInvoice extends Component
         $this->selectedInvoiceId = $invoiceId;
         $this->showModal = true;
         $this->invoiceDetails = DeleteInvoice::find($invoiceId);
-        $this->invoiceItems = DeleteItemInvoice::where('sell_invoice_id', $invoiceId)
+        $this->invoiceItems = DeleteItemInvoice::where('id_delete_invoices', $invoiceId)
             ->with('product')
             ->get();
     }
@@ -67,7 +67,7 @@ class DeletedInvoice extends Component
         $invoices = DeleteInvoice::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('num_invoice_sell', 'like', '%' . $this->search . '%')
+                    $q
                       ->orWhere('customermobile', 'like', '%' . $this->search . '%')
                       ->orWhere('user', 'like', '%' . $this->search . '%')
                       ->orWhere('address', 'like', '%' . $this->search . '%')

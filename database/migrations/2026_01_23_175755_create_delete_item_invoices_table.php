@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('delete_item_invoices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sell_invoice_id'); // Foreign key column
-            $table->integer('product_id');
+            $table->unsignedBigInteger('id_delete_invoices'); 
+            $table->string('product_id');
             $table->integer('quantity');
             $table->decimal('price', 12, 2)->default(0);
 
             // Correct foreign key syntax
-            $table->foreign('sell_invoice_id')
+            $table->foreign('id_delete_invoices')
                 ->references('id')
                 ->on('delete_invoices')
                 ->onUpdate('cascade')

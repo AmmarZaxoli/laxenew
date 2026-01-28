@@ -414,17 +414,18 @@ class Show extends Component
 
         DB::beginTransaction();
 
-        $invoice = Sell_invoice::with('customer')->findOrFail($id);
+        $invoice = Sell_invoice::with(['customer', 'sell'])->findOrFail($id);
 
 
 
         // $user = Auth::guard('account')->user();
 
         $deletedInvoice = DeleteInvoice::create([
-            'num_invoice_sell' => $invoice->num_invoice_sell,
-            'totalprice'      => $invoice->totalprice ?? $invoice->total_price ?? 0,
-            'customermobile'  => optional($invoice->customer)->mobile,
-            'address'         => optional($invoice->customer)->address,
+
+            'totalprice'      =>  $invoice->total_price,
+            'discount'      =>  $invoice->sell->discount,
+            'customermobile'  => $invoice->customer->mobile,
+            'address'         => $invoice->customer->address,
             'user'            => Auth::guard('account')->user()->name ?? 'System',
         ]);
 
@@ -434,13 +435,22 @@ class Show extends Component
         // Create deleted items using the relationship
         foreach ($sellingProducts as $item) {
             DeleteItemInvoice::create([
-                'sell_invoice_id' => $deletedInvoice->id,
+                'id_delete_invoices' => $deletedInvoice->id,
                 'product_id' => $item->product_id,
                 'quantity'   => $item->quantity,
                 'price'      => $item->price,
             ]);
         }
 
+        $offerSells = Offer_sell::where('sell_invoice_id', $id)->get();
+        foreach ($offerSells as $offer) {
+            DeleteItemInvoice::create([
+                'id_delete_invoices' => $deletedInvoice->id,
+                'product_id'      => $offer->nameoffer,
+                'quantity'        => $offer->quantity ?? 1,
+                'price'           => $offer->price ?? 0,
+            ]);
+        }
 
         try {
             // 1. Handle selling products

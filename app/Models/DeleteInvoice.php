@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class DeleteInvoice extends Model
 {
     protected $fillable = [
-        'num_invoice_sell',
+        'id_delete_invoices',
         'totalprice',
+        'discount',
         'customermobile',
         'address',
         'user',
@@ -17,6 +18,6 @@ class DeleteInvoice extends Model
 
     public function items(): HasMany
     {
-        return $this->hasMany(DeleteItemInvoice::class, 'sell_invoice_id');
+        return $this->hasMany(DeleteItemInvoice::class, 'id_delete_invoices');
     }
 }
