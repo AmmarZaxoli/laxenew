@@ -96,12 +96,12 @@
                     </li>
 
                     <li class="nav-item">
-    <a class="nav-link <?php echo e(Route::is('getAPI.create') ? 'active' : ''); ?>"
-       href="<?php echo e(route('getAPI.create')); ?>">
-        <span class="nav-icon"><i class="bi bi-phone"></i></span>
-        <span class="nav-text">طلبات التطبيق</span>
-        
-        <?php
+                        <a class="nav-link <?php echo e(Route::is('getAPI.create') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('getAPI.create')); ?>">
+                            <span class="nav-icon"><i class="bi bi-phone"></i></span>
+                            <span class="nav-text">طلبات التطبيق</span>
+
+                            <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
@@ -117,27 +117,8 @@ unset($__params);
 unset($__split);
 if (isset($__slots)) unset($__slots);
 ?>
-    </a>
-</li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo e(Route::is('deletedinvoice.create') ? 'active' : ''); ?>"
-                            href="<?php echo e(route('deletedinvoice.create')); ?>">
-                            <span class="nav-icon"><i class="bi bi-trash"></i></span>
-                            <span class="nav-text">حذف الفواتير</span>
                         </a>
                     </li>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 </ul>
@@ -390,6 +371,16 @@ if (isset($__slots)) unset($__slots);
                                         <span class="nav-text">إعدادات الموقع</span>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link <?php echo e(Route::is('deletedinvoice.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('deletedinvoice.create')); ?>">
+                                        
+                                        <span class="nav-text">حذف الفواتير</span>
+                                    </a>
+                                </li>
+
+
                             </ul>
                         </div>
                     </li>

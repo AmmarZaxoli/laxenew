@@ -106,11 +106,7 @@
             </div>
         </div>
 
-        <button wire:click="markAllCustomersAsPrinted" class="btn btn-danger">
-            إنشاء حالة طباعة الكل
-        </button>
-
-
+    
         <!-- Action Buttons Section -->
         <div class="card shadow-sm mb-4">
             <div class="card-body p-0">

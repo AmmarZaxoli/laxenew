@@ -251,12 +251,5 @@ class Multiinvoices extends Component
         $this->selectAll = false;
     }
 
-    public function markAllCustomersAsPrinted()
-    {
-        Customer::where('print', 0)->update([
-            'print' => 1
-        ]);
-
-        flash()->addSuccess('تم  بنجاح.');
-    }
+   
 }
