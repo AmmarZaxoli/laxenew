@@ -109,10 +109,10 @@ class Show extends Component
             $customer->driver_id = $this->selectedDriverId;
             $customer->save();
 
-            session()->flash('message', 'تم تحديث السائق بنجاح');
+            flash()->Success('تم تحديث السائق بنجاح');
             $this->dispatch('close-driver-modal');
         } else {
-            session()->flash('message', 'الفاتورة أو العميل غير موجود');
+            flash()->Success('الفاتورة أو العميل غير موجود');
         }
     }
 
@@ -121,7 +121,7 @@ class Show extends Component
     public function openBulkDateModal()
     {
         if (empty($this->selectedInvoices)) {
-            session()->flash('error', 'يرجى اختيار فاتورة واحدة على الأقل.');
+            flash()->Success('يرجى اختيار فاتورة واحدة على الأقل.');
             return;
         }
 
@@ -156,8 +156,8 @@ class Show extends Component
                 }
             }
         }
-
-        session()->flash('message', 'تم تحديث تاريخ البيع للفواتير المختارة بنجاح.');
+        $this->selectedInvoices = [];
+        flash()->Success('تم تحديث تاريخ البيع للفواتير المختارة بنجاح.');
         $this->showBulkDateModal = false;
     }
 
@@ -346,14 +346,14 @@ class Show extends Component
         $selectedIds = array_filter($selectedIds);
 
         if (empty($selectedIds)) {
-            session()->flash('error', 'لم يتم تحديد أي فواتير صالحة.');
+            flash()->Success('error', 'لم يتم تحديد أي فواتير صالحة.');
             return;
         }
 
         Sellinfo::whereIn('sell_invoice_id', $selectedIds)
             ->update(['cash' => true]);
 
-        session()->flash('message', 'تم تحديث حالة الدفع بنجاح.');
+        flash()->Success('message', 'تم تحديث حالة الدفع بنجاح.');
 
         $this->selectedInvoices = [];
         $this->selectAll = false;
@@ -550,27 +550,41 @@ class Show extends Component
     {
 
 
-        $invoice = Sell_invoice::with('customer')->findOrFail($id);
+        $invoice = Sell_invoice::with(['customer', 'sell'])->findOrFail($id);
+
 
 
         // $user = Auth::guard('account')->user();
 
         $deletedInvoice = DeleteInvoice::create([
-            'num_invoice_sell' => $invoice->num_invoice_sell,
-            'totalprice'      => $invoice->total_price ?? 0,
-            'customermobile'  => optional($invoice->customer)->mobile,
-            'address'         => optional($invoice->customer)->address,
-            'user'            => Auth::guard('account')->user()->name ?? 'admin',
+
+            'totalprice'      =>  $invoice->total_price,
+            'discount'      =>  $invoice->sell->discount,
+            'customermobile'  => $invoice->customer->mobile,
+            'address'         => $invoice->customer->address,
+            'user'            => Auth::guard('account')->user()->name ?? 'System',
         ]);
 
-
+        // Get selling products
         $sellingProducts = SellingProduct::where('sell_invoice_id', $invoice->id)->get();
 
+        // Create deleted items using the relationship
         foreach ($sellingProducts as $item) {
-            $deletedInvoice->items()->create([
+            DeleteItemInvoice::create([
+                'id_delete_invoices' => $deletedInvoice->id,
                 'product_id' => $item->product_id,
                 'quantity'   => $item->quantity,
                 'price'      => $item->price,
+            ]);
+        }
+
+        $offerSells = Offer_sell::where('sell_invoice_id', $id)->get();
+        foreach ($offerSells as $offer) {
+            DeleteItemInvoice::create([
+                'id_delete_invoices' => $deletedInvoice->id,
+                'product_id'      => $offer->nameoffer,
+                'quantity'        => $offer->quantity ?? 1,
+                'price'           => $offer->price ?? 0,
             ]);
         }
 
@@ -642,7 +656,7 @@ class Show extends Component
     public function printSelected()
     {
         if (empty($this->selectedInvoices)) {
-            session()->flash('error', 'Please select at least one invoice.');
+            flash()->Success('error', 'Please select at least one invoice.');
             return;
         }
 

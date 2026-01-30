@@ -39,19 +39,19 @@ class Multiinvoices extends Component
         $this->resetSelectedInvoices();
     }
     public function updatedDateTo()
-{
-    $this->resetSelectedInvoices();
-}
+    {
+        $this->resetSelectedInvoices();
+    }
 
-public function updatedSelectedDriver()
-{
-    $this->resetSelectedInvoices();
-}
+    public function updatedSelectedDriver()
+    {
+        $this->resetSelectedInvoices();
+    }
 
-public function updatedPrintedStatus()
-{
-    $this->resetSelectedInvoices();
-}
+    public function updatedPrintedStatus()
+    {
+        $this->resetSelectedInvoices();
+    }
 
 
     public function mount()
@@ -60,7 +60,6 @@ public function updatedPrintedStatus()
         $today = now()->format('Y-m-d');
         $this->date_from = $this->date_from ?? $today;
         $this->date_to = $this->date_to ?? $today;
-        
     }
 
     // Clear selected invoices when filters/search change
@@ -89,58 +88,58 @@ public function updatedPrintedStatus()
         $this->resetSelectedInvoices();
     }
 
-public function updatedSelectAll($value)
-{
-    // Get only the invoices from the current page
-    $currentPageInvoices = $this->getCurrentPageInvoices();
+    public function updatedSelectAll($value)
+    {
+        // Get only the invoices from the current page
+        $currentPageInvoices = $this->getCurrentPageInvoices();
 
-    if ($value) {
-        // Add their invoice numbers to selectedInvoices
-        $this->selectedInvoices = array_unique(array_merge(
-            $this->selectedInvoices,
-            $currentPageInvoices->pluck('num_invoice_sell')->map(fn($num) => (string) $num)->toArray()
-        ));
-    } else {
-        // Remove only current page invoices from selectedInvoices
-        $this->selectedInvoices = array_diff(
-            $this->selectedInvoices,
-            $currentPageInvoices->pluck('num_invoice_sell')->map(fn($num) => (string) $num)->toArray()
-        );
+        if ($value) {
+            // Add their invoice numbers to selectedInvoices
+            $this->selectedInvoices = array_unique(array_merge(
+                $this->selectedInvoices,
+                $currentPageInvoices->pluck('num_invoice_sell')->map(fn($num) => (string) $num)->toArray()
+            ));
+        } else {
+            // Remove only current page invoices from selectedInvoices
+            $this->selectedInvoices = array_diff(
+                $this->selectedInvoices,
+                $currentPageInvoices->pluck('num_invoice_sell')->map(fn($num) => (string) $num)->toArray()
+            );
+        }
     }
-}
-protected function getCurrentPageInvoices()
-{
-    $query = Sell_invoice::with(['customer', 'sell'])
-        ->whereHas('sell', fn($q) => $q->where('cash', 0))
-        ->when($this->search, function ($q) {
-            $q->where(function ($sub) {
-                $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('customer', fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%'));
-            });
-        })
-        ->when(!is_null($this->printedStatus), function ($q) {
-            $q->whereHas('customer', fn($q) => $q->where('print', $this->printedStatus));
-        })
-        ->when(
-            $this->selected_driver,
-            fn($q) => $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
-        );
+    protected function getCurrentPageInvoices()
+    {
+        $query = Sell_invoice::with(['customer', 'sell'])
+            ->whereHas('sell', fn($q) => $q->where('cash', 0))
+            ->when($this->search, function ($q) {
+                $q->where(function ($sub) {
+                    $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('customer', fn($q) => $q->where('mobile', 'like', '%' . $this->search . '%'));
+                });
+            })
+            ->when(!is_null($this->printedStatus), function ($q) {
+                $q->whereHas('customer', fn($q) => $q->where('print', $this->printedStatus));
+            })
+            ->when(
+                $this->selected_driver,
+                fn($q) => $q->whereHas('customer', fn($q2) => $q2->where('driver_id', $this->selected_driver))
+            );
 
-    if ($this->filteredByDate && $this->date_from && $this->date_to) {
-        $query->whereBetween('date_sell', [$this->date_from, $this->date_to]);
+        if ($this->filteredByDate && $this->date_from && $this->date_to) {
+            $query->whereBetween('date_sell', [$this->date_from, $this->date_to]);
+        }
+
+        return $query->paginate(30); // 👈 same as render()
     }
 
-    return $query->paginate(30); // 👈 same as render()
-}
+    public function updatedPage($page)
+    {
+        // Uncheck "select all" when changing page
+        $this->selectAll = false;
 
-public function updatedPage($page)
-{
-    // Uncheck "select all" when changing page
-    $this->selectAll = false;
-
-    // Forget selected invoices from the previous page
-    $this->selectedInvoices = [];
-}
+        // Forget selected invoices from the previous page
+        $this->selectedInvoices = [];
+    }
     public function updatedSelectedInvoices()
     {
         $filteredInvoices = Sell_invoice::with(['customer', 'sell'])
@@ -178,7 +177,7 @@ public function updatedPage($page)
     public function render()
     {
         $query = Sell_invoice::with(['customer', 'sell'])
-            ->whereHas('sell', fn($q) => $q->where('cash', 0))
+            ->whereHas('sell', fn($q) => $q->where('cash', 1))
             ->when($this->search, function ($q) {
                 $q->where(function ($sub) {
                     $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')
@@ -211,12 +210,12 @@ public function updatedPage($page)
                 ->whereDate('date_sell', '<=', $this->date_to);
         }
 
-      $driverInvoices = $query->paginate(30);
+        $driverInvoices = $query->paginate(30);
 
 
         return view('livewire.print.multiinvoices', [
             'driverInvoices' => $driverInvoices,
-                'invoices' => $driverInvoices, // 👈 just alias
+            'invoices' => $driverInvoices, // 👈 just alias
 
         ]);
     }
@@ -250,5 +249,14 @@ public function updatedPage($page)
 
         $this->selectedInvoices = [];
         $this->selectAll = false;
+    }
+
+    public function markAllCustomersAsPrinted()
+    {
+        Customer::where('print', 0)->update([
+            'print' => 1
+        ]);
+
+        flash()->addSuccess('تم  بنجاح.');
     }
 }

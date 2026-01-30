@@ -20,6 +20,7 @@ class Customer extends Model
         'waypayment',
         'buywith',
         'block',
+        'print',
     ];
 
     public function sellInvoice()

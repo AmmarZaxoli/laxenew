@@ -20,11 +20,12 @@
                 <label for="nameDriver" class="form-label">أسماء السائقين</label>
                 <select id="nameDriver" wire:model.live="selected_driver" class="form-control">
                     <option value="">اختر السائق</option>
-                    @foreach ($drivers as $driver)
-                        <option value="{{ $driver->id }}">
-                            {{ $driver->nameDriver }}
+                    <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $drivers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $driver): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($driver->id); ?>">
+                            <?php echo e($driver->nameDriver); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                 </select>
             </div>
 
@@ -36,19 +37,22 @@
                     <div class="card-body py-2 d-flex justify-content-between bg-light rounded">
                         <span>المجموع الفواتير:</span>
                         <span class="fw-bold fs-6 text-primary">
-                            {{ number_format($invoices->sum(fn($i) => $i->sell?->total_price_afterDiscount_invoice ?? 0)) }}
+                            <?php echo e(number_format($invoices->sum(fn($i) => $i->sell?->total_price_afterDiscount_invoice ?? 0))); ?>
+
                         </span>
                     </div>
                     <div class="card-body py-2 d-flex justify-content-between">
                         <span>المجموع التوصيل:</span>
                         <span class="fw-bold fs-6 text-danger">
-                            {{ number_format($invoices->sum(fn($i) => $i->sell?->taxi_price ?? 0)) }}
+                            <?php echo e(number_format($invoices->sum(fn($i) => $i->sell?->taxi_price ?? 0))); ?>
+
                         </span>
                     </div>
                     <div class="card-body py-2 d-flex justify-content-between bg-light rounded">
                         <span>المجموع الكلي:</span>
                         <span class="fw-bold fs-5 text-black">
-                            {{ number_format($invoices->sum(fn($i) => ($i->sell?->total_price_afterDiscount_invoice ?? 0) + ($i->sell?->taxi_price ?? 0))) }}
+                            <?php echo e(number_format($invoices->sum(fn($i) => ($i->sell?->total_price_afterDiscount_invoice ?? 0) + ($i->sell?->taxi_price ?? 0)))); ?>
+
                         </span>
                     </div>
                 </div>
@@ -113,17 +117,17 @@
                 <div
                     class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3 bg-light border-bottom gap-2 gap-md-0">
                     <div class="order-2 order-md-1 text-muted text-center text-md-start">
-                        {{-- Removed commented count --}}
+                        
                     </div>
 
                     <div
                         class="order-1 order-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-3 w-100 w-md-auto">
 
                         <button wire:click="printSelected" wire:loading.attr="disabled" class="btn btn-outline-primary"
-                            @disabled(count($selectedInvoices) === 0)>
+                            <?php if(count($selectedInvoices) === 0): echo 'disabled'; endif; ?>>
                             <span wire:loading.remove wire:target="printSelected">
                                 <i class="fas fa-print me-2"></i>
-                                طباعة القائمات ({{ count($selectedInvoices) }})
+                                طباعة القائمات (<?php echo e(count($selectedInvoices)); ?>)
                             </span>
                             <span wire:loading wire:target="printSelected">
                                 <i class="fas fa-spinner fa-spin me-2"></i>
@@ -138,11 +142,11 @@
 
             <!-- Selected Invoices Display -->
             <div class="p-3 bg-light">
-                @forelse ($selectedInvoices as $num_invoice_sell)
-                    <span class="badge bg-primary me-1">{{ $num_invoice_sell }}</span>
-                @empty
+                <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $selectedInvoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num_invoice_sell): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <span class="badge bg-primary me-1"><?php echo e($num_invoice_sell); ?></span>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <span class="text-muted">لا توجد فواتير مختارة</span>
-                @endforelse
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                 : الفواتير المختارة
             </div>
 
@@ -166,44 +170,51 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($invoices as $invoice)
+                        <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $invoices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $invoice): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
                                 <td>
                                     <input type="checkbox" class="form-check-input shadow-sm" style="cursor: pointer"
-                                        wire:model.live="selectedInvoices" value="{{ $invoice->num_invoice_sell }}"
-                                        @checked(in_array((string) $invoice->num_invoice_sell, $selectedInvoices))>
+                                        wire:model.live="selectedInvoices" value="<?php echo e($invoice->num_invoice_sell); ?>"
+                                        <?php if(in_array((string) $invoice->num_invoice_sell, $selectedInvoices)): echo 'checked'; endif; ?>>
                                 </td>
-                                <td class="text-muted align-middle">{{ $loop->iteration }}</td>
+                                <td class="text-muted align-middle"><?php echo e($loop->iteration); ?></td>
                                 <td class="text-center align-middle fw-semibold">
                                     <span class="badge bg-success bg-opacity-10 text-success fs-6 fw-bold">
-                                        {{ $invoice->num_invoice_sell }}
+                                        <?php echo e($invoice->num_invoice_sell); ?>
+
                                     </span>
                                 </td>
                                 <td class="text-center align-middle">
-                                    {{ $invoice->customer?->driver?->nameDriver ?? '—' }}
+                                    <?php echo e($invoice->customer?->driver?->nameDriver ?? '—'); ?>
+
                                 </td>
                                 <td class="text-center align-middle text-truncate" style="max-width:150px;">
-                                    {{ $invoice->customer?->address ?? '—' }}
+                                    <?php echo e($invoice->customer?->address ?? '—'); ?>
+
                                 </td>
-                                <td class="text-center align-middle">{{ $invoice->customer?->mobile ?? '—' }}</td>
+                                <td class="text-center align-middle"><?php echo e($invoice->customer?->mobile ?? '—'); ?></td>
                                 <td class="text-center align-middle text-nowrap">
-                                    {{ number_format($invoice->sell?->taxi_price ?? 0) }}
+                                    <?php echo e(number_format($invoice->sell?->taxi_price ?? 0)); ?>
+
                                 </td>
                                 <td class="text-center align-middle fw-bold text-nowrap">
-                                    {{ number_format($invoice->sell?->total_price_afterDiscount_invoice) }}
+                                    <?php echo e(number_format($invoice->sell?->total_price_afterDiscount_invoice)); ?>
+
                                 </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex justify-content-center">
-                                        {{ $invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : '' }}
+                                        <?php echo e($invoice->date_sell ? date('Y-m-d', strtotime($invoice->date_sell)) : ''); ?>
+
                                     </div>
                                 </td>
                             </tr>
-                        @empty
-                        @endforelse
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </tbody>
                 </table>
                 <div class="mt-3">
-                    {{ $invoices->links() }}
+                    <?php echo e($invoices->links()); ?>
+
                 </div>
             </div>
         </div>
@@ -277,7 +288,10 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        @script
+            <?php
+        $__scriptKey = '201619956-0';
+        ob_start();
+    ?>
             <script>
                 $wire.on("confirmDelete", (event) => {
                     Swal.fire({
@@ -295,9 +309,16 @@
                     });
                 });
             </script>
-        @endscript
+            <?php
+        $__output = ob_get_clean();
 
-        @script
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
+
+            <?php
+        $__scriptKey = '201619956-1';
+        ob_start();
+    ?>
             <script>
                 $wire.on('confirm-payment', () => {
                     Swal.fire({
@@ -314,9 +335,16 @@
                     });
                 });
             </script>
-        @endscript
+            <?php
+        $__output = ob_get_clean();
 
-        @script
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
+
+            <?php
+        $__scriptKey = '201619956-2';
+        ob_start();
+    ?>
             <script>
                 $wire.on('confirmDeleteSelected', () => {
                     Swal.fire({
@@ -334,6 +362,11 @@
                     });
                 });
             </script>
-        @endscript
+            <?php
+        $__output = ob_get_clean();
+
+        \Livewire\store($this)->push('scripts', $__output, $__scriptKey)
+    ?>
     </div>
 </div>
+<?php /**PATH C:\Users\PC\Desktop\laxe8-10\resources\views/livewire/print/multiinvoices.blade.php ENDPATH**/ ?>
