@@ -177,7 +177,7 @@ class Multiinvoices extends Component
     public function render()
     {
         $query = Sell_invoice::with(['customer', 'sell'])
-            ->whereHas('sell', fn($q) => $q->where('cash', 1))
+            ->whereHas('sell', fn($q) => $q->where('cash', 0))
             ->when($this->search, function ($q) {
                 $q->where(function ($sub) {
                     $sub->where('num_invoice_sell', 'like', '%' . $this->search . '%')

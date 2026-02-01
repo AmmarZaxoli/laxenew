@@ -335,7 +335,7 @@ class Show extends Component
         $user = Auth::guard('account')->user();
         if ($user->role !== 'admin') {
 
-            flash()->error('يمكن للمسؤول فقط حذف الفواتير');
+            flash()->error('يمكن للمسؤول فقط دفع الفواتير');
             return;
         }
         $selectedIds = array_map(
@@ -346,14 +346,14 @@ class Show extends Component
         $selectedIds = array_filter($selectedIds);
 
         if (empty($selectedIds)) {
-            flash()->Success('error', 'لم يتم تحديد أي فواتير صالحة.');
+            flash()->Success('لم يتم تحديد أي فواتير صالحة.');
             return;
         }
 
         Sellinfo::whereIn('sell_invoice_id', $selectedIds)
             ->update(['cash' => true]);
 
-        flash()->Success('message', 'تم تحديث حالة الدفع بنجاح.');
+        flash()->Success('تم تحديث حالة الدفع بنجاح.');
 
         $this->selectedInvoices = [];
         $this->selectAll = false;
