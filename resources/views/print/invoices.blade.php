@@ -224,7 +224,7 @@
 
         .product-table th {
             font-size: 10px;
-            background-color: #813434;
+            /* background-color: #813434; */
             color: #813434;
             padding: 1mm 1mm;
             text-align: center;
@@ -472,7 +472,7 @@
                             style="height: 23px; display: block; margin: 0 auto;">
 
                         <div style="font-size: 14px; font-weight: bold; margin-top: 1px;color: #813434;">
-                            {{ $invoice['invoice_number'] ?? '—' }}
+                            رقم الفاتورة : {{ $invoice['invoice_number'] ?? '—' }}
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'default' => 'sweetalert', // Make SweetAlert the default
+    'default' => 'sweetalert',
 
     'plugins' => [
         'sweetalert' => [
@@ -20,4 +20,5 @@ return [
             ],
         ],
     ],
+
 ];
