@@ -55,6 +55,7 @@ Route::middleware(['auth:account'])->group(function () {
         Route::view('/expenses', 'expenses.create')->name('expenses.create');
         Route::view('/accounts', 'accounts.create')->name('accounts.create');
         Route::view('/Invoices', 'Invoices.create')->name('add_Invoices.create');
+        Route::view('/Invoices/gift', 'Invoices.gift')->name('Invoices.gift');
         Route::view('/companys', 'companys.create')->name('companys.create');
         Route::view('/Invoices/show', 'Invoices.show.show_Invoices')->name('show_Invoices.create');
         Route::view('/offers', 'offers.create')->name('offers.create');

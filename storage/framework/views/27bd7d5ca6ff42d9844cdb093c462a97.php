@@ -373,6 +373,14 @@ if (isset($__slots)) unset($__slots);
                                 </li>
 
                                 <li class="nav-item">
+                                    <a class="nav-link <?php echo e(Route::is('Invoices.gift') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('Invoices.gift')); ?>">
+                                        <span class="nav-text">gift</span>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
                                     <a class="nav-link <?php echo e(Route::is('deletedinvoice.create') ? 'active' : ''); ?>"
                                         href="<?php echo e(route('deletedinvoice.create')); ?>">
                                         

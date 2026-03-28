@@ -377,6 +377,14 @@
                                 </li>
 
                                 <li class="nav-item">
+                                    <a class="nav-link {{ Route::is('Invoices.gift') ? 'active' : '' }}"
+                                        href="{{ route('Invoices.gift') }}">
+                                        <span class="nav-text">gift</span>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
                                     <a class="nav-link {{ Route::is('deletedinvoice.create') ? 'active' : '' }}"
                                         href="{{ route('deletedinvoice.create') }}">
                                         {{-- <span class="nav-icon"><i class="bi bi-trash"></i></span> --}}

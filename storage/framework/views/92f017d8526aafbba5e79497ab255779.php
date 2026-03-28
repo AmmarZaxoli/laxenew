@@ -1,7 +1,7 @@
 
 
 <?php $__env->startSection('content'); ?>
-    <div style="padding: 10px">
+    <div class="card body formtype"> 
        <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];

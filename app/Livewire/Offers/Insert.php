@@ -181,7 +181,8 @@ class Insert extends Component
                     if (!empty($this->search_code_name)) {
                         $query->where(function ($subQuery) {
                             $subQuery->where('name', 'like', "%{$this->search_code_name}%")
-                                ->orWhere('code', 'like', "%{$this->search_code_name}%");
+                                ->orWhere('code', 'like', "%{$this->search_code_name}%")
+                                ->orWhere('barcode', 'like', "%{$this->search_code_name}%");
                         });
                     }
 

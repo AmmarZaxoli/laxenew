@@ -95,32 +95,30 @@
                         </a>
                     </li>
 
-                    <li class="nav-item d-flex align-items-center">
+                    <li class="nav-item">
                         <a class="nav-link <?php echo e(Route::is('getAPI.create') ? 'active' : ''); ?>"
                             href="<?php echo e(route('getAPI.create')); ?>">
                             <span class="nav-icon"><i class="bi bi-phone"></i></span>
                             <span class="nav-text">طلبات التطبيق</span>
+
+                            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('notfications.pending-orders-badge');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-2661649288-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
                         </a>
                     </li>
-                    <li class="nav-item d-flex align-items-center">
-                        <a class="nav-link <?php echo e(Route::is('deletedinvoice.create') ? 'active' : ''); ?>"
-                            href="<?php echo e(route('deletedinvoice.create')); ?>">
-                            <span class="nav-icon"><i class="bi bi-phone"></i></span>
-                            <span class="nav-text">طلبات التطبيق</span>
-                        </a>
-                    </li>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 </ul>
@@ -373,6 +371,24 @@
                                         <span class="nav-text">إعدادات الموقع</span>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link <?php echo e(Route::is('Invoices.gift') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('Invoices.gift')); ?>">
+                                        <span class="nav-text">gift</span>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link <?php echo e(Route::is('deletedinvoice.create') ? 'active' : ''); ?>"
+                                        href="<?php echo e(route('deletedinvoice.create')); ?>">
+                                        
+                                        <span class="nav-text">حذف الفواتير</span>
+                                    </a>
+                                </li>
+
+
                             </ul>
                         </div>
                     </li>
@@ -422,7 +438,7 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split('drivers.drivers-order');
 
-$__html = app('livewire')->mount($__name, $__params, 'lw-2661649288-0', $__slots ?? [], get_defined_vars());
+$__html = app('livewire')->mount($__name, $__params, 'lw-2661649288-1', $__slots ?? [], get_defined_vars());
 
 echo $__html;
 

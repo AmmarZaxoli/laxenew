@@ -92,8 +92,9 @@
 
         </div>
         <div class="col-md-5">
-            <div class="btn-group w-100" role="group" >
-                <button wire:click="filterPrinted(null)" type="button" class="btn btn-outline-secondary btn-sm" style="height: 45px">
+            <div class="btn-group w-100" role="group">
+                <button wire:click="filterPrinted(null)" type="button" class="btn btn-outline-secondary btn-sm"
+                    style="height: 45px">
                     <i class="fas fa-list me-1"></i> الكل
                 </button>
                 <button wire:click="filterPrinted(1)" type="button" class="btn btn-outline-success btn-sm">
@@ -105,8 +106,7 @@
             </div>
         </div>
 
-
-
+    
         <!-- Action Buttons Section -->
         <div class="card shadow-sm mb-4">
             <div class="card-body p-0">
@@ -205,19 +205,13 @@
                                 </td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                            <tr>
-                                <td colspan="11" class="text-center py-5 text-muted">
-                                    <i class="fas fa-file-invoice fa-3x opacity-25 mb-3"></i>
-                                    <h5 class="fw-light">لا توجد فواتير لعرضها</h5>
-                                </td>
-                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
                 <div class="mt-3">
-    <?php echo e($invoices->links()); ?>
+                    <?php echo e($invoices->links()); ?>
 
-</div>
+                </div>
             </div>
         </div>
 
